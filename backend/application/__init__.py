@@ -1,7 +1,6 @@
 from flask import Flask
 from datetime import datetime
 
-from application.extensions import db
 from application.models.skill import Skill
 from application.models.access_control import AccessControl
 from application.models.role import Role
@@ -29,20 +28,18 @@ def init_app(config):
 
 def register_blueprints(app: Flask):
     with app.app_context():
-        from application.models import access_control, staff, skill, role, role_listing
-
         # Include our Routes
         from .routes import (
             api,
             role_listing_route,
-            # staff_route,
+            staff_route,
             access_control_route,
-            # skills_route,
+            skills_route,
+            role_route,
         )
 
         # Register routes
         app.register_blueprint(api, url_prefix="/api")
-        # app.register_blueprint(staff_route.api, url_prefix="/api")
 
         return app
 

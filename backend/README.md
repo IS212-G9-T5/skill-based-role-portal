@@ -64,3 +64,4 @@ poetry run python -B -m pytest -s -v
 - Create a service in services folder to support operations relating to the resource (for reusing the service across routes, services)
 - Think of test cases; document them down in the test plan for future testers to review
 - Write test cases for the new feature in `tests/functional` and `tests/unit` folders for API endpoint testing and unit testing respectively
+- Add the new route under imports in the `application/__init__.py` file
