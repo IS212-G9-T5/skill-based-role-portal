@@ -3,6 +3,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 from application import init_app, register_blueprints, register_error_handlers
 from application.config import Config
+from application.extensions import db
 
 
 if __name__ == "__main__":
@@ -25,5 +26,8 @@ if __name__ == "__main__":
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.DEBUG)
     # endregion
+
+    with app.app_context():
+        db.create_all()
 
     app.run(host="0.0.0.0", debug=True, port=5000)
