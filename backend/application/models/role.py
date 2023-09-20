@@ -20,7 +20,7 @@ class Role(db.Model):
     def role_name(self):
         return self.name
 
-    def __init__(self, name, description, skills):
+    def __init__(self, name, description, skills=[]):
         self.name = name
         self.description = description
         self.skills = skills

@@ -1,18 +1,24 @@
 from typing import List, Optional
-from application.dao import role_dao
 from application.models.role import Role
+from application.extensions import db
 
 
 def find_all() -> List[Role]:
-    res = role_dao.find_all()
+    res = db.session.execute(db.select(Role)).scalars().all()
+    return res
+
+
+def find_one_random() -> Optional[Role]:
+    res = db.session.execute(db.select(Role)).scalars().first()
     return res
 
 
 def find_by_name(name: str) -> Optional[Role]:
-    res = role_dao.find_by_name(name)
+    res = db.session.execute(db.select(Role).where(Role.name == name)).scalars().first()
     return res
 
 
 def create(role: Role) -> Role:
-    role_dao.create(role)
-    return role.json()
+    db.session.add(role)
+    db.session.commit()
+    return role

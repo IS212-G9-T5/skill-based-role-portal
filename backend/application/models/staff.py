@@ -45,7 +45,7 @@ class Staff(db.Model):
         back_populates="applicants",
     )
 
-    def __init__(self, fname, lname, dept, country, email, access_control, skills):
+    def __init__(self, fname, lname, dept, country, email, access_control, skills=[]):
         self.fname = fname
         self.lname = lname
         self.dept = dept

@@ -46,10 +46,17 @@ class RoleListing(db.Model):
         back_populates="applications",
     )
 
-    def __init__(self, start_time, end_time, role, status=None, applicants=[]):
+    def __init__(
+        self,
+        role,
+        start_time=datetime.utcnow(),
+        end_time=datetime.utcnow() + timedelta(days=30),
+        status=RoleStatus.OPEN,
+        applicants=[],
+    ):
+        self.role = role
         self.start_time = start_time
         self.end_time = end_time
-        self.role = role
         self.status = status
         self.applicants = applicants
 
