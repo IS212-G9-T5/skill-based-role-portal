@@ -62,5 +62,5 @@ def create_listing():
         start_time=body["start_time"], end_time=body["end_time"], role=role
     )
     data = role_listing_service.create(listing)
-    res = ResponseBodyJSON(data=data).json()
+    res = ResponseBodyJSON(data=data.json()).json()
     return jsonify(res), 201

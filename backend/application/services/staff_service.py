@@ -1,18 +1,19 @@
 from typing import List, Optional
-from application.dao import staff_dao
 from application.models.staff import Staff
+from application.extensions import db
 
 
 def find_all() -> List[Staff]:
-    res = staff_dao.find_all()
+    res = db.session.execute(db.select(Staff)).scalars().all()
     return res
 
 
 def find_by_id(id: int) -> Optional[Staff]:
-    res = staff_dao.find_by_id(id)
+    res = db.session.execute(db.select(Staff).where(Staff.id == id)).scalars().first()
     return res
 
 
 def create(staff: Staff) -> Staff:
-    staff_dao.create(staff)
+    db.session.add(staff)
+    db.session.commit()
     return staff

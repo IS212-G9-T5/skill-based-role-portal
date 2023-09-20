@@ -1,23 +1,32 @@
 from typing import List, Optional
-from application.dao import access_control_dao
 from application.models.access_control import AccessControl
+from application.extensions import db
 
 
 def find_all() -> List[AccessControl]:
-    res = access_control_dao.find_all()
+    res = db.session.execute(db.select(AccessControl)).scalars().all()
     return res
 
 
 def find_by_id(id: int) -> Optional[AccessControl]:
-    res = access_control_dao.find_by_id(id)
+    res = (
+        db.session.execute(db.select(AccessControl).where(AccessControl.id == id))
+        .scalars()
+        .first()
+    )
     return res
 
 
 def find_by_name(name: str) -> Optional[AccessControl]:
-    res = access_control_dao.find_by_name(name)
+    res = (
+        db.session.execute(db.select(AccessControl).where(AccessControl.name == name))
+        .scalars()
+        .first()
+    )
     return res
 
 
 def create(obj: AccessControl) -> AccessControl:
-    access_control_dao.create(obj)
-    return obj.json()
+    db.session.add(obj)
+    db.session.commit()
+    return obj
