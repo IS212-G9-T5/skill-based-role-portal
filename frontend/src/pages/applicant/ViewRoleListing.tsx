@@ -23,8 +23,6 @@ const ViewRoleListing = () => {
             roleID={roleData.roleID}
             roleName={roleData.roleName}
             roleDescription={roleData.roleDescription}
-            roleStartTime={roleData.roleStartTime}
-            roleEndTime={roleData.roleEndTime}
             isOpen={roleData.isOpen}
             skillsRequired={roleData.skillsRequired}
         />
@@ -37,8 +35,6 @@ interface RoleListingProps {
     roleID: string;
     roleName: string;
     roleDescription: string;
-    roleStartTime: string;
-    roleEndTime: string;
     isOpen: boolean;
     skillsRequired: string[];
 }
@@ -48,8 +44,6 @@ const RoleListing: React.FC<RoleListingProps> = ({
     roleID,
     roleName,
     roleDescription,
-    roleStartTime,
-    roleEndTime,
     isOpen,
     skillsRequired
   }) => {
@@ -86,22 +80,6 @@ const RoleListing: React.FC<RoleListingProps> = ({
                 </Typography>
             </Grid>
 
-            {/* <Typography variant="h5" gutterBottom style={{fontFamily: 'Poppins, sans-serif', marginTop:'4%'}}>
-                <b><span style={{backgroundColor:"#1976d2", paddingLeft:"9px", marginRight:"5px"}}></span>Role Listing Period</b>
-            </Typography>
-
-            <Grid container spacing={2} style={{marginTop:'1%', marginBottom:'2%'}}>
-                <Grid item xs={6}>
-                    <Typography variant="h6" style={{fontFamily: 'Poppins, sans-serif'}}>
-                        <strong>Start Time:</strong> {roleStartTime}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography variant="h6" style={{fontFamily: 'Poppins, sans-serif'}}>
-                        <strong>End Time:</strong> {roleEndTime}
-                    </Typography>
-                </Grid>
-            </Grid> */}
             <Button variant="contained" color="primary" style={{ marginTop: '20px', fontFamily: 'Poppins, sans-serif'}}>
                 Apply Now
             </Button>
