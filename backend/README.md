@@ -46,7 +46,7 @@ or run the following commands in the terminal:
 ```
 cd backend
 poetry install
-poetry run python main.py
+poetry run python wsgi.py
 ```
 
 ### Running tests
