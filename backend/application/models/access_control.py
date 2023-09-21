@@ -1,5 +1,5 @@
 from application.extensions import db
-from application.enums.access_control_role import AccessControlRole
+from application.enums import AccessControlRole
 from sqlalchemy import Column, INTEGER, Enum
 from sqlalchemy.orm import relationship
 

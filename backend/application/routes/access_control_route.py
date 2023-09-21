@@ -1,8 +1,7 @@
 from flask import abort, jsonify, request
-from application.extensions import db
 from application.models.access_control import AccessControl
 from application.services import access_control_service as ac_service
-from application.enums.access_control_role import AccessControlRole
+from application.enums import AccessControlRole
 from . import api
 from application.dto.response import ResponseBodyJSON
 

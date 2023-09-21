@@ -2,7 +2,7 @@ from application.extensions import db
 from datetime import datetime, timedelta
 from sqlalchemy import INTEGER, Column, TIMESTAMP, VARCHAR, Enum, ForeignKey
 from sqlalchemy.orm import relationship
-from application.enums.role_status import RoleStatus
+from application.enums import RoleStatus
 
 from application.models.role_application import role_applications
 

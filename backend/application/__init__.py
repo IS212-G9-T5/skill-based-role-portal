@@ -1,11 +1,11 @@
 from flask import Flask
 from datetime import datetime
 
+from application.enums import AccessControlRole
 from application.models.skill import Skill
 from application.models.access_control import AccessControl
 from application.models.role import Role
 from application.models.staff import Staff
-from application.enums.access_control_role import AccessControlRole
 from application.models.role_listing import RoleListing
 from application.models.role_listing import time_format
 

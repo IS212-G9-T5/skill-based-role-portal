@@ -1,5 +1,5 @@
 from application.extensions import db
-from application.enums.application_status import ApplicationStatus
+from application.enums import ApplicationStatus
 
 
 role_applications = db.Table(
