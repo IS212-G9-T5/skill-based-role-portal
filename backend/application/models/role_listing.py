@@ -1,14 +1,16 @@
 from application.extensions import db
-from datetime import datetime, timedelta
-from sqlalchemy import INTEGER, Column, TIMESTAMP, VARCHAR, Enum, ForeignKey
+from datetime import date, datetime, timedelta
+from sqlalchemy import INTEGER, Column, VARCHAR, Enum, ForeignKey, DATE
 from sqlalchemy.orm import relationship
 from application.enums import RoleStatus
 
 from application.models.role_application import role_applications
 
-time_format = "%Y-%m-%dT%H:%M:%SZ"
+
+date_format = "%Y-%m-%d"
 
 
+# time_format = "%Y-%m-%dT%H:%M:%SZ"
 class RoleListing(db.Model):
     __tablename__ = "role_listing"
 
@@ -22,15 +24,15 @@ class RoleListing(db.Model):
 
     role_name = Column(VARCHAR(50), ForeignKey("role.role_name"), nullable=False)
 
-    start_time = Column(
-        name="start_time", type_=TIMESTAMP, nullable=False, default=datetime.utcnow
+    start_date = Column(
+        name="start_date", type_=DATE, nullable=False, default=date.today()
     )
 
-    end_time = Column(
-        name="end_time",
-        type_=TIMESTAMP,
+    end_date = Column(
+        name="end_date",
+        type_=DATE,
         nullable=False,
-        default=datetime.utcnow() + timedelta(days=30),
+        default=date.today() + timedelta(days=30),
     )
 
     status = Column(
@@ -49,22 +51,22 @@ class RoleListing(db.Model):
     def __init__(
         self,
         role,
-        start_time=datetime.utcnow(),
-        end_time=datetime.utcnow() + timedelta(days=30),
+        start_date=datetime.utcnow(),
+        end_date=datetime.utcnow() + timedelta(days=30),
         status=RoleStatus.OPEN,
         applicants=[],
     ):
         self.role = role
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start_date = start_date
+        self.end_date = end_date
         self.status = status
         self.applicants = applicants
 
     def json(self) -> dict:
         return {
             "id": self.id,
-            "start_time": self.start_time.strftime(time_format),
-            "end_time": self.end_time.strftime(time_format),
+            "start_date": self.start_date.strftime(date_format),
+            "end_date": self.end_date.strftime(date_format),
             "status": self.status.name,
             "role": self.role.json(),
             # "applicants": [applicant.id for applicant in self.applicants],

@@ -1,5 +1,5 @@
 from flask import Flask
-from datetime import datetime
+from datetime import date
 
 from application.enums import AccessControlRole
 from application.models.skill import Skill
@@ -7,7 +7,6 @@ from application.models.access_control import AccessControl
 from application.models.role import Role
 from application.models.staff import Staff
 from application.models.role_listing import RoleListing
-from application.models.role_listing import time_format
 
 
 from sqlalchemy.exc import IntegrityError
@@ -234,16 +233,16 @@ def init_db():
         if i < 11:
             role_listing = RoleListing(
                 role=role_account_manager,
-                start_time=datetime.strptime(f"2023-09-{i}T08:15:33Z", time_format),
-                end_time=datetime.strptime(f"2023-10-{i}T08:15:33Z", time_format),
+                start_date=date(2023, 9, i),
+                end_date=date(2023, 10, i),
             )
             db.session.add(role_listing)
 
         elif i < 21:
             role_listing = RoleListing(
                 role=role_developer,
-                start_time=datetime.strptime(f"2023-09-{i}T08:15:33Z", time_format),
-                end_time=datetime.strptime(f"2023-10-{i}T08:15:33Z", time_format),
+                start_date=date(2023, 9, i),
+                end_date=date(2023, 10, i),
                 applicants=[staff1, staff2] if i % 3 == 0 else [],
             )
             db.session.add(role_listing)
@@ -251,8 +250,8 @@ def init_db():
         else:
             role_listing = RoleListing(
                 role=role_consultant,
-                start_time=datetime.strptime(f"2023-09-{i}T08:15:33Z", time_format),
-                end_time=datetime.strptime(f"2023-10-{i}T08:15:33Z", time_format),
+                start_date=date(2023, 9, i),
+                end_date=date(2023, 10, i),
             )
             db.session.add(role_listing)
 

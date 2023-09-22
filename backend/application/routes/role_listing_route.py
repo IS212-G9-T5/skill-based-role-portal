@@ -46,10 +46,10 @@ def create_listing():
         body
     )  # raises ValidationError if invalid (handled globally in errors.py)
 
-    # validate start_time < end_time
-    if body["start_time"] >= body["end_time"]:
+    # validate start_date < end_date
+    if body["start_date"] >= body["end_date"]:
         raise ValidationError(
-            "Invalid start time and end time. Start time must be before the end time."
+            "Invalid start date and end date. Start date must be before the end date."
         )
     # endregion
 
@@ -59,7 +59,7 @@ def create_listing():
         abort(404, description=f"Role {body['role_name']} not found.")
 
     listing = RoleListing(
-        start_time=body["start_time"], end_time=body["end_time"], role=role
+        start_date=body["start_date"], end_date=body["end_date"], role=role
     )
     data = role_listing_service.create(listing)
     res = ResponseBodyJSON(data=data.json()).json()
