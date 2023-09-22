@@ -38,12 +38,12 @@ def find_all_listings_paginated():
     return jsonify(data), 200
 
 
-@api.route("/listings/<string:name>", methods=["GET"])
-def find_listing_by_name(name: str):
-    listing = role_listing_service.find_by_name(name)
+@api.route("/listings/<int:id>", methods=["GET"])
+def find_listing_by_id(id: int):
+    listing = role_listing_service.find_by_id(id)
 
     if listing is None:
-        abort(404, description=f"RoleListing {name} not found.")
+        abort(404, description=f"RoleListing {id} not found.")
 
     data = listing.json()
     res = ResponseBodyJSON(data=data).json()

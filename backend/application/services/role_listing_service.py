@@ -17,9 +17,9 @@ def find_all_paginated(page: int, page_size: int) -> Pagination:
     return listings
 
 
-def find_by_name(name: str) -> Optional[RoleListing]:
+def find_by_id(id: int) -> Optional[RoleListing]:
     listing = (
-        db.session.execute(db.select(RoleListing).where(RoleListing.name == name))
+        db.session.execute(db.select(RoleListing).where(RoleListing.id == id))
         .scalars()
         .first()
     )
