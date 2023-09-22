@@ -1,9 +1,11 @@
 from flask.testing import FlaskClient
 from application.services import role_service
+from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 
 ENDPOINT = "/api/listings"
 
 
+# region: creation of role listing
 def test_create_role_listing_success(test_client: FlaskClient, init_database):
     """
     GIVEN there are skills created and skills mapped to a role,
@@ -127,3 +129,149 @@ def test_create_role_listing_role_name_not_exist(
 
     # check response
     assert response.status_code == 404
+
+
+# endregion
+
+
+# region: get role listing
+def test_get_role_listing_paginated_success_no_params(
+    test_client: FlaskClient, init_database
+):
+    """
+    GIVEN there are at least 30 role listings created,
+    WHEN the API endpoint 'role_listing' is requested (GET)
+    THEN check that
+        - the response returns HTTP 200
+        - there are 10 items in the `items` field
+        - `page` field is 1
+        - `size` field is 10
+        - `has_prev` field is False
+        - `has_next` field is True
+    """
+
+    response = test_client.get(path=ENDPOINT)
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) == DEFAULT_PAGE_SIZE
+    assert response.json["has_prev"] == False
+    assert response.json["has_next"] == True
+
+
+def test_get_role_listing_paginated_success_page_size_params_given(
+    test_client: FlaskClient, init_database
+):
+    """
+    GIVEN there are at least 30 role listings created,
+    WHEN the API endpoint 'role_listing' is requested (GET) with query params `size=15`, `page=2`,
+    THEN check that
+        - the response returns HTTP 200
+        - `page` field is 2
+        - `size` field is 15
+        - there are 15 items in the `items` field
+        - `has_prev` field is True
+        - `has_next` field is True
+    """
+    page, size = 2, 15
+    response = test_client.get(path=ENDPOINT, query_string={"page": page, "size": size})
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["page"] == page
+    assert response.json["size"] == size
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) == size
+    assert response.json["has_prev"] == True
+    assert response.json["has_next"] == True
+
+
+def test_get_role_listing_paginated_negative_page_or_negative_size(
+    test_client: FlaskClient, init_database
+):
+    """
+    GIVEN there are at least 30 role listings created,
+    WHEN the API endpoint 'role_listing' is requested (GET) with query params `size` and/or `page` as negative,
+    THEN check that
+        - the response returns HTTP 200
+        - there are 10 items in the `items` field
+        - `page` field is 1
+        - `size` field is 10
+        - `has_prev` field is False
+        - `has_next` field is True
+    """
+    # region: negative page and no size param
+    response = test_client.get(path=ENDPOINT, query_string={"page": -1})
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) == DEFAULT_PAGE_SIZE
+    assert response.json["has_prev"] == False
+    assert response.json["has_next"] == True
+    # endregion
+
+    # region: negative size and no page param
+    response = test_client.get(path=ENDPOINT, query_string={"size": -1})
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) == DEFAULT_PAGE_SIZE
+    assert response.json["has_prev"] == False
+    assert response.json["has_next"] == True
+    # endregion
+
+
+def test_get_role_listing_paginated_exceed_available_pages(
+    test_client: FlaskClient, init_database
+):
+    """
+    GIVEN there are at least 30 role listings created,
+    WHEN the API endpoint 'role_listing' is requested (GET) with query params `page=100`,
+    THEN check that
+        - the response returns HTTP 200
+        - there are 0 items in the `items` field
+        - `page` field matches the query param `page`
+        - `has_prev` field is False
+        - `has_next` field is False
+    """
+    page = 100
+    response = test_client.get(path=ENDPOINT, query_string={"page": page})
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) == 0
+    assert response.json["page"] == page
+    assert response.json["has_prev"] == False
+    assert response.json["has_next"] == False
+
+
+def test_get_role_listing_paginated_exceed_available_pages(
+    test_client: FlaskClient, init_database
+):
+    """
+    GIVEN there are at least 30 role listings created,
+    WHEN the API endpoint 'role_listing' is requested (GET) with query params `size=100`,
+    THEN check that
+        - the response returns HTTP 200
+        - there are at least 30 but less than 100 items in the `items` field
+        - `page` field == 1
+        - `has_prev` field is False
+        - `has_next` field is False
+    """
+    size = 100
+    response = test_client.get(path=ENDPOINT, query_string={"size": size})
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["items"] is not None
+    assert len(response.json["items"]) >= 30 and len(response.json["items"]) < size
+    assert response.json["page"] == 1
+    assert response.json["has_prev"] == False
+    assert response.json["has_next"] == False
+
+
+# endregion
