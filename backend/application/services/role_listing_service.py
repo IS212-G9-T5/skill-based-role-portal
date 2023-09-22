@@ -1,19 +1,23 @@
-from flask import abort
-from application.dao import role_listing_dao
+from typing import List, Optional
 from application.models.role_listing import RoleListing
+from application.extensions import db
 
-def find_all() -> list:
-    listings = role_listing_dao.find_all()
+
+def find_all() -> List[RoleListing]:
+    listings = db.session.execute(db.select(RoleListing)).scalars().all()
     return listings
 
-def find_by_id_or_throw(id) -> RoleListing:
-    listing = role_listing_dao.find_by_id(id)
 
-    if listing is None:
-        abort(404, description=f"RoleListing {str(id)} not found.")
+def find_by_name(name: str) -> Optional[RoleListing]:
+    listing = (
+        db.session.execute(db.select(RoleListing).where(RoleListing.name == name))
+        .scalars()
+        .first()
+    )
+    return listing
 
-    return listing.json()
 
 def create(listing: RoleListing) -> RoleListing:
-    role_listing_dao.create(listing)
-    return listing.json()
+    db.session.add(listing)
+    db.session.commit()
+    return listing
