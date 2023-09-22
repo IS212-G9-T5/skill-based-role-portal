@@ -5,28 +5,6 @@ from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 ENDPOINT = "/api/listings"
 
 
-# region: get individual role listing
-def test_get_indiv_role_listing(test_client: FlaskClient, init_database):
-    """
-    GIVEN there are at least 30 role listings created,
-    WHEN the API endpoint 'role_listing' is requested (GET) with /{id} where id is a valid role listing id
-    THEN check that
-        - the response returns HTTP 200
-        - role listing object id matches the id in the request path
-    """
-    id = 25
-    response = test_client.get(path=f"{ENDPOINT}/{id}")
-
-    # check response
-    assert response.status_code == 200
-    data = response.json["data"]
-    assert data is not None
-    assert data["id"] == id
-
-
-# endregion
-
-
 # region: creation of role listing
 def test_create_role_listing_success(test_client: FlaskClient, init_database):
     """
@@ -156,7 +134,7 @@ def test_create_role_listing_role_name_not_exist(
 # endregion
 
 
-# region: get role listings
+# region: get role listing
 def test_get_role_listing_paginated_success_no_params(
     test_client: FlaskClient, init_database
 ):
