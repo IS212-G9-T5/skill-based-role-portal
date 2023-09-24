@@ -42,6 +42,7 @@ SQLALCHEMY_TEST_DATABASE_URI=postgresql://{username}:{password}@{host}:{port}/{d
 
 ```
 cd backend
+poetry shell
 poetry install
 poetry run python wsgi.py
 ```
