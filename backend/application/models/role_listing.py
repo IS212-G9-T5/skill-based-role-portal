@@ -39,7 +39,7 @@ class RoleListing(db.Model):
         name="status", type_=Enum(RoleStatus), nullable=False, default=RoleStatus.OPEN
     )
 
-    role = relationship("Role", back_populates="role_listing", lazy="subquery")
+    role = db.relationship("Role", back_populates="role_listing", lazy="subquery")
 
     applicants = relationship(
         "Staff",
@@ -68,7 +68,7 @@ class RoleListing(db.Model):
             "start_date": self.start_date.strftime(date_format),
             "end_date": self.end_date.strftime(date_format),
             "status": self.status.name,
-            "role": self.role.json(),
+            "role": self.role.json() if self.role else None,
             # "applicants": [applicant.id for applicant in self.applicants],
         }
 

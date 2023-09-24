@@ -1,0 +1,6 @@
+.env
+/**/__pycache__/*
+localDev.bat
+localTest.bat
+localDev.sh
+logs/**
