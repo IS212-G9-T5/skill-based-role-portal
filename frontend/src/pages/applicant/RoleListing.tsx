@@ -4,7 +4,9 @@ interface RoleListingProps {
   roleID: string
   roleName: string
   roleDescription: string
-  isOpen: boolean
+  roleStartTime: string
+  roleEndTime: string
+  status: boolean
   skillsRequired: string[]
 }
 
@@ -15,8 +17,7 @@ const RoleListing = (props: RoleListingProps) => {
       <div className="pl-[10%] pr-[10%] pt-[2%]">
         <Typography variant="h2">{props.roleName}</Typography>
         <Typography variant="h6" className="mb-[2%] text-[#B0B0B4]">
-          Role ID: {props.roleID} | Role Listing Status:{" "}
-          {props.isOpen ? "Open" : "Closed"}
+          Role ID: {props.roleID} | Role Listing Status: {props.status} | Start Date: {props.roleStartTime} | End Date: {props.roleEndTime}
         </Typography>
 
         <Typography variant="h5" gutterBottom style={{ marginTop: "3%" }}>
