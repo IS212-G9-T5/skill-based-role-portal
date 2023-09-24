@@ -1,10 +1,10 @@
 import type { RouteObject } from 'react-router';
-import RoleListing from './pages/applicant/RoleListing';
+import ViewRoleListing from './pages/applicant/main';
 
 const routes: RouteObject[] = [
     {
       path: 'role-listing',
-      element: <RoleListing/>,
+      element: <ViewRoleListing/>,
     },
   ];
   
