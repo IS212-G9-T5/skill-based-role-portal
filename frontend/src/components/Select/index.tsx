@@ -18,13 +18,11 @@ const SelectWrapper = ({
     const [field] = useField(name)
 
 
-
     const handleChange = evt => {
         const {value} = evt.target
         setFieldValue(name, value)
 
     }
-
     const configSelect = {
         ...field,
         ...otherProps,
