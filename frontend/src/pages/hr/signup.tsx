@@ -1,94 +1,140 @@
-import React from 'react'
-import { Formik, Field, Form } from 'formik'
+import React from "react";
+import { TextareaAutosize } from "@mui/base/TextareaAutosize";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import {Grid, Typography} from "@mui/material";
+import TextArea from '../../components/TextArea';
+import Select from '../../components/Select';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 
 interface MyFormValues {
-    roleListing: string;
-    description: string;
-    applicationDeadline: string;
-    toggle: boolean;
-    skills: string[];
+    roleListing: string
+    description: string
+    applicationDeadline: string
+    toggle: boolean
+    skills: string[]
 }
 
+const FORM_VALIDATION = Yup.object().shape({
+    roleListing: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    applicationDeadline: Yup.string().required("Required"),
+})
+
+const response = fetch('https://localhost:8080/roles')
+
+
 const RolelistingForm = () => {
-    const initialValues: MyFormValues = { roleListing: '', description: '', applicationDeadline: '', toggle: false, skills: [] };
+    const initialValues: MyFormValues = {
+        roleListing: "",
+        description: "",
+        applicationDeadline: "",
+        toggle: false,
+        skills: [],
+    }
+    const handleFormSubmit = async (values) => {
+        try {
+            await new Promise((r) => setTimeout(r, 500))
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <>
-        <h1 className="text-left mb-10">Role Listing Form</h1>
-        <div>
-            <Formik initialValues={{
-                roleListing: '',
-                description: '',
-                applicationDeadline: '',
-                toggle: false,
-                skills: []
-            }}
-                onSubmit={
-                    async (values, { setSubmitting }) => {
-                        await new Promise(r => setTimeout(r, 500));
-                        setSubmitting(false);
-                    }
-                }>
+            <h1 className="mb-10 text-left">Role Listing Form</h1>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={FORM_VALIDATION}
+                onSubmit={handleFormSubmit}
+            >
                 {({ values }) => (
-                    <div className="h-full w-full">
                     <Form className="flex flex-col gap-4">
-                            <div className="text-left">
-                                <h2 className="text-base font-semibold">Role Listing Title</h2>
-                                <label htmlFor="roleListing">
-                                    <Field
-                                        id="roleListing"
-                                        name="roleListing"
-                                        type="text"
-                                        placeholder="Title"
+                        <Grid container spacing={1}>
+                            <Grid item xs={12}>
+                                <Typography>
+                                    Role
+                                </Typography>
+                                <Select
+                                name="Role"
+                                label="role"
+                                options={response}
+                                />
+
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <div className="text-left">
+                                    <Typography>
+                                        Description
+                                    </Typography>
+
+                                    <TextArea
+                                        name="Description"
+                                        label="description"
+                                        className="w-80 font-sans font-normal"
+                                        placeholder="Description"
                                     />
-                                </label>
+                                </div>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <div className="text-left">
+                                    <Typography>
+                                        Start Date
+                                    </Typography>
+                                    <DatePicker label="Start Date"/>
+                                </div>
+                            </Grid>
+
+                            <Grid item xs={6}>
+                                <div className="text-left">
+                                    <Typography>
+                                        End Date
+                                    </Typography>
+                                    <DatePicker label="End Date"/>
+                                </div>
+                            </Grid>
+
+                        </Grid>
+
+
+                        <div className="text-left">
+                            <div className="flex flex-row" id="checkbox-group">
+                                Skills
                             </div>
+                            <div
+                                className="flex flex-row gap-2"
+                                role="group"
+                                aria-labelledby="checkbox-group"
+                            >
+                                <div className="flex">
+                                    <label>
+                                        <Field type="checkbox" name="checked" value="One" />
+                                    </label>
+                                    <div className="ml-1">Skill 1</div>
+                                </div>
 
-                            <div className="text-left">
-                            <h2 className="text-base font-semibold">Description</h2>
-                            <label htmlFor="description"><Field
-                                id="description"
-                                name="description"
-                                type="text"
-                                placeholder="Description"
-                            /></label>
-                            </div>
-
-                            <div className="text-left">
-                                <div className="flex flex-row" id="checkbox-group">Skills</div>
-                                <div className="flex flex-row gap-2" role="group" aria-labelledby="checkbox-group">
-
-                                    <div className="flex">
-                                        <label>
-                                            <Field type="checkbox" name="checked" value="One" />
-                                            Skill 1
-                                        </label>
-                                    </div>
-                                                
-                                    <div className="flex">
+                                <div className="flex">
                                     <label>
                                         <Field type="checkbox" name="checked" value="Two" />
-                                        Skill 2
                                     </label>
-                                    </div>
+                                    <div className="ml-1">Skill 2</div>
+                                </div>
 
-                                    <div className="flex">
+                                <div className="flex">
                                     <label>
                                         <Field type="checkbox" name="checked" value="Three" />
-                                        Skill 3
                                     </label>
-                                    </div>
+                                    <div className="ml-1">Skill 3</div>
                                 </div>
                             </div>
-                            <button type="submit">Submit</button>
+                        </div>
+                        <button type="submit">Submit</button>
                     </Form>
-                    </div>
-             
-                )}
-
+                    )}
             </Formik>
-        </div>
         </>
-    );
-};
-
-export default RolelistingForm;
+    )
+}
+export default RolelistingForm
