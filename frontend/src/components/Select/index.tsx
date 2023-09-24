@@ -1,4 +1,3 @@
-
 import TextField from '@mui/material/TextField';
 import MenuItem from "@mui/material/MenuItem";
 import { FormikTouched, useField, useFormikContext } from "formik";
@@ -10,7 +9,6 @@ interface SelectWrapperProps {
     options: string,
     error: boolean,
     helperText: FormikTouched<any>
-
 }
 const SelectWrapper = ({
         name,
@@ -31,9 +29,7 @@ const SelectWrapper = ({
         ...field,
         ...otherProps,
         select:true,
-
         variant: 'outlined',
-
         fullWidth: true,
         onChange: handleChange
     }
@@ -42,12 +38,10 @@ const SelectWrapper = ({
         configSelect.error = true
         configSelect.helperText = metadata.error
     }
-
     return (
         <TextField {...configSelect}>
             {Object.keys(options).map((item,pos) =>
             {
-
                 return (
                   <MenuItem key={pos} value={item}>
                       {options[item]}
@@ -55,12 +49,6 @@ const SelectWrapper = ({
                 )
 
             })}
-
-                <MenuItem key={pos} value={item}>
-                    {options[item]}
-                </MenuItem>
-            }
-            )}
         </TextField>
     )
 }

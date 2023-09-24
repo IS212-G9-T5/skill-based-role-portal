@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import {useField} from 'formik'
 
@@ -15,8 +14,6 @@ const TextareaWrapper  = ({
                           }: TextareaWrapperProps) => {
     const [field] = useField(name);
 
-
-
     const configTextarea = {
         ...field,
         ...otherProps,
@@ -28,7 +25,6 @@ const TextareaWrapper  = ({
         configTextarea.error = true
         configTextarea.helperText = metadata.error
     }
-
     return (
         <TextareaAutosize {...configTextarea} />
     )
