@@ -10,6 +10,7 @@ interface RoleListingProps {
 
 const RoleListing = (props: RoleListingProps) => {
   return (
+    <>
     <div>
       <div className="pl-[10%] pr-[10%] pt-[2%]">
         <Typography variant="h2">{props.roleName}</Typography>
@@ -62,6 +63,7 @@ const RoleListing = (props: RoleListingProps) => {
         </Button>
       </div>
     </div>
+    </>
   )
 }
 
