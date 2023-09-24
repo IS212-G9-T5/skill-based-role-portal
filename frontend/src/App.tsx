@@ -1,21 +1,25 @@
-import { useRoutes } from "react-router-dom";
-import routes from "./routes"
+import { useState } from "react"
+
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import reactLogo from "./assets/react.svg"
-import viteLogo from "/vite.svg"
+
 import RolelistingForm from "./pages/hr/signup"
 
 import "./App.css"
 
-function App() {
+function App({children}) {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div className="App">
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {children}
+        <div className="App">
         <RolelistingForm />
       </div>
+    </LocalizationProvider>
     </>
   )
 }
