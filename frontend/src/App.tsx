@@ -1,8 +1,7 @@
 import { useRoutes } from "react-router-dom";
 import routes from "./routes"
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const App = ({children}) =>
   {
@@ -12,5 +11,6 @@ const App = ({children}) =>
     return content
     </LocalizationProvider>
   }
+
 
 export default App
