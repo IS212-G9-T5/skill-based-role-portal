@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react"
-
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
 import { useEffect, useState } from "react"
 
 type apiRoleDataProps = {
-  roleID: string
+  id: string
   roleName: string
   roleDescription: string
-  roleStartTime: string
-  roleEndTime: string
+  start_date: string
+  end_date: string
   status: boolean
   skillsRequired: string[]
 }
@@ -43,11 +41,11 @@ const ViewRoleListing = () => {
       {apiRoleData.map((roleData) => (
         <RoleListing
           key={roleData.id} // Provide a unique key for each RoleListing
-          roleID={roleData.id}
+          id={roleData.id}
           roleName={roleData["role"].name}
           roleDescription={roleData["role"].description}
-          roleStartTime={roleData.start_date}
-          roleEndTime={roleData.end_date}
+          start_date={roleData.start_date}
+          end_date={roleData.end_date}
           status={roleData.status}
           skillsRequired={roleData["role"].skills}
         />
