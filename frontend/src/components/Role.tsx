@@ -1,17 +1,10 @@
-import { Button, Chip, Grid, Typography } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import { Chip, Grid, Typography } from "@mui/material"
 
-const RoleListing = (props: Roles) => {
-  const navigate = useNavigate()
-
-  const handleBackToListings = () => {
-    navigate(`/all-role-listing`)
-  }
-
+const Role = (props) => {
   return (
     <div>
-      <div>
-        <div className="pl-[10%] pr-[10%] pt-[2%]">
+      <div className="rounded-lg bg-white p-4 shadow-md transition-transform hover:scale-105 hover:transform">
+        <div className="pl-[5%] pt-[2%]">
           <strong>
             <Typography variant="h4">{props.name}</Typography>
           </strong>
@@ -37,36 +30,16 @@ const RoleListing = (props: Roles) => {
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
                 Skills Required
               </strong>
-              <br></br>
+              <br />
               {props.skills.map((skill, index) => (
                 <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />
               ))}
             </Typography>
           </Grid>
-
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: "20px" }}
-          >
-            Apply Now
-          </Button>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{
-              marginTop: "20px",
-              marginLeft: "10px",
-            }}
-            onClick={handleBackToListings}
-          >
-            Back to Listings
-          </Button>
         </div>
       </div>
     </div>
   )
 }
 
-export default RoleListing
+export default Role

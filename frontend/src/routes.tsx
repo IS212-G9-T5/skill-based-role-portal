@@ -1,11 +1,11 @@
 import type { RouteObject } from "react-router"
 
+import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
-import AllRoleListing from "./pages/applicant/AllRoleListing";
 
 const routes: RouteObject[] = [
   {
-    path: "role-listing",
+    path: "role-listing/:id",
     element: <ViewRoleListing />,
   },
   {
