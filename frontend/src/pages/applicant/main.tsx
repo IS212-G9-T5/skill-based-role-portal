@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react"
+
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
-import { useEffect, useState } from "react"
 
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
