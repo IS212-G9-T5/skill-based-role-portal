@@ -7,7 +7,6 @@ const RoleListing = (props: Roles) => {
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
   }
-
   return (
     <div>
       <div>
@@ -25,6 +24,7 @@ const RoleListing = (props: Roles) => {
               <span className="mr-2 bg-[#1976D2] pl-2"></span>
               Role Description
             </b>
+            
           </Typography>
 
           <Typography variant="body1" style={{ marginBottom: "3%" }} paragraph>

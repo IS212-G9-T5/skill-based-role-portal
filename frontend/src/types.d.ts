@@ -12,3 +12,4 @@ declare type NavBar = {
   title: string
   items: string[]
 }
+
