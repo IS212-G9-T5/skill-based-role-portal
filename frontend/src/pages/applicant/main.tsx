@@ -1,18 +1,24 @@
+import { useEffect, useState } from "react"
+
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
 
 const ViewRoleListing = () => {
-  // Sample role data
-  const roleData = {
-    roleID: "R0001",
-    roleName: "Frontend Developer",
-    roleDescription:
-      "As a Frontend Developer at All-In-One, you will play a pivotal role in creating and maintaining the user interfaces of our web applications. You will collaborate with cross-functional teams, including designers and backend developers, to bring our product visions to life. You will have the opportunity to work on exciting projects, from building new features to optimizing existing codebases. You will also be able to learn from and share your knowledge with your teammates, as well as grow your skillset through our mentorship program. If you are passionate about frontend development and want to make a difference, we want you to join us!",
-    roleStartTime: "2023-09-25 09:00 AM",
-    roleEndTime: "2023-09-30 05:00 PM",
-    isOpen: true,
-    skillsRequired: ["React", "JavaScript", "HTML", "CSS"],
-  }
+  const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
+  const endpointUrl = "http://127.0.0.1:5000/api/listings/25"
+
+  useEffect(() => {
+    fetch(endpointUrl)
+      .then((response) => response.json())
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setApiRoleData(res.data)
+        } else if (typeof res.data === "object") {
+          setApiRoleData([res.data])
+        }
+      })
+      .catch((error) => console.log(error))
+  }, [])
 
   const title = "SKILLS BASED ROLE PORTAL"
   const items = ["View Listings", "View Profile", "Logout"]
@@ -20,13 +26,18 @@ const ViewRoleListing = () => {
   return (
     <div>
       <NavBar title={title} items={items} />
-      <RoleListing
-        roleID={roleData.roleID}
-        roleName={roleData.roleName}
-        roleDescription={roleData.roleDescription}
-        isOpen={roleData.isOpen}
-        skillsRequired={roleData.skillsRequired}
-      />
+      {apiRoleData.map((roleData) => (
+        <RoleListing
+          key={roleData.id}
+          id={roleData.id}
+          name={roleData["role"].name}
+          description={roleData["role"].description}
+          start_date={roleData.start_date}
+          end_date={roleData.end_date}
+          status={roleData.status}
+          skills={roleData["role"].skills}
+        />
+      ))}
     </div>
   )
 }
