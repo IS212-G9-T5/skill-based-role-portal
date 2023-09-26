@@ -2,7 +2,6 @@ import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
 import { useEffect, useState } from "react"
 
-
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
   const endpointUrl = "http://127.0.0.1:5000/api/listings/25"
