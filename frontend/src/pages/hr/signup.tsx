@@ -12,14 +12,16 @@ import React from 'react'
 interface MyFormValues {
     roleListing: string
     description: string
-    applicationDeadline: string
-    skills: string[]
+    startDate: string
+    endDate: string
 }
 
 const FORM_VALIDATION = Yup.object().shape({
     roleListing: Yup.string().required("Required"),
     description: Yup.string().required("Required"),
-    applicationDeadline: Yup.string().required("Required"),
+    startDate: Yup.string().required("Required"),
+    endDate: Yup.string().required("Required"),
+
 })
 
 const endpointUrl = 'http://127.0.0.1:5000/api/listings'
@@ -31,9 +33,7 @@ const RolelistingForm = () => {
     const [data, setData] = useState(null)
     const [roles, setRoles] = useState<string[]>([]);
     const [selectedRole, setSelectedRole] = useState('')
-    const [skills, setSkills] = useState<string[]>([])
-    const[selectedSkills, setSelectedSkills] = useState('')
-
+    const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
     useEffect(() => {
           fetch(endpointUrl)
             .then((response) => response.json())
@@ -46,7 +46,6 @@ const RolelistingForm = () => {
                     skills.forEach(skill => {
                         skillsSet.add(skill)
                     })
-                    setSkills([...skillsSet])
 
                     rolesArray.push(roleName)
                     setRoles(rolesArray)
@@ -63,11 +62,12 @@ const RolelistingForm = () => {
     const initialValues: MyFormValues = {
         roleListing: "",
         description: "",
-        applicationDeadline: "",
-        skills: [],
+        startDate: "",
+        endDate: ""
     }
     const handleFormSubmit = async (values) => {
         try {
+            console.log("Form data", values)
             const response = await fetch("http://127.0.0.1:5000/api/listings", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -88,19 +88,21 @@ const RolelistingForm = () => {
         }
     }
     const handleChange = (event) => {
-        const roleName = event.target.value
-        setSelectedRole(roleName)
-        const items = data.items
-        console.log("items retrieved",items)
+        const selectedRoleName = event.target.value
+        setSelectedRole(selectedRoleName)
+        const items = data
         items.forEach(item => {
-            const roleName =  item.role.find(role => role.name === roleName)
-            console.log("rolename", roleName)
+            const roleName =  item.role.name
+            const skills = item.role.skills
+            if (roleName === selectedRoleName) {
+                setRetrievedSkills(skills)
+            }
 
         })
 
-        // console.log(roleSkill)
     }
-    const [value, setValue] = React.useState<Dayjs | null>(null);
+    const [startDatevalue, setstartDateValue] = React.useState<Dayjs | null>(null);
+    const [endDatevalue, setendDateValue] = React.useState<Dayjs | null>(null);
 
     return (
         <>
@@ -171,7 +173,7 @@ const RolelistingForm = () => {
                                                     </strong>
                                                   </Typography>
 
-                                                  <DatePicker value={value} onChange={(newValue) => setValue(newValue)} label="Start Date"/>
+                                                  <DatePicker value={startDatevalue} onChange={(newValue) => setstartDateValue(newValue)} label="Start Date"/>
                                               </div>
                                           </Grid>
 
@@ -182,7 +184,7 @@ const RolelistingForm = () => {
                                                           End Date
                                                       </strong>
                                                   </Typography>
-                                                  <DatePicker value={value} onChange={(newValue) => setValue(newValue)} label="End Date"/>
+                                                  <DatePicker value={endDatevalue} onChange={(newValue) => setendDateValue(newValue)} label="End Date"/>
                                               </div>
                                           </Grid>
 
@@ -193,14 +195,14 @@ const RolelistingForm = () => {
                                                       Skills Required
                                                   </strong>
                                                   <br></br>
-                                                  {/*{selectedSkills.map((skill, index) => (*/}
-                                                  {/*  <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />*/}
-                                                  {/*))}*/}
+                                                  {retrievedSkills.map((skill, index) => (
+                                                    <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />
+                                                  ))}
                                               </Typography>
                                           </Grid>
 
                                           <Grid item xs={12}>
-                                              <Button variant='contained' fullWidth type="submit" onClick={() => toast.success}>Submit</Button>
+                                              <Button variant='contained' fullWidth type="submit">Submit</Button>
                                           </Grid>
                                       </Grid>
 
