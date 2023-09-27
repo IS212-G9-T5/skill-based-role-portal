@@ -1,18 +1,18 @@
-import React from "react";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import { Field, Form, Formik } from "formik";
+import {useState, useEffect, useRef} from "react";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import {Grid, Typography} from "@mui/material";
-import TextArea from '../../components/TextArea';
-import Select from '../../components/Select';
+import { Chip, Grid, Typography, Container, Button, MenuItem } from "@mui/material";
+import { Dayjs } from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import toast from "react-hot-toast";
+import TextField from "@mui/material/TextField";
+import React from 'react'
 
 
 interface MyFormValues {
     roleListing: string
     description: string
     applicationDeadline: string
-    toggle: boolean
     skills: string[]
 }
 
@@ -22,118 +22,196 @@ const FORM_VALIDATION = Yup.object().shape({
     applicationDeadline: Yup.string().required("Required"),
 })
 
-const response = fetch('https://localhost:8080/roles')
+const endpointUrl = 'http://127.0.0.1:5000/api/listings'
 
 
 const RolelistingForm = () => {
+    const rolesArray = new Array<string>
+    const skillsSet = new Set<string>()
+    const [data, setData] = useState(null)
+    const [roles, setRoles] = useState<string[]>([]);
+    const [selectedRole, setSelectedRole] = useState('')
+    const [skills, setSkills] = useState<string[]>([])
+    const[selectedSkills, setSelectedSkills] = useState('')
+
+    useEffect(() => {
+          fetch(endpointUrl)
+            .then((response) => response.json())
+            .then(res => {
+                setData(res.items)
+                const result = res.items
+                result.forEach(item => {
+                    const roleName = item.role.name;
+                    const skills = item.role.skills;
+                    skills.forEach(skill => {
+                        skillsSet.add(skill)
+                    })
+                    setSkills([...skillsSet])
+
+                    rolesArray.push(roleName)
+                    setRoles(rolesArray)
+                })
+            })
+      },
+      [])
+    const handleSuccess = (msg) =>
+        toast.success(msg, {position: "top-center"})
+
+    const handleError = (msg) =>
+        toast.error(msg, {position: "top-center"})
+
     const initialValues: MyFormValues = {
         roleListing: "",
         description: "",
         applicationDeadline: "",
-        toggle: false,
         skills: [],
     }
     const handleFormSubmit = async (values) => {
         try {
-            await new Promise((r) => setTimeout(r, 500))
+            const response = await fetch("http://127.0.0.1:5000/api/listings", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(values)
+            })
+            const data = await response.json()
+            if (response.ok){
+                if (data.success) {
+                    handleSuccess("Create Role Listing")
+                }
+                else {
+                    handleError("Failed to create Role Listing")
+                }
+            }
         } catch (error) {
+            handleError("Error occurred when submitting form")
             console.log(error)
         }
     }
+    const handleChange = (event) => {
+        const roleName = event.target.value
+        setSelectedRole(roleName)
+        const items = data.items
+        console.log("items retrieved",items)
+        items.forEach(item => {
+            const roleName =  item.role.find(role => role.name === roleName)
+            console.log("rolename", roleName)
+
+        })
+
+        // console.log(roleSkill)
+    }
+    const [value, setValue] = React.useState<Dayjs | null>(null);
+
     return (
         <>
-            <h1 className="mb-10 text-left">Role Listing Form</h1>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={FORM_VALIDATION}
-                onSubmit={handleFormSubmit}
-            >
-                {({ values }) => (
-                    <Form className="flex flex-col gap-4">
-                        <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                <Typography>
-                                    Role
-                                </Typography>
-                                <Select
-                                name="Role"
-                                label="role"
-                                options={response}
-                                />
-
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <div className="text-left">
-                                    <Typography>
-                                        Description
-                                    </Typography>
-
-                                    <TextArea
-                                        name="Description"
-                                        label="description"
-                                        className="w-80 font-sans font-normal"
-                                        placeholder="Description"
-                                    />
-                                </div>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <div className="text-left">
-                                    <Typography>
-                                        Start Date
-                                    </Typography>
-                                    <DatePicker label="Start Date"/>
-                                </div>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <div className="text-left">
-                                    <Typography>
-                                        End Date
-                                    </Typography>
-                                    <DatePicker label="End Date"/>
-                                </div>
-                            </Grid>
-
-                        </Grid>
-
-
-                        <div className="text-left">
-                            <div className="flex flex-row" id="checkbox-group">
-                                Skills
-                            </div>
-                            <div
-                                className="flex flex-row gap-2"
-                                role="group"
-                                aria-labelledby="checkbox-group"
+            <Grid container>
+                <Grid item xs={12}>
+                        <Typography className="text-center" variant="h4">Role Listing Form</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Container maxWidth="md">
+                        <div className="mt-2 mb-2">
+                            <Formik
+                              initialValues={initialValues}
+                              validationSchema={FORM_VALIDATION}
+                              onSubmit={handleFormSubmit}
                             >
-                                <div className="flex">
-                                    <label>
-                                        <Field type="checkbox" name="checked" value="One" />
-                                    </label>
-                                    <div className="ml-1">Skill 1</div>
-                                </div>
+                                {({ touched, errors }) => (
+                                  <Form className="flex flex-col gap-4">
+                                      <Grid container spacing={2}>
+                                          <Grid item xs={12}>
+                                              <Typography variant="h5">
+                                                  <strong>
+                                                      Role
+                                                  </strong>
+                                              </Typography>
+                                              <TextField
+                                                name="Role"
+                                                label="Role"
+                                                value={selectedRole}
+                                                select
+                                                onChange={handleChange}
+                                                fullWidth
+                                                error={Boolean(touched.Role) && Boolean(errors.Role)}
+                                                helperText={Boolean(touched.Role) && Boolean(errors.Role)}
+                                              >
+                                                  {roles.map((option,index) => (
+                                                      <MenuItem key={index} value={option}>
+                                                          {option}
+                                                      </MenuItem>
+                                                  ))}
 
-                                <div className="flex">
-                                    <label>
-                                        <Field type="checkbox" name="checked" value="Two" />
-                                    </label>
-                                    <div className="ml-1">Skill 2</div>
-                                </div>
+                                              </TextField>
 
-                                <div className="flex">
-                                    <label>
-                                        <Field type="checkbox" name="checked" value="Three" />
-                                    </label>
-                                    <div className="ml-1">Skill 3</div>
-                                </div>
-                            </div>
+                                          </Grid>
+
+                                          <Grid item xs={12}>
+                                              <div className="text-left">
+                                                  <Typography variant="h5">
+                                                      <strong>
+                                                          Description
+                                                      </strong>
+                                                  </Typography>
+
+                                                  <TextField
+                                                    name="Description"
+                                                    label="Description"
+                                                    fullWidth
+                                                    error={Boolean(touched.Description) && Boolean(errors.Description)}
+                                                    placeholder="Description"
+                                                  />
+                                              </div>
+                                          </Grid>
+
+                                          <Grid item xs={6}>
+                                              <div className="text-left">
+                                                  <Typography variant="h5">
+                                                    <strong>
+                                                        Start Date
+                                                    </strong>
+                                                  </Typography>
+
+                                                  <DatePicker value={value} onChange={(newValue) => setValue(newValue)} label="Start Date"/>
+                                              </div>
+                                          </Grid>
+
+                                          <Grid item xs={6}>
+                                              <div className="text-left">
+                                                  <Typography variant="h5">
+                                                      <strong>
+                                                          End Date
+                                                      </strong>
+                                                  </Typography>
+                                                  <DatePicker value={value} onChange={(newValue) => setValue(newValue)} label="End Date"/>
+                                              </div>
+                                          </Grid>
+
+                                          <Grid item xs={12} style={{ marginBottom: "3%" }}>
+                                              <Typography variant="h5">
+                                                  <strong>
+                                                      <span className="mr-2 bg-[#1976D2] pl-2"></span>
+                                                      Skills Required
+                                                  </strong>
+                                                  <br></br>
+                                                  {/*{selectedSkills.map((skill, index) => (*/}
+                                                  {/*  <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />*/}
+                                                  {/*))}*/}
+                                              </Typography>
+                                          </Grid>
+
+                                          <Grid item xs={12}>
+                                              <Button variant='contained' fullWidth type="submit" onClick={() => toast.success}>Submit</Button>
+                                          </Grid>
+                                      </Grid>
+
+                                  </Form>
+                                )}
+                            </Formik>
                         </div>
-                        <button type="submit">Submit</button>
-                    </Form>
-                    )}
-            </Formik>
+                    </Container>
+                </Grid>
+            </Grid>
+
         </>
     )
 }
