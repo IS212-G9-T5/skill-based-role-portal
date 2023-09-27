@@ -1,8 +1,6 @@
 import type { RouteObject } from "react-router"
 import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
-import CreateRoleListing from "./pages/hr/CreateRoleListing"
-import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
 
 const routes: RouteObject[] = [
   {
