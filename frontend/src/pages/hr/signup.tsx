@@ -1,5 +1,5 @@
-import {useState, useEffect, useRef} from "react";
-import { Form, Formik } from "formik";
+import {useState, useEffect} from "react";
+import { Form, Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Chip, Grid, Typography, Container, Button, MenuItem } from "@mui/material";
 import { Dayjs } from 'dayjs';
@@ -10,19 +10,24 @@ import React from 'react'
 
 
 interface MyFormValues {
-    Role: string
+    role: string
     description: string
     startDate: string
     endDate: string
 }
 
-const FORM_VALIDATION = Yup.object().shape({
-    Role: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
-    startDate: Yup.string().required("Required"),
-    endDate: Yup.string().required("Required"),
+// const validationSchema = Yup.object({
+//     description: Yup
+//         .string()
+//         .required('Description is required'),
+//     startDate: Yup
+//         .string()
+//         .required('Start Date is required'),
+//     endDate: Yup
+//         .string()
+//         .required('End Date is required')
+// });
 
-})
 
 const endpointUrl = 'http://127.0.0.1:5000/api/listings'
 
@@ -34,10 +39,14 @@ const RolelistingForm = () => {
     const [roles, setRoles] = useState<string[]>([]);
     const [selectedRole, setSelectedRole] = useState('')
     const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
+    const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null);
+    const [endDateValue, setendDateValue] = useState<Dayjs | null>(null);
+
     useEffect(() => {
           fetch(endpointUrl)
             .then((response) => response.json())
             .then(res => {
+                console.log("res", res)
                 setData(res.items)
                 const result = res.items
                 result.forEach(item => {
@@ -58,17 +67,19 @@ const RolelistingForm = () => {
 
     const handleError = (msg) =>
         toast.error(msg, {position: "top-center"})
-
+        
     const initialValues: MyFormValues = {
-        Role: "",
+        role: "",
         description: "",
         startDate: "",
         endDate: ""
     }
+
     const handleFormSubmit = async (values) => {
+        console.log("Form data", values)
+
         try {
-            console.log("Form data", values)
-            const response = await fetch("http://127.0.0.1:5000/api/listings", {
+            const response = await fetch("http://localhost:5000/api/listings", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(values)
@@ -87,7 +98,8 @@ const RolelistingForm = () => {
             console.log(error)
         }
     }
-    const handleChange = (event) => {
+
+    const handleDropDownChange = (event) => {
         const selectedRoleName = event.target.value
         console.log("selectedRoleName", selectedRoleName)
         setSelectedRole(selectedRoleName)
@@ -98,12 +110,8 @@ const RolelistingForm = () => {
             if (roleName === selectedRoleName) {
                 setRetrievedSkills(skills)
             }
-
         })
-
     }
-    const [startDatevalue, setstartDateValue] = React.useState<Dayjs | null>(null);
-    const [endDatevalue, setendDateValue] = React.useState<Dayjs | null>(null);
 
     return (
         <>
@@ -116,100 +124,113 @@ const RolelistingForm = () => {
                         <div className="mt-2 mb-2">
                             <Formik
                               initialValues={initialValues}
-                              validationSchema={FORM_VALIDATION}
                               onSubmit={handleFormSubmit}
                             >
-                                {({ touched, errors }) => (
-                                  <Form className="flex flex-col gap-4">
-                                      <Grid container spacing={2}>
-                                          <Grid item xs={12}>
-                                              <Typography variant="h5">
-                                                  <strong>
-                                                      Role
-                                                  </strong>
-                                              </Typography>
-                                              <TextField
-                                                name="Role"
-                                                label="Role"
-                                                value={selectedRole}
-                                                select
-                                                onChange={handleChange}
-                                                fullWidth
-                                                error={Boolean(touched.Role) && Boolean(errors.Role)}
-                                                helperText={touched.Role && errors.Role}
-                                              >
-                                                  {roles.map((option,index) => (
-                                                      <MenuItem key={index} value={option}>
-                                                          {option}
-                                                      </MenuItem>
-                                                  ))}
+                                {({ values, touched, errors, handleChange, handleSubmit }) => {
+                                    const combinedHandler = (event) => {
+                                        handleDropDownChange(event)
+                                        handleChange(event)
+                                    }
+                                    const handleStartDateChange = (event: Dayjs | null) => {
+                                       console.log("start date", event)
+                                       setstartDateValue(event)
+                                       handleChange(event)
+                                    }
+                                    const handleEndDateChange = (event: Dayjs | null) => {
+                                        console.log("end date", event)
+                                        setendDateValue(event)
+                                    }
+                                    return (
+                                        <Form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
+                                                    <Typography variant="h5">
+                                                        <strong>
+                                                            Role
+                                                        </strong>
+                                                    </Typography>
+                                                    <TextField
+                                                        name="role"
+                                                        id="role"
+                                                        value={selectedRole}
+                                                        select
+                                                        onChange={combinedHandler}
+                                                        fullWidth
+                                                        error={Boolean(touched.role) && Boolean(errors.role)}
+                                                        helperText={touched.role && errors.role}
+                                                    >
+                                                        {roles.map((option, index) => (
+                                                            <MenuItem key={index} value={option}>
+                                                                {option}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
 
-                                              </TextField>
+                                                </Grid>
 
-                                          </Grid>
+                                                <Grid item xs={12}>
+                                                    <div className="text-left">
+                                                        <Typography variant="h5">
+                                                            <strong>
+                                                                Description
+                                                            </strong>
+                                                        </Typography>
 
-                                          <Grid item xs={12}>
-                                              <div className="text-left">
-                                                  <Typography variant="h5">
-                                                      <strong>
-                                                          Description
-                                                      </strong>
-                                                  </Typography>
+                                                        <TextField
+                                                            name="description"
+                                                            id="description"
+                                                            label="Description"
+                                                            fullWidth
+                                                            placeholder="Description"
+                                                            onChange={handleChange}
+                                                            error={Boolean(touched.description) && Boolean(errors.description)}
+                                                            helperText={touched.description && errors.description}
+                                                        />
+                                                    </div>
+                                                </Grid>
 
-                                                  <TextField
-                                                    name="Description"
-                                                    label="Description"
-                                                    fullWidth
-                                                    error={Boolean(touched.Description) && Boolean(errors.Description)}
-                                                    helperText={touched.Description && errors.Description}
-                                                    placeholder="Description"
-                                                  />
-                                              </div>
-                                          </Grid>
+                                                <Grid item xs={6}>
+                                                    <div className="text-left">
+                                                        <Typography variant="h5">
+                                                            <strong>
+                                                                Start Date
+                                                            </strong>
+                                                        </Typography>
+                                                        <DatePicker value={startDateValue} onChange={handleStartDateChange} label="StartDate"/>
+                                                    </div>
+                                                </Grid>
 
-                                          <Grid item xs={6}>
-                                              <div className="text-left">
-                                                  <Typography variant="h5">
-                                                    <strong>
-                                                        Start Date
-                                                    </strong>
-                                                  </Typography>
+                                                <Grid item xs={6}>
+                                                    <div className="text-left">
+                                                        <Typography variant="h5">
+                                                            <strong>
+                                                                End Date
+                                                            </strong>
+                                                        </Typography>
+                                                        <DatePicker value={endDateValue} onChange={handleEndDateChange} label="EndDate"/>
+                                                    </div>
+                                                </Grid>
 
-                                                  <DatePicker value={startDatevalue} onChange={(newValue) => setstartDateValue(newValue)} label="StartDate"/>
-                                              </div>
-                                          </Grid>
+                                                <Grid item xs={12} style={{marginBottom: "3%"}}>
+                                                    <Typography variant="h5">
+                                                        <strong>
+                                                            <span className="mr-2 bg-[#1976D2] pl-2"></span>
+                                                            Skills Required
+                                                        </strong>
+                                                        <br></br>
+                                                        {retrievedSkills.map((skill, index) => (
+                                                            <Chip key={index} label={skill} className="mr-[1%] mt-[1%]"/>
+                                                        ))}
+                                                    </Typography>
+                                                </Grid>
 
-                                          <Grid item xs={6}>
-                                              <div className="text-left">
-                                                  <Typography variant="h5">
-                                                      <strong>
-                                                          End Date
-                                                      </strong>
-                                                  </Typography>
-                                                  <DatePicker value={endDatevalue} onChange={(newValue) => setendDateValue(newValue)} label="EndDate"/>
-                                              </div>
-                                          </Grid>
-
-                                          <Grid item xs={12} style={{ marginBottom: "3%" }}>
-                                              <Typography variant="h5">
-                                                  <strong>
-                                                      <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                                                      Skills Required
-                                                  </strong>
-                                                  <br></br>
-                                                  {retrievedSkills.map((skill, index) => (
-                                                    <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />
-                                                  ))}
-                                              </Typography>
-                                          </Grid>
-
-                                          <Grid item xs={12}>
-                                              <Button variant='contained' fullWidth type="submit">Submit</Button>
-                                          </Grid>
-                                      </Grid>
-
-                                  </Form>
-                                )}
+                                                <Grid item xs={12}>
+                                                    <Button variant='contained' fullWidth type="submit">Submit</Button>
+                                                </Grid>
+                                            </Grid>
+                                        </Form>
+                                    )
+                                }}
                             </Formik>
                         </div>
                     </Container>
