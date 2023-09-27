@@ -3,13 +3,13 @@ import routes from "./routes"
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
-const App = ({children}) =>
+
+import routes from "./routes";
+
+const App = () =>
   {
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      {children}
     const content = useRoutes(routes)
     return content
-    </LocalizationProvider>
   }
 
 
