@@ -26,7 +26,8 @@ def find_by_id(id: int) -> Optional[RoleListing]:
     return listing
 
 
-def create(listing: RoleListing) -> RoleListing:
+def save(listing: RoleListing) -> RoleListing:
     db.session.add(listing)
     db.session.commit()
     return listing
+
