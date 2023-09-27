@@ -10,14 +10,14 @@ import React from 'react'
 
 
 interface MyFormValues {
-    roleListing: string
+    Role: string
     description: string
     startDate: string
     endDate: string
 }
 
 const FORM_VALIDATION = Yup.object().shape({
-    roleListing: Yup.string().required("Required"),
+    Role: Yup.string().required("Required"),
     description: Yup.string().required("Required"),
     startDate: Yup.string().required("Required"),
     endDate: Yup.string().required("Required"),
@@ -60,7 +60,7 @@ const RolelistingForm = () => {
         toast.error(msg, {position: "top-center"})
 
     const initialValues: MyFormValues = {
-        roleListing: "",
+        Role: "",
         description: "",
         startDate: "",
         endDate: ""
@@ -89,6 +89,7 @@ const RolelistingForm = () => {
     }
     const handleChange = (event) => {
         const selectedRoleName = event.target.value
+        console.log("selectedRoleName", selectedRoleName)
         setSelectedRole(selectedRoleName)
         const items = data
         items.forEach(item => {
@@ -135,7 +136,7 @@ const RolelistingForm = () => {
                                                 onChange={handleChange}
                                                 fullWidth
                                                 error={Boolean(touched.Role) && Boolean(errors.Role)}
-                                                helperText={Boolean(touched.Role) && Boolean(errors.Role)}
+                                                helperText={touched.Role && errors.Role}
                                               >
                                                   {roles.map((option,index) => (
                                                       <MenuItem key={index} value={option}>
@@ -160,6 +161,7 @@ const RolelistingForm = () => {
                                                     label="Description"
                                                     fullWidth
                                                     error={Boolean(touched.Description) && Boolean(errors.Description)}
+                                                    helperText={touched.Description && errors.Description}
                                                     placeholder="Description"
                                                   />
                                               </div>
@@ -173,7 +175,7 @@ const RolelistingForm = () => {
                                                     </strong>
                                                   </Typography>
 
-                                                  <DatePicker value={startDatevalue} onChange={(newValue) => setstartDateValue(newValue)} label="Start Date"/>
+                                                  <DatePicker value={startDatevalue} onChange={(newValue) => setstartDateValue(newValue)} label="StartDate"/>
                                               </div>
                                           </Grid>
 
@@ -184,7 +186,7 @@ const RolelistingForm = () => {
                                                           End Date
                                                       </strong>
                                                   </Typography>
-                                                  <DatePicker value={endDatevalue} onChange={(newValue) => setendDateValue(newValue)} label="End Date"/>
+                                                  <DatePicker value={endDatevalue} onChange={(newValue) => setendDateValue(newValue)} label="EndDate"/>
                                               </div>
                                           </Grid>
 
