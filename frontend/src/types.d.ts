@@ -7,3 +7,9 @@ declare type Roles = {
   status: boolean
   skills: string[]
 }
+
+declare type NavBar = {
+  title: string
+  items: string[]
+}
+
