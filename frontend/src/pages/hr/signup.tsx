@@ -14,8 +14,8 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 import * as yup from "yup"
-
 import StaffNavbar from "../../components/Navbar"
+
 
 interface MyFormValues {
   role_name: string
@@ -78,6 +78,7 @@ const RolelistingForm = () => {
     }
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
+
     try {
       const response = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
@@ -260,6 +261,7 @@ const RolelistingForm = () => {
                             />
                           </div>
                         </Grid>
+
 
                         <Grid item xs={12} style={{ marginBottom: "3%" }}>
                           <Typography variant="h5">
