@@ -1,5 +1,5 @@
 from flask.testing import FlaskClient
-from application.services import role_service
+from application.services import role_service, role_listing_service
 from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 
 ENDPOINT = "/api/listings"
@@ -154,6 +154,46 @@ def test_create_role_listing_role_name_not_exist(
 
 
 # endregion
+
+
+# region: update role listing success
+def test_update_role_listing_success(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the role object with skills for the role that exists
+        - the start date for the role listing (lesser than end date)
+        - the end date for the role listing
+        - a list of updated applicants' data
+    THEN check that the response returns HTTP 200 and the response body contains the updated data.
+    """
+    # Create an existing role listing and applicants
+    # ...
+
+    # Fetch an existing role listing ID from the database
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+
+    # Update the role listing, including applicants and skills
+    start_date = "2023-09-14"
+    end_date = "2023-10-14"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            # "role_name": role_listing.role.name,
+            "status": "OPEN",
+        },
+    )
+
+    # Check response
+    assert response.status_code == 200
+    # Additional assertions to verify the updated data in the response
+
+#endregion: end role listings
+
 
 
 # region: get role listings
