@@ -5,9 +5,13 @@ import RoleListing from "./RoleListing"
 
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
-  const endpointUrl = "http://127.0.0.1:5000/api/listings/25"
+  
 
   useEffect(() => {
+    const currUrl = window.location.href
+    const id = currUrl.split("/").pop()
+    const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
+
     fetch(endpointUrl)
       .then((response) => response.json())
       .then((res) => {
