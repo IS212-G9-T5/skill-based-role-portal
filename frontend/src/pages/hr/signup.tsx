@@ -56,7 +56,6 @@ const RolelistingForm = () => {
           skills.forEach((skill) => {
             skillsSet.add(skill)
           })
-
           rolesArray.push(roleName)
           setRoles(rolesArray)
         })
@@ -195,7 +194,6 @@ const RolelistingForm = () => {
                             <Typography variant="h5">
                               <strong>Description</strong>
                             </Typography>
-
                             <TextField
                               name="description"
                               id="description"
@@ -239,7 +237,6 @@ const RolelistingForm = () => {
                             />
                           </div>
                         </Grid>
-
                         <Grid item xs={6}>
                           <div className="text-left">
                             <Typography variant="h5">
@@ -296,6 +293,5 @@ const RolelistingForm = () => {
       </Grid>
     </>
   )
-
 }
 export default RolelistingForm
