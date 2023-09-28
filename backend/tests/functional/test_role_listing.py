@@ -161,10 +161,9 @@ def test_update_role_listing_success(test_client: FlaskClient, init_database):
     """
     GIVEN there is an existing role listing,
     WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
-        - the role object with skills for the role that exists
         - the start date for the role listing (lesser than end date)
         - the end date for the role listing
-        - a list of updated applicants' data
+        - a status that exists in the enum
     THEN check that the response returns HTTP 200 and the response body contains the updated data.
     """
     # Create an existing role listing and applicants
@@ -193,6 +192,14 @@ def test_update_role_listing_success(test_client: FlaskClient, init_database):
 
 # region: update role listing status not exist
 def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the start date for the role listing (lesser than end date)
+        - the end date for the role listing
+        - a status that DOES NOT exist in the enum
+    THEN check that the response returns HTTP 400
+    """
     role_listing = role_listing_service.find_one_random()
     assert role_listing is not None, "No role listings found in database"
     role_listing_id = role_listing.id
@@ -214,6 +221,14 @@ def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_dat
 
 # region: update role listing start date greater than end date
 def test_update_role_listing_start_date_gt_end_date(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the start date for the role listing is GREATER than end date
+        - the end date for the role listing
+        - a status that exists in the enum
+    THEN check that the response returns HTTP 400
+    """
     role_listing = role_listing_service.find_one_random()
     assert role_listing is not None, "No role listings found in database"
     role_listing_id = role_listing.id
