@@ -183,16 +183,54 @@ def test_update_role_listing_success(test_client: FlaskClient, init_database):
         json={
             "start_date": start_date,
             "end_date": end_date,
-            # "role_name": role_listing.role.name,
             "status": "OPEN",
         },
     )
-
     # Check response
     assert response.status_code == 200
     # Additional assertions to verify the updated data in the response
+# endregion: end role listings
 
-#endregion: end role listings
+# region: update role listing status not exist
+def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_database):
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+    # Update the role listing, including applicants and skills
+    start_date = "2023-09-14"
+    end_date = "2023-10-14"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": "NIL",
+        },
+    )
+    # Check response
+    assert response.status_code == 400
+# endregion: end role listings
+
+
+# region: update role listing start date greater than end date
+def test_update_role_listing_start_date_gt_end_date(test_client: FlaskClient, init_database):
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+    # Update the role listing, including applicants and skills
+    start_date = "2023-11-14"
+    end_date = "2023-10-14"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": "CLOSED",
+        },
+    )
+    # Check response
+    assert response.status_code == 400
+# endregion: end role listings start date greater than end date
 
 
 

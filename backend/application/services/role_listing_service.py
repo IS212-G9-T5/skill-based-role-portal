@@ -31,3 +31,6 @@ def save(listing: RoleListing) -> RoleListing:
     db.session.commit()
     return listing
 
+def find_one_random() -> Optional[RoleListing]:
+    res = db.session.execute(db.select(RoleListing)).scalars().first()
+    return res
