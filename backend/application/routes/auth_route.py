@@ -4,7 +4,6 @@ from flask import request
 from flask import Response
 from . import api
 from functools import wraps
-from flask_cors import cross_origin
 
 from flask_jwt_extended import (
     jwt_required,
@@ -51,7 +50,7 @@ def login():
 
     # Set the JWTs and the CSRF double submit protection cookies
     # in this response
-    resp = jsonify({"login": True})
+    resp = jsonify({"access_token": access_token, "refresh_token": refresh_token})
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     return resp, 200

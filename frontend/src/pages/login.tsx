@@ -10,11 +10,9 @@ const Login = () => {
 
   const navigate = useNavigate()
 
-  const getCookie = (name: string): string | undefined => (document.cookie.match(`(?<=;\\s*${name}=)[^;]+`) || [])[0];
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const res = await fetch("http://127.0.0.1:5000/api/login", {
+    const res = await fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,17 +22,18 @@ const Login = () => {
         password: password,
       }),
     })
+    const data = await res.json()
+    console.log(`data from login ${data}`)
+
     if (res.status == 200) {
-      const res = await fetch("http://127.0.0.1:5000/api/example", {
+      const res = await fetch("/api/example", {
         method: "GET",
-        credentials: "same-origin",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
         },
       })
       const data = await res.json()
-      console.log(data.status)
       console.log(data)
       navigate("/role-listing")
     } else {
