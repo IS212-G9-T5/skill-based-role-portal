@@ -4,7 +4,6 @@ from flask import request
 from flask import Response
 from . import api
 from functools import wraps
-from flask_cors import cross_origin
 
 from flask_jwt_extended import (
     jwt_required,
@@ -45,13 +44,13 @@ def login():
 
     # Create the tokens we will be sending back to the user
     access_token = create_access_token(
-        identity=email, additional_claims={"admin": True}
+        identity=email, additional_claims={"admin": False}
     )
     refresh_token = create_refresh_token(identity=email)
 
     # Set the JWTs and the CSRF double submit protection cookies
     # in this response
-    resp = jsonify({"login": True})
+    resp = jsonify({"access_token": access_token, "refresh_token": refresh_token})
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     return resp, 200
@@ -82,6 +81,10 @@ def logout():
 @jwt_required()
 @admin_required()
 def protected():
-    email = get_jwt()
-    resp = Response(jsonify({"hello": "from {}".format(email)}), 200)
-    return resp, 200
+    app.logger.info("Protected endpoint accessed")
+    email = get_jwt_identity()
+    # resp = Response(jsonify({"hello": "from {}".format(email)}), 200)
+    # resp.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:5173/"
+    # resp.headers["Access-Control-Allow-Credentials"] = "true"
+    # return resp, 200
+    return jsonify({"hello": "from {}".format(email)}), 200
