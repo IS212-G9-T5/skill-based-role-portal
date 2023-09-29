@@ -22,19 +22,17 @@ const Login = () => {
         password: password,
       }),
     })
-    const data = await res.json()
-    console.log(`data from login ${data}`)
-
+    // For testing purposes only
     if (res.status == 200) {
-      const res = await fetch("/api/example", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      const data = await res.json()
-      console.log(data)
+      // const res = await fetch("/api/example", {
+      //   method: "GET",
+      //   credentials: "include",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // })
+      // const data = await res.json()
+      // console.log(data)
       navigate("/role-listing")
     } else {
       setModalOpen(true)
