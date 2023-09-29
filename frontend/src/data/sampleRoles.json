@@ -1,9 +1,6 @@
 {
   "role": {
     "description": "lorem ipsum",
-    "skills":[
-      "communication",
-      "collaboration"
-    ]
+    "skills": ["communication", "collaboration"]
   }
 }

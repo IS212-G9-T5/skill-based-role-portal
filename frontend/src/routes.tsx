@@ -14,8 +14,8 @@ const routes: RouteObject[] = [
   },
   {
     path: "create-role-listing",
-    element: <Signup/>
-  }
+    element: <Signup />,
+  },
 ]
 
 export default routes

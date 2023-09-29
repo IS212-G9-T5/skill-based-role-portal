@@ -9,32 +9,32 @@ import {
 } from "@mui/material"
 import TextField from "@mui/material/TextField"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { Form, Formik } from "formik"
-import toast from "react-hot-toast"
+import { toast, Toaster } from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
+import * as yup from "yup"
+
+import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
   role_name: string
   description: string
-  start_date: string
-  end_date: string
+  start_date: Dayjs | number | undefined
+  end_date: Dayjs | number | undefined
 }
+const signupSchema = yup.object().shape({
+  role_name: yup.string().required("Role Name is required"),
+  description: yup.string().required("Description is required"),
+  start_date: yup.date().required("Start Date is required"),
+  end_date: yup.date().required("End Date is required"),
+})
 
-// const validationSchema = Yup.object({
-//     description: Yup
-//         .string()
-//         .required('Description is required'),
-//     startDate: Yup
-//         .string()
-//         .required('Start Date is required'),
-//     endDate: Yup
-//         .string()
-//         .required('End Date is required')
-// });
-
-const endpointUrl = "http://127.0.0.1:5000/api/listings"
-
+const endpointUrl = "http://127.0.0.1:5000/api/roles"
 const RolelistingForm = () => {
+  const title = "SKILLS BASED ROLE PORTAL"
+  const items = ["View Listings", "View Profile", "Logout"]
+  const navigate = useNavigate()
   const rolesArray = new Array<string>()
   const skillsSet = new Set<string>()
   const [data, setData] = useState(null)
@@ -48,11 +48,11 @@ const RolelistingForm = () => {
     fetch(endpointUrl)
       .then((response) => response.json())
       .then((res) => {
-        setData(res.items)
-        const result = res.items
+        setData(res.data)
+        const result = res.data
         result.forEach((item) => {
-          const roleName = item.role.name
-          const skills = item.role.skills
+          const roleName = item.name
+          const skills = item.skills
           skills.forEach((skill) => {
             skillsSet.add(skill)
           })
@@ -63,24 +63,22 @@ const RolelistingForm = () => {
       })
   }, [])
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
-
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
   const initialValues: MyFormValues = {
     role_name: "",
     description: "",
-    start_date: Date.now().toString(),
-    end_date: Date.now().toString(),
+    start_date: dayjs(null),
+    end_date: dayjs(null),
   }
-
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
       ...values,
       start_date: startDateValue ? startDateValue.format("YYYY-MM-DD") : "",
       end_date: endDateValue ? endDateValue.format("YYYY-MM-DD") : "",
     }
+    //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
-    console.log("Form data", formattedValues)
     try {
       const response = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
@@ -89,56 +87,77 @@ const RolelistingForm = () => {
       })
       const data = await response.json()
       if (response.ok) {
-        if (data.success) {
-          handleSuccess("Create Role Listing")
-        } else {
-          handleError("Failed to create Role Listing")
-        }
+        handleSuccess("Create Role Listing")
+        resetForm()
+      } else {
+        handleError("Failed to create Role Listing")
+        resetForm()
       }
+      setTimeout(() => {
+        navigate("/role-listing")
+      }, 2000)
     } catch (error) {
       handleError("Error occurred when submitting form")
-      console.log(error)
+      resetForm()
     }
   }
-
   const handleDropDownChange = (event) => {
     const selectedRoleName = event.target.value
-    console.log("selectedRoleName", selectedRoleName)
     setSelectedRole(selectedRoleName)
     const items = data
     items.forEach((item) => {
-      const roleName = item.role.name
-      const skills = item.role.skills
+      const roleName = item.name
+      const skills = item.skills
       if (roleName === selectedRoleName) {
         setRetrievedSkills(skills)
       }
     })
   }
-
   return (
     <>
-      <Grid container>
+      <StaffNavbar title={title} items={items} />
+      <Toaster />
+      <Grid container style={{ marginTop: "20px" }}>
         <Grid item xs={12}>
-          <Typography className="text-center" variant="h4">
+          <Typography className="mt-5 text-center" variant="h4">
             Role Listing Form
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Container maxWidth="md">
             <div className="mb-2 mt-2">
-              <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
-                {({ touched, errors, handleChange, handleSubmit }) => {
-                  const combinedHandler = (event) => {
+              <Formik
+                initialValues={initialValues}
+                onSubmit={handleFormSubmit}
+                validationSchema={signupSchema}
+              >
+                {({ values, touched, errors, handleChange, handleSubmit }) => {
+                  const handleDropDown = (event) => {
+                    console.log("role event", event)
                     handleDropDownChange(event)
                     handleChange(event)
                   }
-                  const handleStartDateChange = (event: Dayjs | null) => {
-                    console.log("start date", event)
+                  const handleStartDateChange = (event) => {
                     setstartDateValue(event)
+                    const newEvent = {
+                      ...event,
+                      target: {
+                        name: "start_date",
+                        value: event ? dayjs(event) : dayjs(Date.now()),
+                      },
+                    }
+                    handleChange(newEvent)
                   }
-                  const handleEndDateChange = (event: Dayjs | null) => {
-                    console.log("end date", event)
+                  const handleEndDateChange = (event) => {
                     setendDateValue(event)
+                    const newEvent = {
+                      ...event,
+                      target: {
+                        name: "end_date",
+                        value: event ? dayjs(event) : dayjs(Date.now()),
+                      },
+                    }
+                    handleChange(newEvent)
                   }
                   return (
                     <Form
@@ -153,14 +172,15 @@ const RolelistingForm = () => {
                           <TextField
                             name="role_name"
                             id="role_name"
-                            value={selectedRole}
+                            value={values.role_name}
                             select
-                            onChange={combinedHandler}
+                            onChange={handleDropDown}
                             fullWidth
                             error={
-                              Boolean(touched.role) && Boolean(errors.role)
+                              Boolean(touched.role_name) &&
+                              Boolean(errors.role_name)
                             }
-                            helperText={touched.role && errors.role}
+                            helperText={touched.role_name && errors.role_name}
                           >
                             {roles.map((option, index) => (
                               <MenuItem key={index} value={option}>
@@ -180,6 +200,7 @@ const RolelistingForm = () => {
                               name="description"
                               id="description"
                               label="Description"
+                              value={values.description}
                               fullWidth
                               placeholder="Description"
                               onChange={handleChange}
@@ -199,10 +220,22 @@ const RolelistingForm = () => {
                             <Typography variant="h5">
                               <strong>Start Date</strong>
                             </Typography>
+
                             <DatePicker
-                              value={startDateValue}
+                              slotProps={{
+                                textField: {
+                                  error:
+                                    Boolean(touched.start_date) &&
+                                    Boolean(errors.start_date),
+                                  helperText:
+                                    touched.start_date && errors.start_date,
+                                },
+                              }}
+                              format="DD/MM/YYYY"
+                              disablePast
+                              value={dayjs(values.start_date)}
                               onChange={handleStartDateChange}
-                              label="start_date"
+                              className="w-full"
                             />
                           </div>
                         </Grid>
@@ -213,9 +246,20 @@ const RolelistingForm = () => {
                               <strong>End Date</strong>
                             </Typography>
                             <DatePicker
-                              value={endDateValue}
+                              slotProps={{
+                                textField: {
+                                  error:
+                                    Boolean(touched.end_date) &&
+                                    Boolean(errors.end_date),
+                                  helperText:
+                                    touched.end_date && errors.end_date,
+                                },
+                              }}
+                              format="DD/MM/YYYY"
+                              disablePast
+                              value={dayjs(values.end_date)}
                               onChange={handleEndDateChange}
-                              label="end_date"
+                              className="w-full"
                             />
                           </div>
                         </Grid>
