@@ -14,8 +14,8 @@ from marshmallow import ValidationError
 
 from application.extensions import db, cors, jwt
 
-def init_app(config):
 
+def init_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
     db.init_app(app)
