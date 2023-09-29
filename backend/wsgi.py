@@ -4,11 +4,13 @@ from logging.handlers import TimedRotatingFileHandler
 from application import init_app, register_blueprints, register_error_handlers
 from application.config import Config
 from application.extensions import db
+from flask_cors import CORS
 
 
 if __name__ == "__main__":
     app = init_app(Config)
     app = register_blueprints(app)
+    CORS(app, supports_credentials=True)
     app = register_error_handlers(app)
 
     # region: configure logging
