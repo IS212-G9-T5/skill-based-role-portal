@@ -13,10 +13,6 @@ from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
 
 from application.extensions import db, cors, jwt
-from .routes import auth_route, auth_route
-
-from flask_jwt_extended import JWTManager
-from flask_cors import CORS
 
 def init_app(config):
 

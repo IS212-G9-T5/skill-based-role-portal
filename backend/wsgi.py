@@ -5,6 +5,7 @@ from application import init_app, register_blueprints, register_error_handlers
 from application.config import Config
 from application.extensions import db
 
+
 if __name__ == "__main__":
     app = init_app(Config)
     app = register_blueprints(app)
