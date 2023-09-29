@@ -38,7 +38,6 @@ const RolelistingForm = () => {
   const skillsSet = new Set<string>()
   const [data, setData] = useState(null)
   const [roles, setRoles] = useState<string[]>([])
-  const [selectedRole, setSelectedRole] = useState("")
   const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
   const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null)
   const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
@@ -83,7 +82,6 @@ const RolelistingForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedValues),
       })
-      const data = await response.json()
       if (response.ok) {
         handleSuccess("Create Role Listing")
         resetForm()
@@ -101,7 +99,6 @@ const RolelistingForm = () => {
   }
   const handleDropDownChange = (event) => {
     const selectedRoleName = event.target.value
-    setSelectedRole(selectedRoleName)
     const items = data
     items.forEach((item) => {
       const roleName = item.name
