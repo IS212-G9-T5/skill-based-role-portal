@@ -8,7 +8,8 @@ from application.services import staff_service
 from . import api
 from application.services import role_listing_service, role_service
 from application.dto.response import ResponseBodyJSON
-from application.enums import RoleStatus
+from .route_decorators import admin_required
+from flask_jwt_extended import jwt_required
 
 DEFAULT_PAGE_SIZE = 10
 
@@ -54,6 +55,8 @@ def find_listing_by_id(id: int):
 
 
 @api.route("/listings", methods=["POST"])
+@jwt_required()
+@admin_required()
 def create_listing():
     body = request.get_json()
     app.logger.info(f"POST /listings with request body: {body}")
