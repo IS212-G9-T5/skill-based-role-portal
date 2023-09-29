@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom"
 import * as yup from "yup"
 import StaffNavbar from "../../components/Navbar"
 
-
 interface MyFormValues {
   role_name: string
   description: string
@@ -78,7 +77,6 @@ const RolelistingForm = () => {
     }
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
-
     try {
       const response = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
