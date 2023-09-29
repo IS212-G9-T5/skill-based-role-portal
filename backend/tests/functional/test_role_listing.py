@@ -177,16 +177,20 @@ def test_update_role_listing_success(test_client: FlaskClient, init_database):
     # Update the role listing, including applicants and skills
     start_date = "2023-09-14"
     end_date = "2023-10-14"
+    status = "OPEN"
     response = test_client.put(
         path=f"{ENDPOINT}/{role_listing_id}",
         json={
             "start_date": start_date,
             "end_date": end_date,
-            "status": "OPEN",
+            "status": status,
         },
     )
     # Check response
     assert response.status_code == 200
+    assert response.json["data"]["start_date"] == start_date
+    assert response.json["data"]["end_date"] == end_date
+    assert response.json["data"]["status"] == status
     # Additional assertions to verify the updated data in the response
 # endregion: end role listings
 
