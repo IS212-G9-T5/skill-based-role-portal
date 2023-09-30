@@ -256,8 +256,6 @@ const RolelistingForm = () => {
                             />
                           </div>
                         </Grid>
-
-
                         <Grid item xs={12} style={{ marginBottom: "3%" }}>
                           <Typography variant="h5">
                             <strong>
