@@ -7,6 +7,9 @@ const RoleListing = (props: Roles) => {
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
   }
+  const handleEditListing = () => {
+    navigate(`/update-role-listing/${props.id}`)
+  }
 
   return (
     <div>
@@ -61,6 +64,16 @@ const RoleListing = (props: Roles) => {
             onClick={handleBackToListings}
           >
             Back to Listings
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+            marginTop: "20px",
+            marginLeft: "10px",
+            }}
+            onClick={handleEditListing}>
+            Edit Role Listing
           </Button>
         </div>
       </div>
