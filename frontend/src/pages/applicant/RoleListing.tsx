@@ -7,6 +7,7 @@ const RoleListing = (props: Roles) => {
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
   }
+
   return (
     <div>
       <div>
@@ -15,8 +16,7 @@ const RoleListing = (props: Roles) => {
             <Typography variant="h4">{props.name}</Typography>
           </strong>
           <Typography variant="subtitle1" className="mb-[2%] text-[#B0B0B4]">
-            Role ID: {props.id} | Status: {props.status} | Start Date:{" "}
-            {props.start_date} | End Date: {props.end_date}
+            Role ID: {props.id} | Status: {props.status} | Closing Date: {props.end_date}
           </Typography>
 
           <Typography variant="h6" gutterBottom style={{ marginTop: "3%" }}>
@@ -24,7 +24,6 @@ const RoleListing = (props: Roles) => {
               <span className="mr-2 bg-[#1976D2] pl-2"></span>
               Role Description
             </b>
-            
           </Typography>
 
           <Typography variant="body1" style={{ marginBottom: "3%" }} paragraph>
