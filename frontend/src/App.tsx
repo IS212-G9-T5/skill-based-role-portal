@@ -2,7 +2,6 @@ import { useRoutes } from "react-router-dom";
 import routes from "./routes"
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import routes from "./routes"
 
 const App = () => {
   const content = useRoutes(routes)
