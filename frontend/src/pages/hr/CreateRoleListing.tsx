@@ -17,13 +17,7 @@ import * as yup from "yup"
 
 import StaffNavbar from "../../components/Navbar"
 
-interface MyFormValues {
-  role_name: string
-  description: string
-  start_date: Dayjs | number | undefined
-  end_date: Dayjs | number | undefined
-}
-const signupSchema = yup.object().shape({
+const createRoleSchema = yup.object().shape({
   role_name: yup.string().required("Role Name is required"),
   description: yup.string().required("Description is required"),
   start_date: yup.date().required("Start Date is required"),
@@ -56,7 +50,6 @@ const RolelistingForm = () => {
           skills.forEach((skill) => {
             skillsSet.add(skill)
           })
-
           rolesArray.push(roleName)
           setRoles(rolesArray)
         })
@@ -115,7 +108,7 @@ const RolelistingForm = () => {
     <>
       <StaffNavbar title={title} items={items} />
       <Toaster />
-      <Grid container style={{ marginTop: "20px" }}>
+      <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
             Role Listing Form
@@ -127,7 +120,7 @@ const RolelistingForm = () => {
               <Formik
                 initialValues={initialValues}
                 onSubmit={handleFormSubmit}
-                validationSchema={signupSchema}
+                validationSchema={createRoleSchema}
               >
                 {({ values, touched, errors, handleChange, handleSubmit }) => {
                   const handleDropDown = (event) => {
@@ -262,7 +255,7 @@ const RolelistingForm = () => {
                           </div>
                         </Grid>
 
-                        <Grid item xs={12} style={{ marginBottom: "3%" }}>
+                        <Grid item xs={12} className="mb-1">
                           <Typography variant="h5">
                             <strong>
                               <span className="mr-2 bg-[#1976D2] pl-2"></span>
