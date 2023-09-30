@@ -35,8 +35,7 @@ const RolelistingForm = () => {
   const title = "SKILLS BASED ROLE PORTAL"
   const items = ["View Listings", "View Profile", "Logout"]
   const navigate = useNavigate()
-  const rolesArray = new Array<string>()
-  const skillsSet = new Set<string>()
+
   const [data, setData] = useState(null)
   const [roles, setRoles] = useState<string[]>([])
   const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
@@ -44,6 +43,8 @@ const RolelistingForm = () => {
   const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
 
   useEffect(() => {
+    const rolesArray = new Array<string>()
+    const skillsSet = new Set<string>()
     fetch(endpointUrl)
       .then((response) => response.json())
       .then((res) => {
