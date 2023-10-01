@@ -19,9 +19,8 @@ def test_get_indiv_role_listing(test_client: FlaskClient, init_database):
 
     # check response
     assert response.status_code == 200
-    data = response.json["data"]
-    assert data is not None
-    assert data["id"] == id
+    assert response.json is not None
+    assert response.json["listing"]["id"] == id
 
 
 # endregion
@@ -192,7 +191,10 @@ def test_update_role_listing_success(test_client: FlaskClient, init_database):
     assert response.json["data"]["end_date"] == end_date
     assert response.json["data"]["status"] == status
     # Additional assertions to verify the updated data in the response
+
+
 # endregion: end role listings
+
 
 # region: update role listing status not exist
 def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_database):
@@ -220,11 +222,15 @@ def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_dat
     )
     # Check response
     assert response.status_code == 400
+
+
 # endregion: end role listings
 
 
 # region: update role listing start date greater than end date
-def test_update_role_listing_start_date_gt_end_date(test_client: FlaskClient, init_database):
+def test_update_role_listing_start_date_gt_end_date(
+    test_client: FlaskClient, init_database
+):
     """
     GIVEN there is an existing role listing,
     WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
@@ -249,8 +255,9 @@ def test_update_role_listing_start_date_gt_end_date(test_client: FlaskClient, in
     )
     # Check response
     assert response.status_code == 400
-# endregion: end role listings start date greater than end date
 
+
+# endregion: end role listings start date greater than end date
 
 
 # region: get role listings
