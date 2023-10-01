@@ -1,9 +1,8 @@
 from typing import List
-from flask import abort, json, jsonify, request, current_app as app
+from flask import abort, jsonify, request, current_app as app
 from marshmallow import ValidationError
 
 from application.models.role_listing import RoleListing
-from application.models.role import Role
 
 # from application.dto.role_listing import UpdateRoleListingDTO
 from application.dto.role_listing import (
@@ -16,10 +15,6 @@ from . import api
 from application.services import role_listing_service, role_service, staff_service
 from application.dto.response import ResponseBodyJSON
 from application.enums import RoleStatus
-from application.extensions import db
-from sqlalchemy import select, text
-
-from flask_sqlalchemy.pagination import SelectPagination
 
 
 DEFAULT_PAGE_SIZE = 10
@@ -94,8 +89,30 @@ def find_listing_by_id(id: int):
     if listing is None:
         abort(404, description=f"RoleListing {id} not found.")
 
-    data = listing.json()
-    res = ResponseBodyJSON(data=data).json()
+    # FIXME: get user id from JWT claim to get the user's skills
+    # randomly get a user from the database so simulate a logged in user
+    user = staff_service.find_by_id(3)
+    if user is None:
+        abort(500, description="No user found.")
+
+    user_skills = set([s.name for s in user.skills])
+    app.logger.info(f"user skills: {user_skills}")
+
+    listing_skills = set([s.name for s in listing.role.skills])
+
+    skills_matched = listing_skills.intersection(user_skills)
+    skills_unmatched = listing_skills.difference(user_skills)
+    skills_match_count = len(skills_matched)
+    skills_match_pct = round(skills_match_count / len(listing_skills), 2)
+
+    res = RoleListingSkillMatchDTO(
+        listing=listing.json(),
+        skills_matched=list(skills_matched),
+        skills_unmatched=list(skills_unmatched),
+        skills_match_count=skills_match_count,
+        skills_match_pct=skills_match_pct,
+    )
+
     return jsonify(res), 200
 
 
