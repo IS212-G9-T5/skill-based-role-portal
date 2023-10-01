@@ -13,6 +13,11 @@ def find_by_id(id: int) -> Optional[Staff]:
     return res
 
 
+def find_one_random() -> Optional[Staff]:
+    res = db.session.execute(db.select(Staff)).scalars().first()
+    return res
+
+
 def create(staff: Staff) -> Staff:
     db.session.add(staff)
     db.session.commit()
