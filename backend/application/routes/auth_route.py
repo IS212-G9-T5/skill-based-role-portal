@@ -18,14 +18,14 @@ from flask_jwt_extended import (
 def login():
     email = request.json.get("email", None)
     # password = request.json.get("password", None)
-
     results = (
-        db.session.execute(db.select(Staff).where(Staff.email == email)).scalars().first()
+        db.session.execute(db.select(Staff).where(Staff.email == email))
+        .scalars()
+        .first()
     )
 
     if results is None:
         abort(404, description=f"Staff with {email} not found.")
-
     data = results.json()
 
     if data["email"] != email:
@@ -38,7 +38,11 @@ def login():
     refresh_token = create_refresh_token(identity=email)
 
     # Set the JWTs and the CSRF double submit protection cookies in this response
-    resp = jsonify({"status": "success"})
+    data = {
+        "status": "success",
+        "role": data["access_control"],
+    }
+    resp = jsonify(data)
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     return resp, 200
@@ -59,6 +63,7 @@ def logout():
     resp = jsonify({"logout": True})
     unset_jwt_cookies(resp)
     return resp, 200
+
 
 # Endpoint used to test protected routes
 # @api.route("/example", methods=["GET"])

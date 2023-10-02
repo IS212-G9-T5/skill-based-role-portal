@@ -17,7 +17,7 @@ def admin_required():
             if claims[AccessControlRole.ADMIN.value]:
                 return fn(*args, **kwargs)
             else:
-                return jsonify(msg="Admin Rights Required"), 402
+                return jsonify(msg="Unauthorised. Admin Rights Required"), 401
 
         return decorator
 

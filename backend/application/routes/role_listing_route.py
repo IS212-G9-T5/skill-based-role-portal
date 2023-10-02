@@ -87,6 +87,8 @@ def create_listing():
     return jsonify(res), 201
 
 @api.route("/listings/<int:id>", methods=["PUT"])
+@jwt_required()
+@admin_required()
 def update_role_listing(id: int):
     body = request.get_json()
     print(f"PUT /listings/{id} with body: {body}")

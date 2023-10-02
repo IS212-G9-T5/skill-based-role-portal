@@ -1,40 +1,29 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { Login } from "../api/AuthAPI"
 import LoginModal from "../components/LoginModal"
 
-const Login = () => {
+const LoginForm = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
 
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-    // For testing purposes only
-    if (res.status == 200) {
-      // const res = await fetch("/api/example", {
-      //   method: "GET",
-      //   credentials: "include",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      // const data = await res.json()
-      // console.log(data)
-      navigate("/role-listing")
-    } else {
+    try {
+      const res = await Login(email, password)
+      if (res.status == "success") {
+        localStorage.setItem("role", res.role)
+        navigate("/all-role-listing")
+        window.location.reload()
+      } else {
+        setModalOpen(true)
+      }
+    } catch (error) {
+      console.error("Error during login:", error)
       setModalOpen(true)
     }
   }
@@ -109,4 +98,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default LoginForm
