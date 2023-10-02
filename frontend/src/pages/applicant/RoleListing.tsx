@@ -9,6 +9,8 @@ import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
 import { useState } from "react";
 
+
+
 const RoleListing = (props: Roles) => {
   const navigate = useNavigate()
 
@@ -42,6 +44,101 @@ const RoleListing = (props: Roles) => {
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
   }
+const handleBackToListings = () => {
+  navigate(`/all-role-listing`)
+}
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+
+  const [openApply, setOpenApply] = useState(false);
+  const [openWithdraw, setOpenWithdraw] = useState(false);
+
+
+  const handleApplyOpen = () => {
+    setOpenApply(true);
+  };
+
+  const handleApplyClose = () => {
+    setOpenApply(false);
+  };
+
+  const handleWithdrawOpen = () => {
+    setOpenWithdraw(true);
+  };
+
+  const handleWithdrawClose = () => {
+    setOpenWithdraw(false);
+  };
+
+  const handleApplySubmit = () => {
+    // Handle the submission logic for applying here
+    // This function should be replaced with your actual submission logic
+    console.log('Application submitted');
+    setOpenApply(false);
+  };
+
+  const handleWithdrawSubmit = () => {
+    // Handle the submission logic for withdrawing here
+    // This function should be replaced with your actual withdrawal logic
+    console.log('Application withdrawn');
+    setOpenWithdraw(false);
+  };
+
+
+  const data = {
+    "listing": {
+        "end_date": "2023-10-11",
+        "id": 31,
+        "role": {
+            "description": "lorem ipsum",
+            "name": "Consultant",
+            "skills": [
+                "Collaboration",
+                "Communication",
+                "Learning Agility"
+            ]
+        },
+        "start_date": "2023-09-11",
+        "status": "OPEN"
+    },
+    "skills_match_count": 2,
+    "skills_match_pct": 0.67,
+    "skills_matched": [
+        "Communication",
+        "Collaboration"
+    ],
+    "skills_unmatched": [
+        "Learning Agility"
+    ],
+    "has_applied": false
+}
+  
+  const has_applied = data.has_applied;
+
+  // useEffect(() => {
+  //   const currUrl = window.location.href
+  //   const id = currUrl.split("/").pop()
+  //   const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
+  //   fetch(endpointUrl)
+  //   .then((response) => response.json())   
+  //   .then((res) => {
+  //     console.log(res.data)
+  //   })
+  // }, [])
+
+
+
 
 
   const [openApply, setOpenApply] = useState(false);
@@ -178,13 +275,13 @@ const RoleListing = (props: Roles) => {
 
 
           {
-            props.roleMatchData.has_applied ? (
+            has_applied ? (
               <Button
                 variant="contained"
-                color="secondary"
+                color="secondary"  // You can use 'secondary' for a red color
                 style={{ marginTop: "20px" }}
                 onClick={handleWithdrawOpen}
-                disabled={props.status !== "OPEN"}
+                // onClick={() => }
               >
                 Withdraw Application
               </Button>
