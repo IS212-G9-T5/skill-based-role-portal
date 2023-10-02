@@ -81,3 +81,48 @@ export const getUserSkills = async (): Promise<SkillObject[]> => {
   const res = await response.json()
   return res.data
 }
+
+/**
+ * API call to retrieve user's skills 
+ * import { updateApplyRoleListing } from ...
+ */
+export const updateApplyRoleListing = async (has_applied: boolean, id: string): Promise<void> => {
+  try {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`
+      const parts = value.split(`; ${name}=`)
+      if (parts.length === 2) return parts.pop().split(";").shift()
+    }
+    const response = await fetch(`/api/listings/${id}`, {
+      method: "PATCH", 
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        
+      },
+      body: JSON.stringify({
+        "apply" : !has_applied
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update role listing");
+    }
+
+    const res = await response.json();
+
+    // if (res.hasOwnProperty('has_applied')) {
+    //   res.has_applied = !res.has_applied;
+    // } else {
+    //   throw new Error("Response object does not contain 'has_applied' property.");
+    // }
+
+    return res;
+
+  } catch (error) {
+    // Handle errors here or re-throw the error for higher-level handling
+    console.error("Error updating role listing:", error);
+    throw error;
+  }
+};
