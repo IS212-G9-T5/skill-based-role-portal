@@ -90,34 +90,6 @@ const RoleListing = (props: Roles) => {
 
   console.log(props)
 
-  // useEffect(() => {
-  //   const currUrl = window.location.href
-  //   const id = currUrl.split("/").pop()
-  //   const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
-  //   fetch(endpointUrl)
-  //   .then((response) => response.json())   
-  //   .then((res) => {
-  //     console.log(res.data)
-  //   })
-  // }, [])
-
-  // useEffect(() => {
-  //   const currUrl = window.location.href
-  //   const id = currUrl.split("/").pop()
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await updateApplyRoleListing(id);
-  //       console.log(data);
-
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [])
-
 
 
 
