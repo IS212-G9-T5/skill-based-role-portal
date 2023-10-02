@@ -27,13 +27,17 @@ If you are developing a production application, we recommend updating the config
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 
 ## Install the dependencies
+
 Run `yarn install`
 
 ## Build the application
+
 Run `yarn build`
 
 ## Run the application
+
 Run `yarn dev`
 
 ## Before making a commit
+
 Run `yarn prettier . --write`

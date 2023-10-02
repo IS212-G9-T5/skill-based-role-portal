@@ -1,5 +1,5 @@
 from flask.testing import FlaskClient
-from application.services import role_service
+from application.services import role_service, role_listing_service
 from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 
 ENDPOINT = "/api/listings"
@@ -154,6 +154,103 @@ def test_create_role_listing_role_name_not_exist(
 
 
 # endregion
+
+
+# region: update role listing success
+def test_update_role_listing_success(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the start date for the role listing (lesser than end date)
+        - the end date for the role listing
+        - a status that exists in the enum
+    THEN check that the response returns HTTP 200 and the response body contains the updated data.
+    """
+    # Create an existing role listing and applicants
+    # ...
+
+    # Fetch an existing role listing ID from the database
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+
+    # Update the role listing, including applicants and skills
+    start_date = "2023-09-14"
+    end_date = "2023-10-14"
+    status = "OPEN"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": status,
+        },
+    )
+    # Check response
+    assert response.status_code == 200
+    assert response.json["data"]["start_date"] == start_date
+    assert response.json["data"]["end_date"] == end_date
+    assert response.json["data"]["status"] == status
+    # Additional assertions to verify the updated data in the response
+# endregion: end role listings
+
+# region: update role listing status not exist
+def test_update_role_listing_status_not_exist(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the start date for the role listing (lesser than end date)
+        - the end date for the role listing
+        - a status that DOES NOT exist in the enum
+    THEN check that the response returns HTTP 400
+    """
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+    # Update the role listing, including applicants and skills
+    start_date = "2023-09-14"
+    end_date = "2023-10-14"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": "NIL",
+        },
+    )
+    # Check response
+    assert response.status_code == 400
+# endregion: end role listings
+
+
+# region: update role listing start date greater than end date
+def test_update_role_listing_start_date_gt_end_date(test_client: FlaskClient, init_database):
+    """
+    GIVEN there is an existing role listing,
+    WHEN the API endpoint 'role_listing' is requested (PUT) with request body containing
+        - the start date for the role listing is GREATER than end date
+        - the end date for the role listing
+        - a status that exists in the enum
+    THEN check that the response returns HTTP 400
+    """
+    role_listing = role_listing_service.find_one_random()
+    assert role_listing is not None, "No role listings found in database"
+    role_listing_id = role_listing.id
+    # Update the role listing, including applicants and skills
+    start_date = "2023-11-14"
+    end_date = "2023-10-14"
+    response = test_client.put(
+        path=f"{ENDPOINT}/{role_listing_id}",
+        json={
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": "CLOSED",
+        },
+    )
+    # Check response
+    assert response.status_code == 400
+# endregion: end role listings start date greater than end date
+
 
 
 # region: get role listings

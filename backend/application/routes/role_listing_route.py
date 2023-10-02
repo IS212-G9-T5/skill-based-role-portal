@@ -2,10 +2,13 @@ from flask import abort, json, jsonify, request, current_app as app
 from marshmallow import ValidationError
 
 from application.models.role_listing import RoleListing
-from application.dto.role_listing import RoleListingDTO
+# from application.dto.role_listing import UpdateRoleListingDTO
+from application.dto.role_listing import RoleListingDTO, UpdateRoleListingDTO
+from application.services import staff_service
 from . import api
 from application.services import role_listing_service, role_service
 from application.dto.response import ResponseBodyJSON
+from application.enums import RoleStatus
 
 DEFAULT_PAGE_SIZE = 10
 
@@ -76,6 +79,45 @@ def create_listing():
     listing = RoleListing(
         start_date=body["start_date"], end_date=body["end_date"], role=role
     )
-    data = role_listing_service.create(listing)
+    data = role_listing_service.save(listing)
     res = ResponseBodyJSON(data=data.json()).json()
     return jsonify(res), 201
+
+@api.route("/listings/<int:id>", methods=["PUT"])
+def update_role_listing(id: int):
+    body = request.get_json()
+    print(f"PUT /listings/{id} with body: {body}")
+
+    # Find the existing role listing by id
+    existing_listing = role_listing_service.find_by_id(id)
+
+    if existing_listing is None:
+        abort(404, description=f"RoleListing {id} not found.")
+
+    # Validate the request body (required fields and types)
+    schema = UpdateRoleListingDTO()
+    updated_data = schema.load(body)
+
+    # Validate start_time < end_time
+    if updated_data["start_date"] >= updated_data["end_date"]:
+        return jsonify({"message": "Invalid start time and end time. Start time must be before the end time."}), 400
+
+    # Validate that the status is valid
+    if updated_data["status"] is None or updated_data["status"] not in RoleStatus.__members__:
+        abort(
+            400,
+            description=f"Invalid role status: '{id}'. name can only be the following: {RoleStatus.__members__.keys()}",
+        )
+
+    # Update the existing role listing
+    existing_listing.start_date = updated_data["start_date"]
+    existing_listing.end_date = updated_data["end_date"]
+    # existing_listing.role = role
+    existing_listing.status = updated_data["status"]
+
+    # Save the updated listing
+    updated_listing = role_listing_service.save(existing_listing)
+
+    data = updated_listing.json()
+    res = ResponseBodyJSON(data=data).json()
+    return jsonify(res), 200
