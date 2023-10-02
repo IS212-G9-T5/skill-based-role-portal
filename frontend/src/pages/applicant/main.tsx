@@ -4,8 +4,25 @@ import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
 
 const ViewRoleListing = () => {
-  const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
+  const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
+
+  // To obtain the skills of the user
+  const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
+
+  useEffect(() => {
+    async function fetchSkills() {
+      try {
+        const response = await fetch('http://localhost:5000/api/skills');
+        const data = await response.json();
+        const skillsArray = data.data;
+        setUserSkills(skillsArray);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   
+    fetchSkills();
+  }, []);
 
   useEffect(() => {
     const currUrl = window.location.href
@@ -18,7 +35,7 @@ const ViewRoleListing = () => {
         if (Array.isArray(res.data)) {
           setApiRoleData(res.data)
         } else if (typeof res.data === "object") {
-          setApiRoleData([res.data])
+          setApiRoleData(res.data)
         }
       })
       .catch((error) => console.log(error))
@@ -30,18 +47,19 @@ const ViewRoleListing = () => {
   return (
     <div>
       <NavBar title={title} items={items} />
-      {apiRoleData.map((roleData) => (
+      {apiRoleData && (
         <RoleListing
-          key={roleData.id}
-          id={roleData.id}
-          name={roleData["role"].name}
-          description={roleData["role"].description}
-          start_date={roleData.start_date}
-          end_date={roleData.end_date}
-          status={roleData.status}
-          skills={roleData["role"].skills}
-        />
-      ))}
+          key={apiRoleData.id}
+          id={apiRoleData.id}
+          name={apiRoleData["role"].name}
+          description={apiRoleData["role"].description}
+          start_date={apiRoleData.start_date}
+          end_date={apiRoleData.end_date}
+          status={apiRoleData.status}
+          skills={apiRoleData["role"].skills}
+          userSkills={userSkills}
+      />
+      )}
     </div>
   )
 }

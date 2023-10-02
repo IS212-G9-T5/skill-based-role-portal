@@ -6,7 +6,14 @@ declare type Roles = {
   end_date: string
   status: boolean
   skills: string[]
+  userSkills: SkillObject[]
 }
+
+declare type SkillObject = {
+  name: string;
+  description: string;
+};
+
 
 declare type NavBar = {
   title: string
