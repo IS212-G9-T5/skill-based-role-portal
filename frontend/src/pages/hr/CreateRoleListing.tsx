@@ -14,15 +14,10 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 import * as yup from "yup"
+
 import StaffNavbar from "../../components/Navbar"
 
-interface MyFormValues {
-  role_name: string
-  description: string
-  start_date: Dayjs | number | undefined
-  end_date: Dayjs | number | undefined
-}
-const signupSchema = yup.object().shape({
+const createRoleSchema = yup.object().shape({
   role_name: yup.string().required("Role Name is required"),
   description: yup.string().required("Description is required"),
   start_date: yup.date().required("Start Date is required"),
@@ -34,8 +29,6 @@ const RolelistingForm = () => {
   const title = "SKILLS BASED ROLE PORTAL"
   const items = ["View Listings", "View Profile", "Logout"]
   const navigate = useNavigate()
-  const rolesArray = new Array<string>()
-  const skillsSet = new Set<string>()
   const [data, setData] = useState(null)
   const [roles, setRoles] = useState<string[]>([])
   const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
@@ -43,6 +36,8 @@ const RolelistingForm = () => {
   const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
 
   useEffect(() => {
+    const rolesArray = new Array<string>()
+    const skillsSet = new Set<string>()
     fetch(endpointUrl)
       .then((response) => response.json())
       .then((res) => {
@@ -124,7 +119,7 @@ const RolelistingForm = () => {
               <Formik
                 initialValues={initialValues}
                 onSubmit={handleFormSubmit}
-                validationSchema={signupSchema}
+                validationSchema={createRoleSchema}
               >
                 {({ values, touched, errors, handleChange, handleSubmit }) => {
                   const handleDropDown = (event) => {

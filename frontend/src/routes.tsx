@@ -1,8 +1,7 @@
 import type { RouteObject } from "react-router"
 import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
-import Signup from "./pages/hr/CreateRoleListing"
-import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
+import CreateRoleListing from "./pages/hr/CreateRoleListing"
 
 const routes: RouteObject[] = [
   {
@@ -15,12 +14,8 @@ const routes: RouteObject[] = [
   },
   {
     path: "create-role-listing",
-    element: <Signup />,
+    element: <CreateRoleListing />,
   },
-  {
-    path: "update-role-listing/:id",
-    element: <UpdateRoleListing/>
-  }
 ]
 
 export default routes
