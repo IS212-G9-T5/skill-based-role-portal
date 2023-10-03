@@ -17,6 +17,7 @@ import * as yup from "yup"
 import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
+  role_name: string
   description: string
   status: string
   start_date: Dayjs | number | undefined
@@ -31,13 +32,6 @@ const signupSchema = yup.object().shape({
 
 
 const RolelistingForm = () => {
-  const initialValues: MyFormValues = {
-    description: "",
-    status: "",
-    start_date: dayjs(null),
-    end_date: dayjs(null),
-  }
-
   const { id } = useParams()
   const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
   const title = "SKILLS BASED ROLE PORTAL"
@@ -73,6 +67,17 @@ const RolelistingForm = () => {
 
 
   const {id: _, ...roleData} = storeData
+  console.log("roleData", roleData)
+  console.log("storeData", storeData)
+
+  const initialValues: MyFormValues = {
+    role_name: roleData.role.name || "",
+    description: roleData.role.description || "",
+    status: roleData.status || "",
+    start_date: dayjs(roleData.start_date) || 0,
+    end_date: dayjs(roleData.end_date) || 0,
+  }
+
   const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
       ...values,
@@ -88,17 +93,17 @@ const RolelistingForm = () => {
         body: JSON.stringify(formattedValues),
       })
       if (response.ok) {
-        handleSuccess("Create Role Listing")
+        handleSuccess("Update Role Listing")
         resetForm()
       } else {
-        handleError("Failed to create Role Listing")
+        handleError("Failed to update Role Listing")
         resetForm()
       }
       setTimeout(() => {
         navigate("/all-role-listing")
       }, 2000)
     } catch (error) {
-      handleError("Error occurred when submitting form")
+      handleError("Error occurred when updating role listing")
       resetForm()
     }
   }
@@ -106,7 +111,7 @@ const RolelistingForm = () => {
     <>
       <StaffNavbar title={title} items={items} />
       <Toaster />
-      <Grid container style={{ marginTop: "20px" }}>
+      <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
             Role Listing Form
@@ -116,7 +121,7 @@ const RolelistingForm = () => {
           <Container maxWidth="md">
             <div className="mb-2 mt-2">
               <Formik
-                initialValues={{initialValues, ...roleData}}
+                initialValues={initialValues}
                 onSubmit={handleFormSubmit}
                 validationSchema={signupSchema}
               >
@@ -153,13 +158,9 @@ const RolelistingForm = () => {
                           <Typography variant="h5">
                             <strong>Role</strong>
                           </Typography>
-                          <TextField
-                            name="role_name"
-                            id="role_name"
-                            value={storeData.role.name}
-                            fullWidth
-                          >
-                          </TextField>
+                          <Typography variant="h6">
+                            <strong>{roleData.role.name}</strong>
+                          </Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -171,7 +172,7 @@ const RolelistingForm = () => {
                             <TextField
                               name="description"
                               id="description"
-                              value={storeData.role.description}
+                              value={values.description}
                               fullWidth
                               onChange={handleChange}
                               error={
@@ -194,7 +195,7 @@ const RolelistingForm = () => {
                             <TextField
                               name="status"
                               id="status"
-                              value={storeData.status}
+                              value={roleData.status}
                               fullWidth
                               onChange={handleChange}
                               error={
@@ -225,7 +226,6 @@ const RolelistingForm = () => {
                                 },
                               }}
                               format="DD/MM/YYYY"
-                              disablePast
                               value={dayjs(storeData.start_date)}
                               onChange={handleStartDateChange}
                               className="w-full"
@@ -249,7 +249,6 @@ const RolelistingForm = () => {
                                 },
                               }}
                               format="DD/MM/YYYY"
-                              disablePast
                               value={dayjs(storeData.end_date)}
                               onChange={handleEndDateChange}
                               className="w-full"
@@ -257,14 +256,14 @@ const RolelistingForm = () => {
                           </div>
                         </Grid>
 
-                        <Grid item xs={12} style={{ marginBottom: "3%" }}>
+                        <Grid item xs={12} className="mb-1">
                           <Typography variant="h5">
                             <strong>
                               <span className="mr-2 bg-[#1976D2] pl-2"></span>
                               Skills Required
                             </strong>
                             <br></br>
-                            {retrievedSkills.map((skill, index) => (
+                            {storeData.role.skills.map((skill, index) => (
                               <Chip
                                 key={index}
                                 label={skill}

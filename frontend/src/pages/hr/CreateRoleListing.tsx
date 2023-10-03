@@ -112,7 +112,7 @@ const RolelistingForm = () => {
     <>
       <StaffNavbar title={title} items={items} />
       <Toaster />
-      <Grid container style={{ marginTop: "20px" }}>
+      <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
             Role Listing Form
@@ -256,7 +256,7 @@ const RolelistingForm = () => {
                             />
                           </div>
                         </Grid>
-                        <Grid item xs={12} style={{ marginBottom: "3%" }}>
+                        <Grid item xs={12} className="mb-1">
                           <Typography variant="h5">
                             <strong>
                               <span className="mr-2 bg-[#1976D2] pl-2"></span>
