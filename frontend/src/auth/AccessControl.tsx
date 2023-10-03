@@ -6,8 +6,6 @@ const checkPermissions = (
   userPermissions: string,
   allowedPermissions: string[]
 ): boolean => {
-  console.log(userPermissions)
-  console.log(allowedPermissions)
   if (allowedPermissions.length === 0) {
     return true
   }
