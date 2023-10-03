@@ -7,13 +7,19 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
+import { useNavigate } from "react-router-dom"
 
-interface NavBar {
-  title: string
-  items: string[]
-}
+import { Logout } from "../api/AuthAPI"
 
-const StaffNavbar = (props: NavBar) => {
+const Navbar = (props: NavBar) => {
+  const navigate = useNavigate()
+
+  function handleButtonClick() {
+    if (props.items[2] === "Logout") {
+      Logout()
+      navigate("/")
+    }
+  }
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -31,7 +37,9 @@ const StaffNavbar = (props: NavBar) => {
             <b className="text-lg">{props.items[1]}</b>
           </Button>
           <Button color="inherit">
-            <b className="text-lg">{props.items[2]}</b>
+            <b className="text-lg" onClick={handleButtonClick}>
+              {props.items[2]}
+            </b>
           </Button>
         </Stack>
       </Toolbar>
@@ -39,4 +47,4 @@ const StaffNavbar = (props: NavBar) => {
   )
 }
 
-export default StaffNavbar
+export default Navbar
