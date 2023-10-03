@@ -8,13 +8,13 @@ body {
 }
 
 .emphasis {
+  background-color: #49d861;
   font-weight: bold;
-  color: blue;
 }
 
 .unmatched {
+  background-color: #cff8db;
   opacity: 0.5;
-  font-size: 0.9em;
 }
 
 /* :root {
