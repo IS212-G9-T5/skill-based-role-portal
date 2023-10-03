@@ -2,9 +2,11 @@ import { useEffect, useState } from "react"
 
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
+import { getRoleListingById } from "../../api/RoleListingAPI"
 
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
+  const[roleMatchData, setRoleMatchData] = useState<RoleMatch | null>(null)
 
   // To obtain the skills of the user
   const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
@@ -27,18 +29,25 @@ const ViewRoleListing = () => {
   useEffect(() => {
     const currUrl = window.location.href
     const id = currUrl.split("/").pop()
-    const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
 
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        if (Array.isArray(res.data)) {
-          setApiRoleData(res.data)
-        } else if (typeof res.data === "object") {
-          setApiRoleData(res.data)
+    const fetchData = async () => {
+      try {
+        const data = await getRoleListingById(id);
+        console.log(data);
+        setApiRoleData(data["listing"]);
+        const roleDataObj = {
+          skills_match_count: data["skills_match_count"],
+          skills_match_pct: data["skills_match_pct"],
+          skills_matched: data["skills_matched"],
+          skills_unmatched: data["skills_unmatched"],
         }
-      })
-      .catch((error) => console.log(error))
+        setRoleMatchData(roleDataObj);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, [])
 
   const title = "SKILLS BASED ROLE PORTAL"
@@ -58,6 +67,7 @@ const ViewRoleListing = () => {
           status={apiRoleData.status}
           skills={apiRoleData["role"].skills}
           userSkills={userSkills}
+          roleMatchData={roleMatchData}
       />
       )}
     </div>

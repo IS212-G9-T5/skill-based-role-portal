@@ -1,39 +1,27 @@
-import { Button, Chip, Grid, Typography, Modal, Box } from "@mui/material"
+import { Button, Chip, Grid, Typography} from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import React, { useState } from "react";
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-}
+import { useState, useEffect } from "react"
 
 const RoleListing = (props: Roles) => {
-  const navigate = useNavigate()
-
-  const commonSkills = props.skills.filter(skill => props.userSkills.some(userSkill => userSkill.name === skill));
-
-  const matchedPercentage = (commonSkills.length / props.skills.length) * 100;
-
-  const [open, setOpen] = React.useState(false);
-  const [selectedSkill, setSelectedSkill] = React.useState({ name: "", description: "" });
-
-
-  const handleOpen = (skillName, skillDescription) => {
-    setOpen(true);
-    setSelectedSkill({ name: skillName, description: skillDescription });
-  }
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedSkill({ name: "", description: "" });
+  
+  const styles = {
+    green: {
+      backgroundColor: 'green',
+      color: 'white',
+    },
+    red: {
+      backgroundColor: 'red',
+      color: 'white',
+    },
   };
+
+  const [matchedSkills, setMatchedSkills] = useState([]);
+
+  useEffect(() => {
+    setMatchedSkills(props.roleMatchData.skills_matched);
+  }, [props.roleMatchData.skills_matched]);
+  
+  const navigate = useNavigate()
 
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
@@ -65,16 +53,15 @@ const RoleListing = (props: Roles) => {
             <Typography variant="h6">
               <strong>
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills Required [Skills Matched: {commonSkills.length}/{props.skills.length} ({matchedPercentage.toFixed(0)}%)]
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
                 <Chip
                   key={index}
                   label={skill}
-                  color={commonSkills.includes(skill) ? "success" : "error"}
-                  className="mr-[1%] mt-[1%]"
-                  onClick={() => handleOpen(skill, "")}
+                  className={`mr-[1%] mt-[1%] ${matchedSkills.includes(skill) ? 'green' : 'red'}`}
+                  style={matchedSkills.includes(skill) ? styles.green : styles.red}
                 />
               ))}
             </Typography>
@@ -92,30 +79,10 @@ const RoleListing = (props: Roles) => {
                 key={index} 
                 label={skill.name} 
                 className="mr-[1%] mt-[1%]" 
-                onClick={() => handleOpen(skill.name, skill.description)}/>
+                />
               ))}
             </Typography>
           </Grid>
-
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="skill-description-modal"
-            aria-describedby="skill-description-modal"
-          >
-          
-            {/* <Box sx={style}>
-              <Typography id="modal-modal-title" variant="h3" component="h2">
-                {selectedSkill.name}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                {selectedSkill.description}
-              </Typography>
-            </Box> */}
-      
-        </Modal>
-
-          
 
           <Button
             variant="contained"

@@ -7,6 +7,14 @@ declare type Roles = {
   status: boolean
   skills: string[]
   userSkills: SkillObject[]
+  roleMatchData: RoleMatch
+}
+
+declare type RoleMatch = {
+  skills_match_count: number
+  skills_match_pct: number
+  skills_matched: string[]
+  skills_unmatched: string[]
 }
 
 declare type SkillObject = {
