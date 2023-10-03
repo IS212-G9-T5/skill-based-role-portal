@@ -1,9 +1,25 @@
-import { Button, Chip, Grid, Typography} from "@mui/material"
+import { Button, Chip, Grid, Typography, Modal} from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import ModalContent from "../../components/ModalContent";
+import { useState } from "react";
 
 const RoleListing = (props: Roles) => {
   
   const navigate = useNavigate()
+
+
+
+  const [selectedChip, setSelectedChip] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const handleChipClick = (chip) => {
+    setSelectedChip(chip);
+    setOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+  };
 
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
@@ -42,7 +58,11 @@ const RoleListing = (props: Roles) => {
                 <Chip
                 key={index}
                 label={skill}
-                className={`mr-[1%] mt-[1%] ${props.roleMatchData.skills_matched.includes(skill) ? "emphasis" : "unmatched"}`}
+                className={`mr-[1%] mt-[1%] ${
+                  props.roleMatchData.skills_matched.includes(skill)
+                    ? "emphasis"
+                    : "unmatched"
+                }`}
               />
               ))}
             </Typography>
@@ -60,10 +80,15 @@ const RoleListing = (props: Roles) => {
                 key={index} 
                 label={skill.name} 
                 className="mr-[1%] mt-[1%]" 
+                onClick={() => handleChipClick(skill)}
                 />
               ))}
             </Typography>
           </Grid>
+
+          <Modal open={open} onClose={handleCloseModal} >
+            {/* <ModalContent selectedChip={selectedChip} /> */}
+          </Modal>
 
           <Button
             variant="contained"
