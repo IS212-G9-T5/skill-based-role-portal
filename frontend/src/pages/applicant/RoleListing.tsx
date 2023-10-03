@@ -1,25 +1,7 @@
 import { Button, Chip, Grid, Typography} from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react"
 
 const RoleListing = (props: Roles) => {
-  
-  const styles = {
-    green: {
-      backgroundColor: 'green',
-      color: 'white',
-    },
-    red: {
-      backgroundColor: 'red',
-      color: 'white',
-    },
-  };
-
-  const [matchedSkills, setMatchedSkills] = useState([]);
-
-  useEffect(() => {
-    setMatchedSkills(props.roleMatchData.skills_matched);
-  }, [props.roleMatchData.skills_matched]);
   
   const navigate = useNavigate()
 
@@ -58,11 +40,10 @@ const RoleListing = (props: Roles) => {
               <br></br>
               {props.skills.map((skill, index) => (
                 <Chip
-                  key={index}
-                  label={skill}
-                  className={`mr-[1%] mt-[1%] ${matchedSkills.includes(skill) ? 'green' : 'red'}`}
-                  style={matchedSkills.includes(skill) ? styles.green : styles.red}
-                />
+                key={index}
+                label={skill}
+                className={`mr-[1%] mt-[1%] ${props.roleMatchData.skills_matched.includes(skill) ? "emphasis" : "unmatched"}`}
+              />
               ))}
             </Typography>
           </Grid>
