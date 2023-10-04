@@ -1,17 +1,23 @@
-from flask import abort, json, jsonify, request, current_app as app
+from typing import List
+from flask import abort, jsonify, request, current_app as app
 from marshmallow import ValidationError
 
 from application.models.role_listing import RoleListing
 
 # from application.dto.role_listing import UpdateRoleListingDTO
-from application.dto.role_listing import RoleListingDTO, UpdateRoleListingDTO
+from application.dto.role_listing import (
+    RoleListingDTO,
+    RoleListingSkillMatchDTO,
+    UpdateRoleListingDTO,
+)
 from application.services import staff_service
 from application.enums import RoleStatus
 from . import api
-from application.services import role_listing_service, role_service
+from application.services import role_listing_service, role_service, staff_service
 from application.dto.response import ResponseBodyJSON
 from .route_decorators import admin_or_hr_required
 from flask_jwt_extended import jwt_required
+
 
 DEFAULT_PAGE_SIZE = 10
 
@@ -32,19 +38,53 @@ def find_all_listings_paginated():
     page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)
     page_size = page_size if page_size > 0 else DEFAULT_PAGE_SIZE
 
-    listings = role_listing_service.find_all_paginated(page=page, page_size=page_size)
+    role = request.args.get("role") or ""
+    skills_to_filter = request.args.getlist("skills")
+    app.logger.info(f"GET /listings with params: {request.args}")
 
-    data = {
-        "page": listings.page,
-        "size": listings.per_page,
-        "items": [l.json() for l in listings.items] if listings.items else [],
-        "total": listings.total,
-        "pages": listings.pages,
-        "has_prev": listings.has_prev,
-        "has_next": listings.has_next,
+    # FIXME: get user id from JWT claim to get the user's skills
+    # randomly get a user from the database so simulate a logged in user
+    user = staff_service.find_by_id(3)
+    if user is None:
+        abort(500, description="No user found.")
+
+    user_skills = set([s.name for s in user.skills])
+    app.logger.info(f"user skills: {user_skills}")
+
+    paginated_listings = role_listing_service.find_all_by_role_and_skills_paginated(
+        skills_to_filter=skills_to_filter, role=role, page=page, page_size=page_size
+    )
+
+    data: List[RoleListingSkillMatchDTO] = []
+    for listing in paginated_listings.items:
+        listing_skills = set([s.name for s in listing.role.skills])
+
+        skills_matched = listing_skills.intersection(user_skills)
+        skills_unmatched = listing_skills.difference(user_skills)
+        skills_match_count = len(skills_matched)
+        skills_match_pct = round(skills_match_count / len(listing_skills), 2)
+
+        data.append(
+            RoleListingSkillMatchDTO(
+                listing=listing.json(),
+                skills_matched=list(skills_matched),
+                skills_unmatched=list(skills_unmatched),
+                skills_match_count=skills_match_count,
+                skills_match_pct=skills_match_pct,
+            )
+        )
+
+    res = {
+        "page": paginated_listings.page,
+        "size": paginated_listings.per_page,
+        "items": data,
+        "total": paginated_listings.total,
+        "pages": paginated_listings.pages,
+        "has_prev": paginated_listings.has_prev,
+        "has_next": paginated_listings.has_next,
     }
 
-    return jsonify(data), 200
+    return jsonify(res), 200
 
 
 @api.route("/listings/<int:id>", methods=["GET"])
@@ -55,8 +95,30 @@ def find_listing_by_id(id: int):
     if listing is None:
         abort(404, description=f"RoleListing {id} not found.")
 
-    data = listing.json()
-    res = ResponseBodyJSON(data=data).json()
+    # FIXME: get user id from JWT claim to get the user's skills
+    # randomly get a user from the database so simulate a logged in user
+    user = staff_service.find_by_id(3)
+    if user is None:
+        abort(500, description="No user found.")
+
+    user_skills = set([s.name for s in user.skills])
+    app.logger.info(f"user skills: {user_skills}")
+
+    listing_skills = set([s.name for s in listing.role.skills])
+
+    skills_matched = listing_skills.intersection(user_skills)
+    skills_unmatched = listing_skills.difference(user_skills)
+    skills_match_count = len(skills_matched)
+    skills_match_pct = round(skills_match_count / len(listing_skills), 2)
+
+    res = RoleListingSkillMatchDTO(
+        listing=listing.json(),
+        skills_matched=list(skills_matched),
+        skills_unmatched=list(skills_unmatched),
+        skills_match_count=skills_match_count,
+        skills_match_pct=skills_match_pct,
+    )
+
     return jsonify(res), 200
 
 

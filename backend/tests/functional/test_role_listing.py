@@ -42,9 +42,8 @@ def test_get_indiv_role_listing(db, random_user_client: FlaskClient, init_databa
 
     # check response
     assert response.status_code == 200
-    data = response.json["data"]
-    assert data is not None
-    assert data["id"] == id
+    assert response.json is not None
+    assert response.json["listing"]["id"] == id
 
 
 # endregion
