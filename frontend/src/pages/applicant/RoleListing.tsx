@@ -1,20 +1,24 @@
-import { Button, Chip, Grid, Typography, Modal} from "@mui/material"
+import { Button, Chip, Grid, Typography} from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import ModalContent from "../../components/ModalContent";
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 import { useState } from "react";
 
 const RoleListing = (props: Roles) => {
   
   const navigate = useNavigate()
 
-
-
-  const [selectedChip, setSelectedChip] = useState(null);
+  const [selectedChip, setSelectedChip] = useState(props.userSkills[0]||null);
   const [open, setOpen] = useState(false);
 
   const handleChipClick = (chip) => {
-    setSelectedChip(chip);
-    setOpen(true);
+    if (chip !== selectedChip) {
+      setSelectedChip(chip);
+      setOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -79,16 +83,24 @@ const RoleListing = (props: Roles) => {
                 <Chip 
                 key={index} 
                 label={skill.name} 
-                className="mr-[1%] mt-[1%]" 
+                style={{margin:"5px"}}
                 onClick={() => handleChipClick(skill)}
                 />
               ))}
             </Typography>
           </Grid>
 
-          <Modal open={open} onClose={handleCloseModal} >
-            {/* <ModalContent selectedChip={selectedChip} /> */}
-          </Modal>
+          <Dialog open={open} onClose={handleCloseModal}>
+            <DialogTitle id="alert-dialog-title">{selectedChip ? selectedChip.name : "No Chip Selected"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                {selectedChip ? selectedChip.description : "Please select a chip"}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseModal}>Close</Button>
+            </DialogActions>
+          </Dialog>
 
           <Button
             variant="contained"
