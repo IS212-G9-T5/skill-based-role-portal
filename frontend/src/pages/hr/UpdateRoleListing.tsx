@@ -4,7 +4,6 @@ import {
   Chip,
   Container,
   Grid,
-  MenuItem,
   Typography,
 } from "@mui/material"
 import TextField from "@mui/material/TextField"
@@ -24,8 +23,7 @@ interface MyFormValues {
   end_date: Dayjs | number | undefined
 }
 const signupSchema = yup.object().shape({
-  role_name: yup.string().required("Role Name is required"),
-  description: yup.string().required("Description is required"),
+  status: yup.string().required("Status is required"),
   start_date: yup.date().required("Start Date is required"),
   end_date: yup.date().required("End Date is required"),
 })
@@ -49,7 +47,6 @@ const RolelistingForm = () => {
     end_date: ""
 
   })
-  const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
   const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null)
   const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
 
@@ -71,11 +68,11 @@ const RolelistingForm = () => {
   console.log("storeData", storeData)
 
   const initialValues: MyFormValues = {
-    role_name: roleData.role.name || "",
-    description: roleData.role.description || "",
-    status: roleData.status || "",
-    start_date: dayjs(roleData.start_date) || 0,
-    end_date: dayjs(roleData.end_date) || 0,
+    role_name: "",
+    description: "",
+    status: "",
+    start_date: 0,
+    end_date: 0,
   }
 
   const handleFormSubmit = async (values, { resetForm }) => {
@@ -86,6 +83,7 @@ const RolelistingForm = () => {
     }
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
+    delete formattedValues.status
     try {
       const response = await fetch("http://localhost:5000/api/listings", {
         method: "POST",
@@ -95,13 +93,13 @@ const RolelistingForm = () => {
       if (response.ok) {
         handleSuccess("Update Role Listing")
         resetForm()
+        setTimeout(() => {
+          navigate("/all-role-listing")
+        }, 2000)
       } else {
         handleError("Failed to update Role Listing")
         resetForm()
       }
-      setTimeout(() => {
-        navigate("/all-role-listing")
-      }, 2000)
     } catch (error) {
       handleError("Error occurred when updating role listing")
       resetForm()
@@ -124,6 +122,7 @@ const RolelistingForm = () => {
                 initialValues={initialValues}
                 onSubmit={handleFormSubmit}
                 validationSchema={signupSchema}
+                enableReinitialize={true}
               >
                 {({ values, touched, errors, handleChange, handleSubmit }) => {
                   const handleStartDateChange = (event) => {
@@ -195,7 +194,7 @@ const RolelistingForm = () => {
                             <TextField
                               name="status"
                               id="status"
-                              value={roleData.status}
+                              value={storeData.status}
                               fullWidth
                               onChange={handleChange}
                               error={
