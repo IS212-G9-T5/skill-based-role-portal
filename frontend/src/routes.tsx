@@ -28,6 +28,7 @@ const routes: RouteObject[] = [
       >
         <SkillsProfile />
       </AccessControl>
+      // <SkillsProfile />
     )
 
   },

@@ -72,14 +72,18 @@ const SkillsProfile = () => {
                         Skills that I have:
                     </strong>
                     <br></br>
-                    {userSkills.map((skill,index) => (
+                    {userSkills.length === 0 ? (
+                        <Typography variant="body1">You do not have any skills at the moment.</Typography>
+                    ) : (
+                        userSkills.map((skill,index) => (
                         <Chip 
-                        key={index} 
-                        label={skill.name}
-                        style={{margin:"5px"}}
-                        onClick={() => handleChipClick(skill)}
+                            key={index} 
+                            label={skill.name}
+                            style={{margin:"5px"}}
+                            onClick={() => handleChipClick(skill)}
                         />
-                    ))}
+                        ))
+                    )}
                     </Typography>
                 </Grid>
 
