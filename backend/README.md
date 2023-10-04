@@ -65,7 +65,7 @@ poetry run python -B -m pytest -s -v
 cd backend
 poetry shell # activate virtual environment
 poetry install
-poetry run python -m flask --app wsgi:app --debug run
+python -m flask --app wsgi:app --debug run
 ```
 
 - Create a route in routes folder for the API endpoint for a new resource
@@ -79,5 +79,8 @@ poetry run python -m flask --app wsgi:app --debug run
 Migrate SQLAlchemy models schema to database
 
 ```
-poetry run python -m flask db init
+cd backend
+poetry shell # activate virtual environment
+python -m flask db init
+python -m flask db migrate -m "initial migration"
 ```

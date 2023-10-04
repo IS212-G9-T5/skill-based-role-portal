@@ -33,7 +33,7 @@ def login():
 
     # Create the tokens
     access_token = create_access_token(
-        identity=email, additional_claims={data["access_control"]: True}
+        identity=email, additional_claims={"role": data["access_control"]}
     )
     refresh_token = create_refresh_token(identity=email)
 
@@ -68,7 +68,7 @@ def logout():
 # Endpoint used to test protected routes
 # @api.route("/example", methods=["GET"])
 # @jwt_required()
-# @admin_required()
+# @admin_or_hr_required()
 # def protected():
 #     email = get_jwt_identity()
 #     return jsonify({"hello": "from {}".format(email)}), 200

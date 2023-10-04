@@ -10,7 +10,7 @@ from application.enums import RoleStatus
 from . import api
 from application.services import role_listing_service, role_service
 from application.dto.response import ResponseBodyJSON
-from .route_decorators import admin_required
+from .route_decorators import admin_or_hr_required
 from flask_jwt_extended import jwt_required
 
 DEFAULT_PAGE_SIZE = 10
@@ -18,11 +18,14 @@ DEFAULT_PAGE_SIZE = 10
 
 @api.route("/hi", methods=["GET"])
 def hello():
-    app.logger.info("Hello world")
-    return jsonify({"message": "hello world"}), 200
+    res = staff_service.find_random_manager()
+    if res is None:
+        abort(404, description="No staff found.")
+    return jsonify(res.json()), 200
 
 
 @api.route("/listings", methods=["GET"])
+@jwt_required()
 def find_all_listings_paginated():
     page = request.args.get("page", 1, type=int)
     page = page if page > 0 else 1
@@ -45,6 +48,7 @@ def find_all_listings_paginated():
 
 
 @api.route("/listings/<int:id>", methods=["GET"])
+@jwt_required()
 def find_listing_by_id(id: int):
     listing = role_listing_service.find_by_id(id)
 
@@ -58,7 +62,7 @@ def find_listing_by_id(id: int):
 
 @api.route("/listings", methods=["POST"])
 @jwt_required()
-@admin_required()
+@admin_or_hr_required()
 def create_listing():
     body = request.get_json()
     app.logger.info(f"POST /listings with request body: {body}")
@@ -91,7 +95,7 @@ def create_listing():
 
 @api.route("/listings/<int:id>", methods=["PUT"])
 @jwt_required()
-@admin_required()
+@admin_or_hr_required()
 def update_role_listing(id: int):
     body = request.get_json()
     print(f"PUT /listings/{id} with body: {body}")
