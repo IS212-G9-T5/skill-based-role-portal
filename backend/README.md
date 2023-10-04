@@ -44,7 +44,7 @@ SQLALCHEMY_TEST_DATABASE_URI=postgresql://{username}:{password}@{host}:{port}/{d
 cd backend
 poetry shell # activate virtual environment
 poetry install
-poetry run python wsgi.py
+poetry run python -m flask --app wsgi:app run
 ```
 
 ### Running tests
@@ -61,8 +61,23 @@ poetry run python -B -m pytest -s -v
 
 ### Starting backend development
 
+```
+cd backend
+poetry shell # activate virtual environment
+poetry install
+poetry run python -m flask --app wsgi:app --debug run
+```
+
 - Create a route in routes folder for the API endpoint for a new resource
 - Create a service in services folder to support operations relating to the resource (for reusing the service across routes, services)
 - Think of test cases; document them down in the test plan for future testers to review
 - Write test cases for the new feature in `tests/functional` and `tests/unit` folders for API endpoint testing and unit testing respectively
 - Add the new route under imports in the `application/__init__.py` file
+
+### Database migration
+
+Migrate SQLAlchemy models schema to database
+
+```
+poetry run python -m flask db init
+```

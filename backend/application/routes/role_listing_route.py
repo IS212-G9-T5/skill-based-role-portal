@@ -2,9 +2,11 @@ from flask import abort, json, jsonify, request, current_app as app
 from marshmallow import ValidationError
 
 from application.models.role_listing import RoleListing
+
 # from application.dto.role_listing import UpdateRoleListingDTO
 from application.dto.role_listing import RoleListingDTO, UpdateRoleListingDTO
 from application.services import staff_service
+from application.enums import RoleStatus
 from . import api
 from application.services import role_listing_service, role_service
 from application.dto.response import ResponseBodyJSON
@@ -86,6 +88,7 @@ def create_listing():
     res = ResponseBodyJSON(data=data.json()).json()
     return jsonify(res), 201
 
+
 @api.route("/listings/<int:id>", methods=["PUT"])
 @jwt_required()
 @admin_required()
@@ -105,10 +108,20 @@ def update_role_listing(id: int):
 
     # Validate start_time < end_time
     if updated_data["start_date"] >= updated_data["end_date"]:
-        return jsonify({"message": "Invalid start time and end time. Start time must be before the end time."}), 400
+        return (
+            jsonify(
+                {
+                    "message": "Invalid start time and end time. Start time must be before the end time."
+                }
+            ),
+            400,
+        )
 
     # Validate that the status is valid
-    if updated_data["status"] is None or updated_data["status"] not in RoleStatus.__members__:
+    if (
+        updated_data["status"] is None
+        or updated_data["status"] not in RoleStatus.__members__
+    ):
         abort(
             400,
             description=f"Invalid role status: '{id}'. name can only be the following: {RoleStatus.__members__.keys()}",

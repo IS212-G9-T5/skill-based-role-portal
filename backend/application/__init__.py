@@ -1,5 +1,7 @@
 from flask import Flask
-from datetime import date
+from datetime import date, datetime
+import logging
+from logging.handlers import TimedRotatingFileHandler
 
 from application.enums import AccessControlRole
 from application.models.skill import Skill
@@ -7,22 +9,47 @@ from application.models.access_control import AccessControl
 from application.models.role import Role
 from application.models.staff import Staff
 from application.models.role_listing import RoleListing
-
+from application.config import Config
 
 from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
 
-from application.extensions import db, cors, jwt
+from application.extensions import db, cors, jwt, migrate
 
 
-def init_app(config):
+def init_app(config=Config):
     app = Flask(__name__)
     app.config.from_object(config)
+
+    configure_extensions(app)
+    app = register_blueprints(app)
+    app = register_error_handlers(app)
+    configure_logging(app)
+
+    return app
+
+
+def configure_extensions(app: Flask):
     db.init_app(app)
     cors.init_app(app)
     jwt.init_app(app)
+    migrate.init_app(app, db)
 
-    return app
+
+def configure_logging(app: Flask):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    file_handler = TimedRotatingFileHandler(
+        f"logs/app-{current_date}.log",
+        when="midnight",
+        backupCount=10,
+        encoding="utf-8",
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(
+        logging.Formatter("[%(asctime)s] [%(levelname)s | %(module)s] >>> %(message)s")
+    )
+    app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.DEBUG)
 
 
 def register_blueprints(app: Flask):
