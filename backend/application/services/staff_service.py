@@ -17,6 +17,15 @@ def find_by_id(id: int) -> Optional[Staff]:
     return res
 
 
+def find_by_email(email: str) -> Optional[Staff]:
+    res = (
+        db.session.execute(db.select(Staff).where(Staff.email == email))
+        .scalars()
+        .first()
+    )
+    return res
+
+
 def find_random_user() -> Optional[Staff]:
     res = (
         db.session.execute(

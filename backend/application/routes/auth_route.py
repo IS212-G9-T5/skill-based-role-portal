@@ -19,24 +19,25 @@ from flask_jwt_extended import (
 
 @api.route("/login", methods=["POST"])
 def login():
-    id = request.json.get("id", None)
+    email = request.json.get("email", None)
     # password = request.json.get("password", None)
-    results = staff_service.find_by_id(id)
+    results = staff_service.find_by_email(email)
 
     if results is None:
-        abort(404, description=f"Staff with {id} not found.")
+        abort(404, description=f"Staff with {email} not found.")
+
     data = results.json()
 
-    if data["id"] != id:
+    if data["email"] != email:
         return jsonify({"msg": "user is not registered in system"}), 400
 
     # Create the tokens
     access_token = create_access_token(
-        identity=id,
+        identity=data["id"],
         additional_claims={"role": data["access_control"]},
         expires_delta=timedelta(hours=4),
     )
-    refresh_token = create_refresh_token(identity=id)
+    refresh_token = create_refresh_token(identity=data["id"])
 
     # Set the JWTs and the CSRF double submit protection cookies in this response
     data = {
