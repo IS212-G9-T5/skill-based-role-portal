@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react"
-import {
-  Button,
-  Chip,
-  Container,
-  Grid,
-  Typography,
-} from "@mui/material"
+import { Button, Chip, Container, Grid, Typography } from "@mui/material"
+import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs, { Dayjs } from "dayjs"
@@ -13,14 +8,17 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
+
 import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
+  id?: string
   role_name: string
   description: string
+  skills?: string[]
   status: string
-  start_date: Dayjs | number | undefined
-  end_date: Dayjs | number | undefined
+  start_date: Dayjs
+  end_date: Dayjs
 }
 const signupSchema = yup.object().shape({
   status: yup.string().required("Status is required"),
@@ -28,65 +26,60 @@ const signupSchema = yup.object().shape({
   end_date: yup.date().required("End Date is required"),
 })
 
-
 const RolelistingForm = () => {
   const { id } = useParams()
   const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
   const title = "SKILLS BASED ROLE PORTAL"
   const items = ["View Listings", "View Profile", "Logout"]
+  const status = ["OPEN", "CLOSED"]
   const navigate = useNavigate()
   const [storeData, setData] = useState({
     id: id,
     role: {
-      description: "",
       name: "",
-      skills: []
+      description: "",
+      skills: [],
     },
     status: "",
-    start_date: "",
-    end_date: ""
-
+    start_date: dayjs(Date.now()),
+    end_date: dayjs(Date.now()),
   })
-  const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null)
-  const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
 
   useEffect(() => {
     fetch(endpointUrl)
       .then((response) => response.json())
-      .then((res) => { setData(res.data)
+      .then((res) => {
+        setData(res.data)
       })
       .catch((error) => console.error(error))
-  }, [id])
+  })
 
-  console.log("data retrieved", storeData)
+  const { id: _, ...roleData } = storeData
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
-
-  const {id: _, ...roleData} = storeData
-  console.log("roleData", roleData)
-  console.log("storeData", storeData)
-
   const initialValues: MyFormValues = {
-    role_name: "",
-    description: "",
-    status: "",
-    start_date: 0,
-    end_date: 0,
+    role_name: roleData.role.name,
+    description: roleData.role.description,
+    status: roleData.status,
+    skills: roleData.role.skills,
+    start_date: dayjs(roleData.start_date),
+    end_date: dayjs(roleData.end_date),
   }
-
   const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
-      ...values,
-      start_date: startDateValue ? startDateValue.format("YYYY-MM-DD") : "",
-      end_date: endDateValue ? endDateValue.format("YYYY-MM-DD") : "",
+      status: values.status,
+      start_date: values.start_date
+        ? dayjs(values.start_date).format("YYYY-MM-DD")
+        : "",
+      end_date: values.end_date
+        ? dayjs(values.end_date).format("YYYY-MM-DD")
+        : "",
     }
-    //temporary fix before endpoint is fixed to take in role description
-    delete formattedValues.description
-    delete formattedValues.status
+
     try {
-      const response = await fetch("http://localhost:5000/api/listings", {
-        method: "POST",
+      const response = await fetch(`http://127.0.0.1:5000/api/listings/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedValues),
       })
@@ -125,8 +118,17 @@ const RolelistingForm = () => {
                 enableReinitialize={true}
               >
                 {({ values, touched, errors, handleChange, handleSubmit }) => {
+                  const handleStatusChange = (event) => {
+                    const updatedArray = storeData
+                    updatedArray.status = event.target.value
+                    setData(updatedArray)
+                    handleChange(event)
+                  }
                   const handleStartDateChange = (event) => {
-                    setstartDateValue(event)
+                    //retrieve storeData, edit array and setData
+                    const updatedArray = storeData
+                    updatedArray.start_date = event
+                    setData(updatedArray)
                     const newEvent = {
                       ...event,
                       target: {
@@ -137,7 +139,9 @@ const RolelistingForm = () => {
                     handleChange(newEvent)
                   }
                   const handleEndDateChange = (event) => {
-                    setendDateValue(event)
+                    const updatedArray = storeData
+                    updatedArray.end_date = event
+                    setData(updatedArray)
                     const newEvent = {
                       ...event,
                       target: {
@@ -167,7 +171,6 @@ const RolelistingForm = () => {
                             <Typography variant="h5">
                               <strong>Description</strong>
                             </Typography>
-
                             <TextField
                               name="description"
                               id="description"
@@ -194,17 +197,22 @@ const RolelistingForm = () => {
                             <TextField
                               name="status"
                               id="status"
-                              value={storeData.status}
+                              select
+                              value={values.status}
                               fullWidth
-                              onChange={handleChange}
+                              onChange={handleStatusChange}
                               error={
                                 Boolean(touched.status) &&
                                 Boolean(errors.status)
                               }
-                              helperText={
-                                touched.status && errors.status
-                              }
-                            />
+                              helperText={touched.status && errors.status}
+                            >
+                              {status.map((name) => (
+                                <MenuItem key={name} value={name}>
+                                  {name}
+                                </MenuItem>
+                              ))}
+                            </TextField>
                           </div>
                         </Grid>
 
@@ -225,7 +233,7 @@ const RolelistingForm = () => {
                                 },
                               }}
                               format="DD/MM/YYYY"
-                              value={dayjs(storeData.start_date)}
+                              value={values.start_date}
                               onChange={handleStartDateChange}
                               className="w-full"
                             />
@@ -247,8 +255,9 @@ const RolelistingForm = () => {
                                     touched.end_date && errors.end_date,
                                 },
                               }}
+                              disablePast
                               format="DD/MM/YYYY"
-                              value={dayjs(storeData.end_date)}
+                              value={values.end_date}
                               onChange={handleEndDateChange}
                               className="w-full"
                             />
@@ -262,7 +271,7 @@ const RolelistingForm = () => {
                               Skills Required
                             </strong>
                             <br></br>
-                            {storeData.role.skills.map((skill, index) => (
+                            {roleData.role.skills.map((skill, index) => (
                               <Chip
                                 key={index}
                                 label={skill}
