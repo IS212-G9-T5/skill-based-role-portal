@@ -74,7 +74,7 @@ python -m flask --app wsgi:app --debug run
 - Write test cases for the new feature in `tests/functional` and `tests/unit` folders for API endpoint testing and unit testing respectively
 - Add the new route under imports in the `application/__init__.py` file
 
-### Database migration
+### Database schema migration
 
 Migrate SQLAlchemy models schema to database
 
@@ -82,5 +82,39 @@ Migrate SQLAlchemy models schema to database
 cd backend
 poetry shell # activate virtual environment
 python -m flask db init
-python -m flask db migrate -m "initial migration"
+python -m flask db migrate -m "initial migration" # create migration script
+python -m flask db upgrade # apply migration script
+```
+
+### Database seeding
+
+```
+cd backend
+poetry shell # activate virtual environment
+python drop_tables.py # drop all tables
+python -m flask db migrate -m "initial migration" # create migration script
+python -m flask db upgrade # apply migration script
+```
+
+Enter PSQL shell in PGAdmin or terminal connected to the postgres db and run the following commands:
+
+```
+\copy access_control from '{absolute_path_to_csv}\Access_Control.csv' WITH DELIMITER ',' CSV HEADER;
+
+\copy role from '{absolute_path_to_csv}\role.csv' WITH DELIMITER ',' CSV HEADER;
+
+\copy skill from '{absolute_path_to_csv}\skill.csv' WITH DELIMITER ',' CSV HEADER;
+
+\copy role_skill from '{absolute_path_to_csv}\role_skill.csv' WITH DELIMITER ',' CSV HEADER;
+
+\copy staff from '{absolute_path_to_csv}\staff.csv' WITH DELIMITER ',' CSV HEADER;
+
+\copy staff_skill from '{absolute_path_to_csv}\staff_skill.csv' WITH DELIMITER ',' CSV HEADER;
+
+```
+
+Inserting data for role listings
+
+```
+python init_database.py
 ```

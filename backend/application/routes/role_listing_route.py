@@ -12,11 +12,17 @@ from application.dto.role_listing import (
 )
 from application.services import staff_service
 from application.enums import RoleStatus
+from application.models.skill import Skill
 from . import api
-from application.services import role_listing_service, role_service, staff_service
+from application.services import (
+    role_listing_service,
+    role_service,
+    staff_service,
+    skill_service,
+)
 from application.dto.response import ResponseBodyJSON
 from .route_decorators import admin_or_hr_required
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
 DEFAULT_PAGE_SIZE = 10
@@ -24,10 +30,7 @@ DEFAULT_PAGE_SIZE = 10
 
 @api.route("/hi", methods=["GET"])
 def hello():
-    res = staff_service.find_random_manager()
-    if res is None:
-        abort(404, description="No staff found.")
-    return jsonify(res.json()), 200
+    return jsonify(msg="hello world"), 200
 
 
 @api.route("/listings", methods=["GET"])
@@ -37,18 +40,22 @@ def find_all_listings_paginated():
     page = page if page > 0 else 1
     page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)
     page_size = page_size if page_size > 0 else DEFAULT_PAGE_SIZE
-
-    role = request.args.get("role") or ""
-    skills_to_filter = request.args.getlist("skills")
     app.logger.info(f"GET /listings with params: {request.args}")
 
-    # FIXME: get user id from JWT claim to get the user's skills
-    # randomly get a user from the database so simulate a logged in user
-    user = staff_service.find_by_id(3)
-    if user is None:
-        abort(500, description="No user found.")
+    role = request.args.get("role") or ""
+    body = request.get_json(silent=True)
+    skills_to_filter = []
+    if body is not None:
+        skills_to_filter = body.get("skills") or []
 
-    user_skills = set([s.name for s in user.skills])
+    current_user_id = get_jwt_identity()
+    user = staff_service.find_by_id(current_user_id)
+    if user is None:
+        return jsonify(msg="User not found."), 401
+
+    user_skills = (
+        set([s.name for s in user.skills]) if user.skills is not None else set()
+    )
     app.logger.info(f"user skills: {user_skills}")
 
     paginated_listings = role_listing_service.find_all_by_role_and_skills_paginated(
@@ -57,12 +64,17 @@ def find_all_listings_paginated():
 
     data: List[RoleListingSkillMatchDTO] = []
     for listing in paginated_listings.items:
-        listing_skills = set([s.name for s in listing.role.skills])
+        # app.logger.info(f"listing: {listing}")
+        if listing.role is None:
+            continue  # skip this listing, not sure why listing does not have role
 
-        skills_matched = listing_skills.intersection(user_skills)
-        skills_unmatched = listing_skills.difference(user_skills)
+        listing_skills = listing.role.skills if listing.role.skills is not None else []
+        skills_required = set([s.name for s in listing_skills])
+
+        skills_matched = skills_required.intersection(user_skills)
+        skills_unmatched = skills_required.difference(user_skills)
         skills_match_count = len(skills_matched)
-        skills_match_pct = round(skills_match_count / len(listing_skills), 2)
+        skills_match_pct = round(skills_match_count / len(skills_required), 2)
 
         data.append(
             RoleListingSkillMatchDTO(
@@ -90,34 +102,35 @@ def find_all_listings_paginated():
 @api.route("/listings/<int:id>", methods=["GET"])
 @jwt_required()
 def find_listing_by_id(id: int):
+    app.logger.info(f"GET /listings/{id}")
     listing = role_listing_service.find_by_id(id)
 
     if listing is None:
         abort(404, description=f"RoleListing {id} not found.")
 
-    # FIXME: get user id from JWT claim to get the user's skills
-    # randomly get a user from the database so simulate a logged in user
-    user = staff_service.find_by_id(3)
+    current_user_id = get_jwt_identity()
+    user = staff_service.find_by_id(current_user_id)
     if user is None:
-        abort(500, description="No user found.")
+        return jsonify(msg="User not found."), 401
 
-    user_skills = set([s.name for s in user.skills])
+    user_skills = set(user.skills)
     app.logger.info(f"user skills: {user_skills}")
 
-    listing_skills = set([s.name for s in listing.role.skills])
+    listing_skills = listing.role.skills
+    skills_required = set(listing_skills if listing_skills is not None else [])
 
-    skills_matched = listing_skills.intersection(user_skills)
-    skills_unmatched = listing_skills.difference(user_skills)
+    skills_matched = skills_required.intersection(user_skills)
+    skills_unmatched = skills_required.difference(user_skills)
     skills_match_count = len(skills_matched)
-    skills_match_pct = round(skills_match_count / len(listing_skills), 2)
+    skills_match_pct = round(skills_match_count / len(skills_required), 2)
 
-    res = RoleListingSkillMatchDTO(
-        listing=listing.json(),
-        skills_matched=list(skills_matched),
-        skills_unmatched=list(skills_unmatched),
-        skills_match_count=skills_match_count,
-        skills_match_pct=skills_match_pct,
-    )
+    res = {
+        "listing": listing.json(),
+        "skills_matched": [s.json() for s in skills_matched],
+        "skills_unmatched": [s.json() for s in skills_unmatched],
+        "skills_match_count": skills_match_count,
+        "skills_match_pct": skills_match_pct,
+    }
 
     return jsonify(res), 200
 

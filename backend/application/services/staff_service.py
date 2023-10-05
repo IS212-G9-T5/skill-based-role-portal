@@ -23,6 +23,8 @@ def find_random_user() -> Optional[Staff]:
             select(Staff)
             .join(AccessControl)
             .where(AccessControl.name == AccessControlRole.User.name)
+            .order_by(db.func.random())
+            .limit(1)
         )
         .scalars()
         .first()
@@ -37,6 +39,8 @@ def find_random_hr() -> Optional[Staff]:
             select(Staff)
             .join(AccessControl)
             .where(AccessControl.name == AccessControlRole.HR.name)
+            .order_by(db.func.random())
+            .limit(1)
         )
         .scalars()
         .first()
@@ -51,16 +55,13 @@ def find_random_manager() -> Optional[Staff]:
             select(Staff)
             .join(AccessControl)
             .where(AccessControl.name == AccessControlRole.Manager.name)
+            .order_by(db.func.random())
+            .limit(1)
         )
         .scalars()
         .first()
     )
 
-    return res
-
-
-def find_one_random() -> Optional[Staff]:
-    res = db.session.execute(db.select(Staff)).scalars().first()
     return res
 
 

@@ -15,6 +15,7 @@ from application.models.access_control import AccessControl
 from application.models.role import Role
 from application.models.staff import Staff
 from application.models.role_listing import RoleListing
+from application.services import role_service
 
 
 @pytest.fixture(scope="session")
@@ -36,7 +37,6 @@ def db(app):
 
 @pytest.fixture(scope="module")
 def init_database(db):
-    print("Initializing database in test db")
     # region: Create access control roles
     user = AccessControl(AccessControlRole.User.value)
     admin = AccessControl(AccessControlRole.Admin.value)
@@ -228,45 +228,6 @@ def init_database(db):
     # endregion
 
 
-#     # region: Create role listings
-#     today = date.today()
-#     dd = today.day
-#     mm = today.month
-#     end_month = (mm % 12) + 1
-#     yyyy = today.year
-#     # find how many days in the current month
-#     days = calendar.monthrange(yyyy, mm)[1]
-
-#     for i in range(1, days + 1):
-#         if i < 11:
-#             role_listing = RoleListing(
-#                 role=role_account_manager,
-#                 start_date=date(yyyy, mm, dd),
-#                 end_date=date(yyyy, end_month, dd),
-#             )
-#             db.session.add(role_listing)
-
-#         elif i < 21:
-#             role_listing = RoleListing(
-#                 role=role_developer,
-#                 start_date=date(yyyy, mm, dd),
-#                 end_date=date(yyyy, end_month, dd),
-#                 applicants=[staff1, staff2] if dd % 3 == 0 else [],
-#             )
-#             db.session.add(role_listing)
-
-#         else:
-#             role_listing = RoleListing(
-#                 role=role_consultant,
-#                 start_date=date(yyyy, mm, dd),
-#                 end_date=date(yyyy, end_month, dd),
-#             )
-#             db.session.add(role_listing)
-
-#         db.session.commit()
-#     # endregion
-
-
 @pytest.fixture(scope="function")
 def random_user(init_database):
     user = staff_service.find_random_user()
@@ -293,7 +254,7 @@ def random_user_client(app: Flask, random_user: Staff):
     with app.test_client() as client:
         res = client.post(
             "/api/login",
-            json={"email": random_user.email},
+            json={"id": random_user.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
@@ -305,7 +266,7 @@ def random_hr_client(app: Flask, random_hr: Staff):
     with app.test_client() as hr_client:
         res = hr_client.post(
             "/api/login",
-            json={"email": random_hr.email},
+            json={"id": random_hr.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
@@ -317,7 +278,7 @@ def random_manager_client(app: Flask, random_manager: Staff):
     with app.test_client() as manager_client:
         res = manager_client.post(
             "/api/login",
-            json={"email": random_manager.email},
+            json={"id": random_manager.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
@@ -337,3 +298,22 @@ def random_hr_client_x_csrf_token_header(random_hr_client: FlaskClient):
 @pytest.fixture(scope="function")
 def random_manager_client_x_csrf_token_header(random_manager_client: FlaskClient):
     return {"X-CSRF-TOKEN": random_manager_client.get_cookie("csrf_access_token").value}
+
+
+@pytest.fixture(scope="module")
+def create_role_listings(db):
+    today = date.today()
+    mm = today.month
+    end_month = (mm % 12) + 1
+    yyyy = today.year
+    days = calendar.monthrange(yyyy, mm)[1] - 1
+
+    for i in range(1, days):
+        role = role_service.find_one_random()
+        role_listing = RoleListing(
+            role=role,
+            start_date=date(yyyy, mm - 1, i),
+            end_date=date(yyyy, end_month, i),
+        )
+        db.session.add(role_listing)
+        db.session.commit()
