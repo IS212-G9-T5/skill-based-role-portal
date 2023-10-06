@@ -20,7 +20,7 @@ from flask_jwt_extended import (
 @api.route("/login", methods=["POST"])
 def login():
     # Use id to retrieve role
-    id = request.json.get("id", None)
+    id = request.json.get("staffId", None)
     # password = request.json.get("password", None)
     results = staff_service.find_by_id(id)
 
