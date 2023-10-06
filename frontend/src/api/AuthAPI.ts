@@ -25,6 +25,7 @@ export const Logout = async () => {
   console.log("logout")
   const response = await fetch("/api/logout", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
