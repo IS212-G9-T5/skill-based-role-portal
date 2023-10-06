@@ -1,4 +1,7 @@
+from datetime import timedelta
 from flask import jsonify, request, abort
+
+from application.services import staff_service
 from . import api
 from application.models.staff import Staff
 from application.extensions import db
@@ -16,26 +19,24 @@ from flask_jwt_extended import (
 
 @api.route("/login", methods=["POST"])
 def login():
-    email = request.json.get("email", None)
+    id = request.json.get("id", None)
     # password = request.json.get("password", None)
-    results = (
-        db.session.execute(db.select(Staff).where(Staff.email == email))
-        .scalars()
-        .first()
-    )
+    results = staff_service.find_by_id(id)
 
     if results is None:
-        abort(404, description=f"Staff with {email} not found.")
+        abort(404, description=f"Staff with {id} not found.")
     data = results.json()
 
-    if data["email"] != email:
-        return jsonify({"msg": "user is not registered in system"}), 401
+    if data["id"] != id:
+        return jsonify({"msg": "user is not registered in system"}), 400
 
     # Create the tokens
     access_token = create_access_token(
-        identity=email, additional_claims={data["access_control"]: True}
+        identity=id,
+        additional_claims={"role": data["access_control"]},
+        expires_delta=timedelta(hours=4),
     )
-    refresh_token = create_refresh_token(identity=email)
+    refresh_token = create_refresh_token(identity=id)
 
     # Set the JWTs and the CSRF double submit protection cookies in this response
     data = {
@@ -68,7 +69,7 @@ def logout():
 # Endpoint used to test protected routes
 # @api.route("/example", methods=["GET"])
 # @jwt_required()
-# @admin_required()
+# @admin_or_hr_required()
 # def protected():
 #     email = get_jwt_identity()
 #     return jsonify({"hello": "from {}".format(email)}), 200

@@ -8,16 +8,20 @@ from flask_jwt_extended import (
 )
 
 
-def admin_required():
+def admin_or_hr_required():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
             verify_jwt_in_request()
             claims = get_jwt()
-            if claims[AccessControlRole.ADMIN.value]:
+            role = claims.get("role")
+            if (
+                role == AccessControlRole.Admin.value
+                or role == AccessControlRole.HR.value
+            ):
                 return fn(*args, **kwargs)
             else:
-                return jsonify(msg="Unauthorised. Admin Rights Required"), 401
+                return jsonify(msg="You are not authorized to access this page."), 403
 
         return decorator
 
