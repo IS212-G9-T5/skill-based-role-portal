@@ -86,10 +86,9 @@ const RolelistingForm = () => {
       })
       if (response.ok) {
         handleSuccess("Update Role Listing")
-        resetForm()
         setTimeout(() => {
           navigate("/all-role-listing")
-        }, 2000)
+        }, 1000)
       } else {
         handleError("Failed to update Role Listing")
         resetForm()
@@ -106,7 +105,7 @@ const RolelistingForm = () => {
       <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
-            Role Listing Form
+            Update Role Listing
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -162,8 +161,8 @@ const RolelistingForm = () => {
                           <Typography variant="h5">
                             <strong>Role</strong>
                           </Typography>
-                          <Typography variant="h6">
-                            <strong>{roleData.role.name}</strong>
+                          <Typography variant="h5">
+                            {roleData.role.name}
                           </Typography>
                         </Grid>
 
@@ -172,20 +171,9 @@ const RolelistingForm = () => {
                             <Typography variant="h5">
                               <strong>Description</strong>
                             </Typography>
-                            <TextField
-                              name="description"
-                              id="description"
-                              value={values.description}
-                              fullWidth
-                              onChange={handleChange}
-                              error={
-                                Boolean(touched.description) &&
-                                Boolean(errors.description)
-                              }
-                              helperText={
-                                touched.description && errors.description
-                              }
-                            />
+                            <Typography variant="body2">
+                                {roleData.role.description}
+                            </Typography>
                           </div>
                         </Grid>
 
