@@ -49,10 +49,11 @@ const RolelistingForm = () => {
     fetch(endpointUrl)
       .then((response) => response.json())
       .then((res) => {
-        setData(res.data)
+        const result = res.data
+        setData(result)
       })
       .catch((error) => console.error(error))
-  })
+  }, [])
 
   const { id: _, ...roleData } = storeData
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
