@@ -15,7 +15,7 @@ const routes: RouteObject[] = [
     element: (
       <AccessControl
         userPermissions={role ? role : ""}
-        allowedPermissions={["Admin", "User", "Manager", "Hr"]}
+        allowedPermissions={["Admin", "User", "Manager", "HR"]}
         renderNoAccess={() => (
           <div className="p-5">
             You are not authenticated. Please proceed to {""}
@@ -34,7 +34,7 @@ const routes: RouteObject[] = [
     element: (
       <AccessControl
         userPermissions={role ? role : ""}
-        allowedPermissions={["Admin", "User", "Manager", "Hr"]}
+        allowedPermissions={["Admin", "User", "Manager", "HR"]}
         renderNoAccess={() => (
           <div className="p-5">
             You are not authenticated. Please proceed to {""}
