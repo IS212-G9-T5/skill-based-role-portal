@@ -1,10 +1,9 @@
-import { Box } from '@mui/material';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search"
+import { Box } from "@mui/material"
+import InputAdornment from "@mui/material/InputAdornment"
+import TextField from "@mui/material/TextField"
 
 const Search = ({ setSearchRoleName }) => {
-
   return (
     <Box>
       <div>
@@ -22,7 +21,7 @@ const Search = ({ setSearchRoleName }) => {
         />
       </div>
     </Box>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search
