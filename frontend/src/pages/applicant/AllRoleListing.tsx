@@ -5,9 +5,11 @@ import { Link, useLocation } from "react-router-dom"
 import { getRoleListings } from "../../api/RoleListingAPI"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
+import Search from "../../components/Search"
 
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
+  const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1)
   const [totalListings, setTotalListings] = useState(0)
   const listingsPerPage = 10
@@ -16,12 +18,7 @@ const AllRoleListing: React.FC = () => {
   const location = useLocation()
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)
-
-  useEffect(() => {
-    setCurrentPage(initialPage)
-    fetchData(initialPage)
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }, [initialPage])
+  const [searchRoleName, setSearchRoleName]= useState("");
 
   const fetchData = async (page) => {
     const res = await getRoleListings(page, listingsPerPage)
@@ -30,24 +27,29 @@ const AllRoleListing: React.FC = () => {
       setTotalListings(res.total)
       setTotalPages(res.pages)
     }
-    // const endpointUrl = `http://localhost:5000/api/listings?page=${page}&size=${listingsPerPage}`
-
-    // axios
-    //   .get(endpointUrl)
-    //   .then((response) => {
-    //     setData(response.data.items)
-    //     setTotalListings(response.data.total)
-    //     setTotalPages(response.data.pages)
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching data:", error)
-    //   })
   }
 
   useEffect(() => {
     fetchData(currentPage)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [currentPage])
+
+  useEffect(() => {
+    // convert searchRoleName to lowercase for case-insensitive comparison
+    const searchLowerCase = searchRoleName.toLowerCase();
+  
+    // filter data based on searchRoleName
+    const filteredData = data.filter((item) =>
+      item.listing.role.name.toLowerCase().includes(searchLowerCase)
+    );
+  
+    // set total listings and total pages based on the filtered data
+    setFilteredData(filteredData);
+    setTotalListings(filteredData.length);
+    setTotalPages(Math.ceil(filteredData.length / listingsPerPage));
+  }, [searchRoleName, data]);
+  
+  
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
@@ -59,13 +61,16 @@ const AllRoleListing: React.FC = () => {
       <div>
         <Navbar {...navbarProps} />
       </div>
+      <div className="pl-[5%] pt-[2%] pr-[5%]">
+        <Search setSearchRoleName={setSearchRoleName}/>
+      </div>
       <div>
         <h1 className="pl-[5%] pt-[2%] text-3xl font-bold">
           Find Your New Job ({totalListings})
         </h1>
       </div>
       <div className="transform rounded-lg bg-white p-4 shadow-md transition-transform">
-        {data.map((item) => (
+        {filteredData.map((item) => (
           <Link key={item.id} to={`/role-listing/${item.id}`}>
             <Role
               key={item.id}
