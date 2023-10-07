@@ -12,15 +12,15 @@ from application.models.role_listing import RoleListing
 from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
 
-from application.extensions import db, cors
+from application.extensions import db, cors, jwt
 
 
 def init_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
-
     db.init_app(app)
     cors.init_app(app)
+    jwt.init_app(app)
 
     return app
 
@@ -35,6 +35,7 @@ def register_blueprints(app: Flask):
             access_control_route,
             skills_route,
             role_route,
+            auth_route,
         )
 
         # Register routes

@@ -71,10 +71,19 @@ const RolelistingForm = () => {
     }
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+  }
     try {
-      const response = await fetch("http://localhost:5000/api/listings", {
+      const response = await fetch("/api/listings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
         body: JSON.stringify(formattedValues),
       })
       if (response.ok) {
