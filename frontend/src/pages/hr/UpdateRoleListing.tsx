@@ -87,7 +87,7 @@ const RolelistingForm = () => {
       if (response.ok) {
         handleSuccess("Update Role Listing")
         setTimeout(() => {
-          navigate("/all-role-listing")
+          navigate(`/role-listing/${id}`)
         }, 1000)
       } else {
         handleError("Failed to update Role Listing")
