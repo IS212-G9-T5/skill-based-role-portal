@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
 import { Link, useLocation } from "react-router-dom"
+import { Player } from '@lottiefiles/react-lottie-player';
 
 import { getRoleListings } from "../../api/RoleListingAPI"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
+import animationData from "../../assets/animation_lngbtih0.json"
 
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
@@ -70,7 +72,21 @@ const AllRoleListing: React.FC = () => {
         </h1>
       </div>
       <div className="transform rounded-lg bg-white p-4 shadow-md transition-transform">
-        {filteredData.map((item) => (
+        {filteredData.length==0 ? (
+        <div>
+          <Player
+            loop
+            autoplay
+            src={animationData}
+            style={{ width: '15%', height: '15%' }}
+          />
+         <div className="text-center">
+          <p className="pt-5">No results found.</p>
+          <p>Please try other search terms or remove selected filters.</p>
+        </div>
+        </div>
+        ) : (
+        filteredData.map((item) => (
           <Link key={item.id} to={`/role-listing/${item.id}`}>
             <Role
               key={item.id}
@@ -84,7 +100,8 @@ const AllRoleListing: React.FC = () => {
               currentPage={currentPage}
             />
           </Link>
-        ))}
+        ))
+        )}
         <Pagination
           className="flex justify-center pt-[2%]"
           count={totalPages}
