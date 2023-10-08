@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import NavBar from "../../components/Navbar"
+import Navbar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
 
 const ViewRoleListing = () => {
@@ -20,12 +20,18 @@ const ViewRoleListing = () => {
       .catch((error) => console.log(error))
   }, [])
 
-  const title = "SKILLS BASED ROLE PORTAL"
-  const items = ["View Listings", "View Profile", "Logout"]
+  const navbarProps = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: "View Listings", to: "/all-role-listing" },
+      { label: "View Profile", to: "/profile" },
+      { label: "Logout", to: "/" },
+    ],
+  }
 
   return (
     <div>
-      <NavBar title={title} items={items} />
+      <Navbar {...navbarProps} />
       {apiRoleData.map((roleData) => (
         <RoleListing
           key={roleData.id}

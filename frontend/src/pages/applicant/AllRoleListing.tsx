@@ -95,7 +95,11 @@ const AllRoleListing: React.FC = () => {
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
-    items: ["View Listings", "View Profile", "Logout"],
+    items: [
+      { label: "View Listings", to: "/all-role-listing" },
+      { label: "View Profile", to: "/profile" },
+      { label: "Logout", to: "/" },
+    ],
   }
 
   return (

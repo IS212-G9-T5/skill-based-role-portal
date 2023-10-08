@@ -9,9 +9,14 @@ declare global {
     skills: string[]
   }
 
+  type NavItem = {
+    label: string
+    to: string
+  }
+
   type NavBar = {
     title: string
-    items: string[]
+    items: NavItem[]
   }
 
   type MyFormValues = {
