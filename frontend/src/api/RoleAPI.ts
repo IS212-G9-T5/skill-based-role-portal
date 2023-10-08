@@ -3,7 +3,9 @@
  * import { getRoles } from ...
  */
 export const getRoles = async () => {
-  const response = await fetch("/api/roles")
+  const response = await fetch("/api/roles", {
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error("Failed to fetch roles")
   }
@@ -17,7 +19,9 @@ export const getRoles = async () => {
  */
 
 export const getRoleByName = async (name: string) => {
-  const response = await fetch(`/api/roles/${name}`)
+  const response = await fetch(`/api/roles/${name}`, {
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error("Failed to fetch role by name")
   }
