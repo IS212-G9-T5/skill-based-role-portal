@@ -10,10 +10,6 @@ import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
 
-type ActiveFilter = {
-  [category: string]: boolean
-}
-
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
   const [filteredData, setFilteredData] = useState([])

@@ -30,7 +30,11 @@ declare global {
     size: number
     total: number
   }
+  type ActiveFilter = {
+    [category: string]: boolean
+  }
 }
+
 
 export type AccessControlProps = {
   userPermissions: string
@@ -38,3 +42,4 @@ export type AccessControlProps = {
   children: React.ReactNode
   renderNoAccess: () => React.ReactNode
 }
+
