@@ -62,7 +62,7 @@ const AllRoleListing: React.FC = () => {
     const searchLowerCase = searchRoleName.toLowerCase()
 
     // Filter data based on skills first
-    let filteredBySkills = data.filter(matchesSkills)
+    const filteredBySkills = data.filter(matchesSkills)
 
     // Filter data based on searchRoleName
     const filteredData = filteredBySkills.filter((item) =>
