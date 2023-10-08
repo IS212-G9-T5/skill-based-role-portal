@@ -29,7 +29,7 @@ const AllRoleListing: React.FC = () => {
     axios
       .get(endpointUrl)
       .then((response) => {
-        setData(response.data.items)
+        setData(response.data.items.listing)
         setTotalListings(response.data.total)
         setTotalPages(response.data.pages)
       })

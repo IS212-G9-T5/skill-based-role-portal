@@ -18,13 +18,13 @@ export const getRoleListings = async (
  * API call to retrieve role listing by id
  * import { getRoleListingById } from ...
  */
-export const getRoleListingById = async (id: number): Promise<Roles> => {
+export const getRoleListingById = async (id: string): Promise<Roles> => {
   const response = await fetch(`/api/listings/${id}`)
   if (!response.ok) {
     throw new Error("Failed to fetch role by id")
   }
   const res = await response.json()
-  return res.data
+  return res
 }
 
 /**

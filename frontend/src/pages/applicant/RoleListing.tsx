@@ -1,8 +1,29 @@
-import { Button, Chip, Grid, Typography } from "@mui/material"
+import { Button, Chip, Grid, Typography} from "@mui/material"
 import { useNavigate } from "react-router-dom"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
+import { useState } from "react";
 
 const RoleListing = (props: Roles) => {
+  
   const navigate = useNavigate()
+
+  const [selectedChip, setSelectedChip] = useState(props.userSkills[0]||null);
+  const [open, setOpen] = useState(false);
+
+  const handleChipClick = (chip) => {
+    if (chip !== selectedChip) {
+      setSelectedChip(chip);
+      setOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+  };
 
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
@@ -34,14 +55,52 @@ const RoleListing = (props: Roles) => {
             <Typography variant="h6">
               <strong>
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills Required
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
-                <Chip key={index} label={skill} className="mr-[1%] mt-[1%]" />
+                <Chip
+                key={index}
+                label={skill}
+                className={`mr-[1%] mt-[1%] ${
+                  props.roleMatchData.skills_matched.includes(skill)
+                    ? "emphasis"
+                    : "unmatched"
+                }`}
+              />
               ))}
             </Typography>
           </Grid>
+          
+          <Grid item xs={12} style={{ marginBottom: "3%" }}>
+            <Typography variant="h6">
+              <strong>
+                <span className="mr-2 bg-[#1976D2] pl-2"></span>
+                Skills that I have:
+              </strong>
+              <br></br>
+              {props.userSkills.map((skill, index) => (
+                <Chip 
+                key={index} 
+                label={skill.name} 
+                style={{margin:"5px"}}
+                onClick={() => handleChipClick(skill)}
+                />
+              ))}
+            </Typography>
+          </Grid>
+
+          <Dialog open={open} onClose={handleCloseModal}>
+            <DialogTitle id="alert-dialog-title">{selectedChip ? selectedChip.name : "No Chip Selected"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                {selectedChip ? selectedChip.description : "Please select a chip"}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseModal}>Close</Button>
+            </DialogActions>
+          </Dialog>
 
           <Button
             variant="contained"
