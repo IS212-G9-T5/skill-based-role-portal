@@ -254,7 +254,7 @@ def random_user_client(app: Flask, random_user: Staff):
     with app.test_client() as client:
         res = client.post(
             "/api/login",
-            json={"id": random_user.id},
+            json={"staffId": random_user.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
@@ -266,7 +266,7 @@ def random_hr_client(app: Flask, random_hr: Staff):
     with app.test_client() as hr_client:
         res = hr_client.post(
             "/api/login",
-            json={"id": random_hr.id},
+            json={"staffId": random_hr.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
@@ -278,7 +278,7 @@ def random_manager_client(app: Flask, random_manager: Staff):
     with app.test_client() as manager_client:
         res = manager_client.post(
             "/api/login",
-            json={"id": random_manager.id},
+            json={"staffId": random_manager.id},
         )
         assert res.status_code == 200
         assert res.json["status"] == "success"
