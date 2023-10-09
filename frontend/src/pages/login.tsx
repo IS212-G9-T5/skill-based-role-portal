@@ -5,7 +5,7 @@ import { Login } from "../api/AuthAPI"
 import LoginModal from "../components/LoginModal"
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("")
+  const [staffId, setStaffId] = useState("")
   const [password, setPassword] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -14,7 +14,7 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     try {
-      const res = await Login(email, password)
+      const res = await Login(+staffId, password)
       if (res.status == "success") {
         localStorage.setItem("role", res.role)
         navigate("/all-role-listing")
@@ -45,15 +45,15 @@ const LoginForm = () => {
                 htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Email address
+                Staff id
               </label>
               <div className="mt-2">
                 <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  onChange={(e) => setStaffId(e.target.value)}
+                  id="staffId"
+                  name="staffId"
+                  type="staffId"
+                  autoComplete="staffId"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
