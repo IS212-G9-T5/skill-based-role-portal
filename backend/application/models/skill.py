@@ -37,3 +37,36 @@ class Skill(db.Model):
 
     def __repr__(self):
         return f"{self.json()}"
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __lt__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name < other.name
+
+    def __le__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name <= other.name
+
+    def __gt__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name > other.name
+
+    def __ge__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name >= other.name
+
+    def __ne__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        return self.name != other.name

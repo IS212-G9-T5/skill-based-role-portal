@@ -5,6 +5,7 @@ from application.models.staff_skill import staff_skills
 from application.models.access_control import AccessControl
 
 from application.models.role_application import role_applications
+from application.enums import AccessControlRole
 
 
 class Staff(db.Model):
@@ -26,7 +27,7 @@ class Staff(db.Model):
         INTEGER,
         ForeignKey("access_control.access_id"),
         nullable=False,
-        default=lambda: AccessControl.get_id("USER"),
+        default=lambda: AccessControl.get_id(AccessControlRole.User.value),
     )
 
     access_control = relationship("AccessControl", back_populates="staff", lazy=True)
