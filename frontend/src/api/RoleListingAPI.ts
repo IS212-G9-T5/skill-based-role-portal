@@ -20,7 +20,7 @@ export const getRoleListings = async (
  * API call to retrieve role listing by id
  * import { getRoleListingById } from ...
  */
-export const getRoleListingById = async (id: number): Promise<Roles> => {
+export const getRoleListingById = async (id: string): Promise<Roles> => {
   const response = await fetch(`/api/listings/${id}`, {
     credentials: "include",
   })
