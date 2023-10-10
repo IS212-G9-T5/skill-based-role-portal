@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom"
 import { getRoleListings } from "../../api/RoleListingAPI"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
-// import axios from "axios"
 
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])

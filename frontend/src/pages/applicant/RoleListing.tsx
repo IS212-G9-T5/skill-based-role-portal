@@ -64,8 +64,8 @@ const RoleListing = (props: Roles) => {
                 label={skill["name"]}
                 className={`mr-[1%] mt-[1%] ${
                   props.roleMatchData.skills_matched.includes(skill["name"])
-                    ? "emphasis"
-                    : "unmatched"
+                    ? "bg-[#49d861] font-bold"
+                    : "bg-[#cff8db] opacity-50"
                 }`}
                 onClick={() => handleChipClick(skill)}
               />

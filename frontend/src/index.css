@@ -7,16 +7,6 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-.emphasis {
-  background-color: #49d861;
-  font-weight: bold;
-}
-
-.unmatched {
-  background-color: #cff8db;
-  opacity: 0.5;
-}
-
 /* :root {
   font-family: 'Neucha', cursive;
   line-height: 1.5;
