@@ -55,5 +55,9 @@ def save(listing: RoleListing) -> RoleListing:
 
 
 def find_one_random() -> Optional[RoleListing]:
-    res = db.session.execute(db.select(RoleListing)).scalars().first()
+    res = (
+        db.session.execute(select(RoleListing).order_by(db.func.random()).limit(1))
+        .scalars()
+        .first()
+    )
     return res

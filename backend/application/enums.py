@@ -2,9 +2,10 @@ from enum import Enum
 
 
 class AccessControlRole(Enum):
-    USER = "USER"
-    ADMIN = "ADMIN"
-    MANAGER = "MANAGER"
+    User = "User"
+    Admin = "Admin"
+    Manager = "Manager"
+    HR = "HR"
 
 
 class ApplicationStatus(Enum):

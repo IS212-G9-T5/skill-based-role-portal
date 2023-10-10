@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
-import axios from "axios"
 import { Link, useLocation } from "react-router-dom"
 
+import { getRoleListings } from "../../api/RoleListingAPI"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
+import axios from "axios"
 
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
@@ -23,7 +24,14 @@ const AllRoleListing: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [initialPage])
 
-  const fetchData = (page) => {
+  const fetchData = async (page) => {
+    const res = await getRoleListings(page, listingsPerPage)
+    if (res) {
+      setData(res.items)
+      setTotalListings(res.total)
+      setTotalPages(res.pages)
+    }
+    // const fetchData = (page) => {
     const endpointUrl = `http://localhost:5000/api/listings?page=${page}&size=${listingsPerPage}`
 
     axios
@@ -64,12 +72,12 @@ const AllRoleListing: React.FC = () => {
             <Role
               key={item.id}
               id={item.id}
-              name={item.role.name}
-              description={item.role.description}
+              name={item.listing.role.name}
+              description={item.listing.role.description}
               start_date={item.start_date}
               end_date={item.end_date}
               status={item.status}
-              skills={item.role.skills}
+              skills={item.listing.role.skills}
               currentPage={currentPage}
             />
           </Link>
