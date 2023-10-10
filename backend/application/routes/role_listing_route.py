@@ -25,7 +25,6 @@ from .route_decorators import admin_or_hr_required
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
-
 DEFAULT_PAGE_SIZE = 10
 
 
