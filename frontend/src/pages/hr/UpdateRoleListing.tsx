@@ -53,19 +53,18 @@ const RolelistingForm = () => {
         setData(result)
       })
       .catch((error) => console.error(error))
-  }, [])
+  })
 
-  const { id: _, ...roleData } = storeData
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
   const initialValues: MyFormValues = {
-    role_name: roleData.role.name,
-    description: roleData.role.description,
-    status: roleData.status,
-    skills: roleData.role.skills,
-    start_date: dayjs(roleData.start_date),
-    end_date: dayjs(roleData.end_date),
+    role_name: storeData.role.name,
+    description: storeData.role.description,
+    status: storeData.status,
+    skills: storeData.role.skills,
+    start_date: dayjs(storeData.start_date),
+    end_date: dayjs(storeData.end_date),
   }
   const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
@@ -162,7 +161,7 @@ const RolelistingForm = () => {
                             <strong>Role</strong>
                           </Typography>
                           <Typography variant="h5">
-                            {roleData.role.name}
+                            {storeData.role.name}
                           </Typography>
                         </Grid>
 
@@ -172,7 +171,7 @@ const RolelistingForm = () => {
                               <strong>Description</strong>
                             </Typography>
                             <Typography variant="body2">
-                                {roleData.role.description}
+                                {storeData.role.description}
                             </Typography>
                           </div>
                         </Grid>
@@ -260,7 +259,7 @@ const RolelistingForm = () => {
                               Skills Required
                             </strong>
                             <br></br>
-                            {roleData.role.skills.map((skill, index) => (
+                            {storeData.role.skills.map((skill, index) => (
                               <Chip
                                 key={index}
                                 label={skill}
