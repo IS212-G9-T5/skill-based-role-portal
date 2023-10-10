@@ -13,8 +13,8 @@ declare type Roles = {
 declare type RoleMatch = {
   skills_match_count: number
   skills_match_pct: number
-  skills_matched: string[]
-  skills_unmatched: string[]
+  skills_matched: SkillObject[]
+  skills_unmatched: SkillObject[]
 }
 
 declare type SkillObject = {

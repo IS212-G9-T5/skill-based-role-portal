@@ -61,12 +61,13 @@ const RoleListing = (props: Roles) => {
               {props.skills.map((skill, index) => (
                 <Chip
                 key={index}
-                label={skill}
+                label={skill["name"]}
                 className={`mr-[1%] mt-[1%] ${
-                  props.roleMatchData.skills_matched.includes(skill)
+                  props.roleMatchData.skills_matched.includes(skill["name"])
                     ? "emphasis"
                     : "unmatched"
                 }`}
+                onClick={() => handleChipClick(skill)}
               />
               ))}
             </Typography>
