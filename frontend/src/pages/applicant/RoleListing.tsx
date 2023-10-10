@@ -55,7 +55,7 @@ const RoleListing = (props: Roles) => {
             <Typography variant="h6">
               <strong>
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count}/{props.roleMatchData.skills_matched.length + props.roleMatchData.skills_unmatched.length}  ({props.roleMatchData.skills_match_pct*100}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
