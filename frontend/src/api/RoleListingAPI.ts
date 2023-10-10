@@ -5,8 +5,10 @@
 export const getRoleListings = async (
   page: number,
   size: number
-): Promise<Roles[]> => {
-  const response = await fetch(`/api/listings?page=${page}&size=${size}`)
+): Promise<RoleListings> => {
+  const response = await fetch(`/api/listings?page=${page}&size=${size}`, {
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error("Failed to fetch roles")
   }
@@ -19,7 +21,9 @@ export const getRoleListings = async (
  * import { getRoleListingById } from ...
  */
 export const getRoleListingById = async (id: number): Promise<Roles> => {
-  const response = await fetch(`/api/listings/${id}`)
+  const response = await fetch(`/api/listings/${id}`, {
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error("Failed to fetch role by id")
   }

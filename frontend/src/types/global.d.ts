@@ -20,6 +20,16 @@ declare global {
     start_date: Dayjs | number | undefined
     end_date: Dayjs | number | undefined
   }
+
+  type RoleListings = {
+    has_next: boolean
+    has_prev: boolean
+    items: Array[]
+    page: number
+    pages: number
+    size: number
+    total: number
+  }
 }
 
 export type AccessControlProps = {
