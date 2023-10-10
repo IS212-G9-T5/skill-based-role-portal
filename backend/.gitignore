@@ -2,7 +2,6 @@
 /**/__pycache__/*
 *.pyc
 __pycache__/
-migrations/versions/*
 .pytest_cache/
 localDev.bat
 localTest.bat

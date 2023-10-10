@@ -33,16 +33,16 @@ const AllRoleListing: React.FC = () => {
     // const fetchData = (page) => {
     //   const endpointUrl = `http://localhost:5000/api/listings?page=${page}&size=${listingsPerPage}`
 
-    axios
-      .get(endpointUrl)
-      .then((response) => {
-        setData(response.data.items.listing)
-        setTotalListings(response.data.total)
-        setTotalPages(response.data.pages)
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error)
-      })
+    //   axios
+    //     .get(endpointUrl)
+    //     .then((response) => {
+    //       setData(response.data.items)
+    //       setTotalListings(response.data.total)
+    //       setTotalPages(response.data.pages)
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching data:", error)
+    //     })
   }
 
   useEffect(() => {
