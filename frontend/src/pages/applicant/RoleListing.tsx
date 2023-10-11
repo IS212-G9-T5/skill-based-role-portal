@@ -66,7 +66,7 @@ const RoleListing = (props: Roles) => {
             <Typography variant="h6">
               <strong>
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count}/{props.roleMatchData.skills_matched.length + props.roleMatchData.skills_unmatched.length}  ({props.roleMatchData.skills_match_pct*100}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
@@ -91,23 +91,6 @@ const RoleListing = (props: Roles) => {
             </Typography>
           </Grid>
           
-          {/* <Grid item xs={12} style={{ marginBottom: "3%" }}>
-            <Typography variant="h6">
-              <strong>
-                <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills that I have:
-              </strong>
-              <br></br>
-              {props.userSkills.map((skill, index) => (
-                <Chip 
-                key={index} 
-                label={skill.name} 
-                style={{margin:"5px"}}
-                onClick={() => handleChipClick(skill)}
-                />
-              ))}
-            </Typography>
-          </Grid> */}
 
           <Dialog open={open} onClose={handleCloseModal}>
             <DialogTitle id="alert-dialog-title">{selectedChip ? selectedChip.name : "No Chip Selected"}</DialogTitle>
