@@ -6,10 +6,32 @@ import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
 import CreateRoleListing from "./pages/hr/CreateRoleListing"
 import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
+import SkillsProfile from "./pages/applicant/SkillsProfile"
 import LoginForm from "./pages/login"
 const role = localStorage.getItem("role")
 
 const routes: RouteObject[] = [
+  {
+    path: "profile",
+    element: (
+      <AccessControl
+      userPermissions={role ? role : ""}
+      allowedPermissions={["Admin", "User", "Manager", "Hr"]}
+      renderNoAccess={() => (
+        <div className="p-5">
+          You are not authenticated. Please proceed to {""}
+          <Link to="/" className="font-medium text-blue-600 hover:underline">
+            log in
+          </Link>
+        </div>
+      )}
+      >
+        <SkillsProfile />
+      </AccessControl>
+      // <SkillsProfile />
+    )
+
+  },
   {
     path: "role-listing/:id",
     element: (
