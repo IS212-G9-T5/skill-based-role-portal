@@ -135,6 +135,7 @@ const RoleListing = (props: Roles) => {
                   props.roleMatchData.skills_unmatched.length}{" "}
                 ({props.roleMatchData.skills_match_pct * 100}%)]
                 Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count}/{props.roleMatchData.skills_matched.length + props.roleMatchData.skills_unmatched.length}  ({props.roleMatchData.skills_match_pct*100}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
