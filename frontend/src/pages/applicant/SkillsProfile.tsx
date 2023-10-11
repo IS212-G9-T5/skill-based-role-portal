@@ -9,6 +9,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useEffect, useState } from 'react'
+import { getUserSkills } from '../../api/RoleListingAPI'
 
 const SkillsProfile = () => {
     const title = "SKILLS BASED ROLE PORTAL"
@@ -18,16 +19,14 @@ const SkillsProfile = () => {
     const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
 
     useEffect(() => {
-    async function fetchSkills() {
-        try {
-        const response = await fetch('http://localhost:5000/api/skills');
-        const data = await response.json();
-        const skillsArray = data.data;
-        setUserSkills(skillsArray);
-        } catch (error) {
-        console.error(error);
-        }
-    }
+        const fetchSkills = async () => {
+            try {
+                const data = await getUserSkills();
+                setUserSkills(data);
+            } catch (error) {
+                console.error(error);
+            }
+        } 
     
     fetchSkills();
     }, []);
