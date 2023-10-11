@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: cd60d5a67eb0
-Revises: e5d09cf7ad0f
-Create Date: 2023-10-05 00:08:23.748493
+Revision ID: 8d4c41ed804f
+Revises: 
+Create Date: 2023-10-11 12:00:34.170453
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cd60d5a67eb0'
-down_revision = 'e5d09cf7ad0f'
+revision = '8d4c41ed804f'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -60,11 +60,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('staff_id')
     )
     op.create_table('role_application',
-    sa.Column('role_listing_id', sa.INTEGER(), nullable=True),
-    sa.Column('staff_id', sa.INTEGER(), nullable=True),
+    sa.Column('role_listing_id', sa.INTEGER(), nullable=False),
+    sa.Column('staff_id', sa.INTEGER(), nullable=False),
     sa.Column('application_status', sa.Enum('ACCEPTED', 'REJECTED', 'PENDING', name='applicationstatus'), nullable=False),
     sa.ForeignKeyConstraint(['role_listing_id'], ['role_listing.role_listing_id'], ),
-    sa.ForeignKeyConstraint(['staff_id'], ['staff.staff_id'], )
+    sa.ForeignKeyConstraint(['staff_id'], ['staff.staff_id'], ),
+    sa.PrimaryKeyConstraint('role_listing_id', 'staff_id')
     )
     op.create_table('staff_skill',
     sa.Column('skill_name', sa.VARCHAR(length=50), nullable=True),
