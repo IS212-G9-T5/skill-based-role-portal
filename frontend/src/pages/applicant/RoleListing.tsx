@@ -91,23 +91,6 @@ const RoleListing = (props: Roles) => {
 
   console.log(props)
 
-  // useEffect(() => {
-  //   const currUrl = window.location.href
-  //   const id = currUrl.split("/").pop()
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await updateApplyRoleListing(id);
-  //       console.log(data);
-
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [])
-
 
 
 
