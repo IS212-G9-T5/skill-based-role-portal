@@ -15,20 +15,19 @@ const routes: RouteObject[] = [
     path: "profile",
     element: (
       <AccessControl
-      userPermissions={role ? role : ""}
-      allowedPermissions={["ADMIN", "USER", "MANAGER", "HR"]}
-      renderNoAccess={() => (
-        <div className="p-5">
-          You are not authenticated. Please proceed to {""}
-          <Link to="/" className="font-medium text-blue-600 hover:underline">
-            log in
-          </Link>
-        </div>
-      )}
+        userPermissions={role ? role : ""}
+        allowedPermissions={["Admin", "User", "Manager", "HR"]}
+        renderNoAccess={() => (
+          <div className="p-5">
+            You are not authenticated. Please proceed to {""}
+            <Link to="/" className="font-medium text-blue-600 hover:underline">
+              log in
+            </Link>
+          </div>
+        )}
       >
         <SkillsProfile />
       </AccessControl>
-      // <SkillsProfile />
     )
 
   },
