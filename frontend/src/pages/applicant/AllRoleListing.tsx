@@ -67,10 +67,10 @@ const AllRoleListing: React.FC = () => {
       </div>
       <div className="transform rounded-lg bg-white p-4 shadow-md transition-transform">
         {data.map((item) => (
-          <Link key={item.id} to={`/role-listing/${item.id}`}>
+          <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
             <Role
-              key={item.id}
-              id={item.id}
+              key={item.listing.id}
+              id={item.listing.id}
               name={item.listing.role.name}
               description={item.listing.role.description}
               start_date={item.start_date}
