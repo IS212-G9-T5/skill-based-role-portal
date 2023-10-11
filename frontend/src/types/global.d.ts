@@ -7,7 +7,22 @@ declare global {
     end_date: string
     status: boolean
     skills: string[]
+    userSkills: SkillObject[]
+    roleMatchData: RoleMatch
   }
+
+  type RoleMatch = {
+    skills_match_count: number
+    skills_match_pct: number
+    skills_matched: SkillObject[]
+    skills_unmatched: SkillObject[]
+  }
+  
+  type SkillObject = {
+    name: string;
+    description: string;
+  };
+  
 
   type NavBar = {
     title: string
@@ -20,6 +35,16 @@ declare global {
     start_date: Dayjs | number | undefined
     end_date: Dayjs | number | undefined
   }
+
+  type RoleListings = {
+    has_next: boolean
+    has_prev: boolean
+    items: Array[]
+    page: number
+    pages: number
+    size: number
+    total: number
+  }
 }
 
 export type AccessControlProps = {
@@ -28,3 +53,8 @@ export type AccessControlProps = {
   children: React.ReactNode
   renderNoAccess: () => React.ReactNode
 }
+
+
+
+
+

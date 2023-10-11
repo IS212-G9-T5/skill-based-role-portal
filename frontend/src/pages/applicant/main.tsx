@@ -2,22 +2,50 @@ import { useEffect, useState } from "react"
 
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
+import { getRoleListingById, getUserSkills } from "../../api/RoleListingAPI"
 
 const ViewRoleListing = () => {
-  const [apiRoleData, setApiRoleData] = useState<Roles[]>([])
-  const endpointUrl = "http://127.0.0.1:5000/api/listings/25"
+  const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
+  const[roleMatchData, setRoleMatchData] = useState<RoleMatch | null>(null)
+
+  // To obtain the skills of the user
+  const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
 
   useEffect(() => {
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        if (Array.isArray(res.data)) {
-          setApiRoleData(res.data)
-        } else if (typeof res.data === "object") {
-          setApiRoleData([res.data])
+
+    const fetchSkills = async () => {
+      try {
+        const data = await getUserSkills();
+        setUserSkills(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }  
+    fetchSkills();
+  }, []);
+
+  useEffect(() => {
+    const currUrl = window.location.href
+    const id = currUrl.split("/").pop()
+
+    const fetchData = async () => {
+      try {
+        const data = await getRoleListingById(id);
+        console.log(data);
+        setApiRoleData(data["listing"]);
+        const roleDataObj = {
+          skills_match_count: data["skills_match_count"],
+          skills_match_pct: data["skills_match_pct"],
+          skills_matched: data["skills_matched"],
+          skills_unmatched: data["skills_unmatched"],
         }
-      })
-      .catch((error) => console.log(error))
+        setRoleMatchData(roleDataObj);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, [])
 
   const title = "SKILLS BASED ROLE PORTAL"
@@ -26,18 +54,20 @@ const ViewRoleListing = () => {
   return (
     <div>
       <NavBar title={title} items={items} />
-      {apiRoleData.map((roleData) => (
+      {apiRoleData && (
         <RoleListing
-          key={roleData.id}
-          id={roleData.id}
-          name={roleData["role"].name}
-          description={roleData["role"].description}
-          start_date={roleData.start_date}
-          end_date={roleData.end_date}
-          status={roleData.status}
-          skills={roleData["role"].skills}
-        />
-      ))}
+          key={apiRoleData.id}
+          id={apiRoleData.id}
+          name={apiRoleData["role"].name}
+          description={apiRoleData["role"].description}
+          start_date={apiRoleData.start_date}
+          end_date={apiRoleData.end_date}
+          status={apiRoleData.status}
+          skills={apiRoleData["role"].skills}
+          userSkills={userSkills}
+          roleMatchData={roleMatchData}
+      />
+      )}
     </div>
   )
 }
