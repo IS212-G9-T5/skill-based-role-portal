@@ -1,5 +1,4 @@
 import { Button, Chip, Grid, Typography} from "@mui/material"
-import { useState , useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -8,6 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
+import { useState } from "react";
 
 const RoleListing = (props: Roles) => {
   const navigate = useNavigate()
@@ -134,6 +134,7 @@ const RoleListing = (props: Roles) => {
                 {props.roleMatchData.skills_matched.length +
                   props.roleMatchData.skills_unmatched.length}{" "}
                 ({props.roleMatchData.skills_match_pct * 100}%)]
+                Skills Required [Matched Skills: {props.roleMatchData.skills_match_count} ({props.roleMatchData.skills_match_pct}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => (
