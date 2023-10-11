@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
-import { getRoleListingById } from "../../api/RoleListingAPI"
+import { getRoleListingById, getUserSkills } from "../../api/RoleListingAPI"
 
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
@@ -12,17 +12,15 @@ const ViewRoleListing = () => {
   const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
 
   useEffect(() => {
-    async function fetchSkills() {
+
+    const fetchSkills = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/skills');
-        const data = await response.json();
-        const skillsArray = data.data;
-        setUserSkills(skillsArray);
+        const data = await getUserSkills();
+        setUserSkills(data);
       } catch (error) {
         console.error(error);
       }
-    }
-  
+    }  
     fetchSkills();
   }, []);
 

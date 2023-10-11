@@ -15,8 +15,19 @@ const RoleListing = (props: Roles) => {
   const [open, setOpen] = useState(false);
 
   const handleChipClick = (chip) => {
-    if (chip !== selectedChip) {
-      setSelectedChip(chip);
+    
+    // See if chip is in props.roleMatchData.skills_matched or props.roleMatchData.skills_unmatched
+    // If so, set selectedChip to chip and open modal
+    // Else, do nothing
+    const matchedSkill = props.roleMatchData.skills_matched.find(s => s.name === chip);
+    const unmatchedSkill = props.roleMatchData.skills_unmatched.find(s => s.name === chip);
+
+    if (matchedSkill) {
+      setSelectedChip(matchedSkill);
+      setOpen(true);
+    }
+    else if (unmatchedSkill) {
+      setSelectedChip(unmatchedSkill);
       setOpen(true);
     }
   };
@@ -62,33 +73,24 @@ const RoleListing = (props: Roles) => {
                 <Chip
                 key={index}
                 label={skill}
+                style={{margin:"5px"}}
                 className={`mr-[1%] mt-[1%] ${
-                  props.roleMatchData.skills_matched.includes(skill)
-                    ? "emphasis"
-                    : "unmatched"
+                  props.roleMatchData.skills_matched.find(
+                    (matchedSkill) => matchedSkill.name === skill
+                  )
+                    ? "bg-[#49d861] font-bold"
+                    : props.roleMatchData.skills_unmatched.find(
+                        (unmatchedSkill) => unmatchedSkill.name === skill
+                      )
+                    ? "bg-[#cff8db] opacity-50"
+                    : ""
                 }`}
+                onClick={() => handleChipClick(skill)}
               />
               ))}
             </Typography>
           </Grid>
           
-          <Grid item xs={12} style={{ marginBottom: "3%" }}>
-            <Typography variant="h6">
-              <strong>
-                <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills that I have:
-              </strong>
-              <br></br>
-              {props.userSkills.map((skill, index) => (
-                <Chip 
-                key={index} 
-                label={skill.name} 
-                style={{margin:"5px"}}
-                onClick={() => handleChipClick(skill)}
-                />
-              ))}
-            </Typography>
-          </Grid>
 
           <Dialog open={open} onClose={handleCloseModal}>
             <DialogTitle id="alert-dialog-title">{selectedChip ? selectedChip.name : "No Chip Selected"}</DialogTitle>
@@ -117,8 +119,7 @@ const RoleListing = (props: Roles) => {
               marginTop: "20px",
               marginLeft: "10px",
             }}
-            onClick={handleBackToListings}
-          >
+            onClick={handleBackToListings}>
             Back to Listings
           </Button>
         </div>

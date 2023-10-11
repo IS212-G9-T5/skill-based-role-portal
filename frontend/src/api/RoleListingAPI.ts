@@ -56,3 +56,19 @@ export const createRoleListing = async (data: Roles): Promise<Roles> => {
   const res = await response.json()
   return res.data
 }
+
+/**
+ * API call to retrieve user's skills 
+ * import { getUserSkills } from ...
+ */
+
+export const getUserSkills = async (): Promise<SkillObject[]> => {
+  const response = await fetch("/api/skills", {
+    credentials: "include",
+  })
+  if (!response.ok) {
+    throw new Error("Failed to fetch user skills")
+  }
+  const res = await response.json()
+  return res.data
+}
