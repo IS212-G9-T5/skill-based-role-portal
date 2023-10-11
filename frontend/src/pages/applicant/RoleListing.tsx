@@ -118,8 +118,7 @@ const RoleListing = (props: Roles) => {
               marginTop: "20px",
               marginLeft: "10px",
             }}
-            onClick={handleBackToListings}
-          >
+            onClick={handleBackToListings}>
             Back to Listings
           </Button>
         </div>
