@@ -741,3 +741,69 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
 
 
 # endregion
+
+
+# region: apply role listing
+def test_apply_role_listing_success(
+    random_user_client: FlaskClient,
+    random_user_client_x_csrf_token_header,
+    init_database,
+):
+    """
+    GIVEN the user is logged in as user, there are role listings created
+    WHEN PATCH 'api/listings/{id}' to the created listing id  with request body containing
+        - `apply` field is `true`
+    THEN check that
+        - the response returns HTTP 200
+        - the `has_applied` field is `true`
+    """
+    listing = role_listing_service.find_one_random()
+
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": True},
+    )
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["has_applied"] == True
+
+
+def test_withdraw_role_listing_success(
+    random_user_client: FlaskClient,
+    random_user_client_x_csrf_token_header,
+    init_database,
+):
+    """
+    GIVEN the user is logged in as user, the user has already applied for a role listing
+    WHEN PATCH 'api/listings/{id}' to the created listing id  with request body containing
+        - `apply` field is `false`
+    THEN check that
+        - the response returns HTTP 200
+        - the `has_applied` field is `false`
+    """
+    # create an application for role listing
+    listing = role_listing_service.find_one_random()
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": True},
+    )
+
+    assert response.status_code == 200
+    assert response.json["has_applied"] == True
+
+    # withdraw application
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": False},
+    )
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["has_applied"] == False
+
+
+# endregion

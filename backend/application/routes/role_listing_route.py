@@ -4,7 +4,6 @@ from marshmallow import ValidationError
 
 from application.models.role_listing import RoleListing
 
-# from application.dto.role_listing import UpdateRoleListingDTO
 from application.dto.role_listing import (
     RoleListingDTO,
     RoleListingSkillMatchDTO,
@@ -12,13 +11,11 @@ from application.dto.role_listing import (
 )
 from application.services import staff_service
 from application.enums import RoleStatus
-from application.models.skill import Skill
 from . import api
 from application.services import (
     role_listing_service,
     role_service,
     staff_service,
-    skill_service,
 )
 from application.dto.response import ResponseBodyJSON
 from .route_decorators import admin_or_hr_required
@@ -113,25 +110,7 @@ def find_listing_by_id(id: int):
     if user is None:
         return jsonify(msg="User not found."), 401
 
-    user_skills = set(user.skills)
-    app.logger.info(f"user skills: {user_skills}")
-
-    listing_skills = listing.role.skills
-    skills_required = set(listing_skills if listing_skills is not None else [])
-
-    skills_matched = skills_required.intersection(user_skills)
-    skills_unmatched = skills_required.difference(user_skills)
-    skills_match_count = len(skills_matched)
-    skills_match_pct = round(skills_match_count / len(skills_required), 2)
-
-    res = {
-        "listing": listing.json(),
-        "skills_matched": [s.json() for s in skills_matched],
-        "skills_unmatched": [s.json() for s in skills_unmatched],
-        "skills_match_count": skills_match_count,
-        "skills_match_pct": skills_match_pct,
-    }
-
+    res = role_listing_service.construct_indiv_role_listing_dto(user, listing)
     return jsonify(res), 200
 
 
@@ -173,7 +152,7 @@ def create_listing():
 @admin_or_hr_required()
 def update_role_listing(id: int):
     body = request.get_json()
-    print(f"PUT /listings/{id} with body: {body}")
+    app.logger.info(f"PUT /listings/{id} with body: {body}")
 
     # Find the existing role listing by id
     existing_listing = role_listing_service.find_by_id(id)
@@ -217,4 +196,37 @@ def update_role_listing(id: int):
 
     data = updated_listing.json()
     res = ResponseBodyJSON(data=data).json()
+    return jsonify(res), 200
+
+
+@api.route("/listings/<int:id>", methods=["PATCH"])
+@jwt_required()
+def patch_role_listing(id: int):
+    current_user_id = get_jwt_identity()
+
+    body = request.get_json(silent=True) or {}
+    app.logger.info(f"PATCH /listings/{id} with body: {body}")
+
+    user = staff_service.find_by_id(current_user_id)
+    if user is None:
+        abort(404, description=f"User {current_user_id} not found.")
+
+    listing = role_listing_service.find_by_id(id)
+
+    if listing is None:
+        abort(404, description=f"RoleListing {id} not found.")
+
+    # Validate the request body (required fields and types)
+    apply = body.get("apply", None)
+    if apply is not None:
+        if apply:
+            role_listing_service.create_role_application(
+                role_listing_id=id, staff_id=current_user_id
+            )
+        else:
+            role_listing_service.delete_role_application(
+                role_listing_id=id, staff_id=current_user_id
+            )
+
+    res = role_listing_service.construct_indiv_role_listing_dto(user, listing)
     return jsonify(res), 200
