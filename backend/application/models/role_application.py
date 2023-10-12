@@ -14,4 +14,5 @@ role_applications = db.Table(
         nullable=False,
         default=ApplicationStatus.PENDING,
     ),
+    db.PrimaryKeyConstraint("role_listing_id", "staff_id"),
 )

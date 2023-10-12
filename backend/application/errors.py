@@ -35,12 +35,8 @@ def handle_key_error(e: KeyError):
 
 
 def handle_integrity_error(e: IntegrityError):
-    """Handles exception when integrity constraint in database are violated. E.g. not nullable fields are null (due to missing fields in request body)"""
-    res = CustomExceptionJson(
-        f"Integrity constraint in database are violated. Error message: {str(e)}"
-    ).json()
-    traceback.print_exc()
-    app.logger.error(f"Integrity error: {e}")
+    res = CustomExceptionJson(f"Integrity constraint in database are violated").json()
+    app.logger.exception(f"Integrity error: {e}")
     return jsonify(res), 400
 
 

@@ -4,6 +4,8 @@ from application.extensions import db
 from flask_sqlalchemy.pagination import Pagination
 from sqlalchemy import select
 from application.models.role_skill import role_skills
+from application.models.role_application import role_applications
+from application.models.staff import Staff
 
 
 def find_all_by_role_and_skills_paginated(
@@ -61,3 +63,44 @@ def find_one_random() -> Optional[RoleListing]:
         .first()
     )
     return res
+
+
+def construct_indiv_role_listing_dto(staff: Staff, listing: RoleListing):
+    staff_skills = set(staff.skills)
+
+    listing_skills = listing.role.skills
+    skills_required = set(listing_skills if listing_skills is not None else [])
+
+    skills_matched = skills_required.intersection(staff_skills)
+    skills_unmatched = skills_required.difference(staff_skills)
+    skills_match_count = len(skills_matched)
+    skills_match_pct = round(skills_match_count / len(skills_required), 2)
+
+    res = {
+        "listing": listing.json(),
+        "skills_matched": [s.json() for s in skills_matched],
+        "skills_unmatched": [s.json() for s in skills_unmatched],
+        "skills_match_count": skills_match_count,
+        "skills_match_pct": skills_match_pct,
+        "has_applied": staff in listing.applicants,
+    }
+
+    return res
+
+
+def create_role_application(role_listing_id: int, staff_id: int):
+    stmt = role_applications.insert().values(
+        role_listing_id=role_listing_id,
+        staff_id=staff_id,
+    )
+    db.session.execute(stmt)
+    db.session.commit()
+
+
+def delete_role_application(role_listing_id: int, staff_id: int):
+    stmt = role_applications.delete().where(
+        role_applications.c.role_listing_id == role_listing_id,
+        role_applications.c.staff_id == staff_id,
+    )
+    db.session.execute(stmt)
+    db.session.commit()
