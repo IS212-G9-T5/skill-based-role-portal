@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
+import Lottie from "react-lottie"
 import { Link, useLocation } from "react-router-dom"
 
 import { getRoleListings } from "../../api/RoleListingAPI"
+import animationData from "../../assets/animation_lngbtih0.json"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
@@ -76,31 +78,55 @@ const AllRoleListing: React.FC = () => {
         </h1>
       </div>
       <div className="transform rounded-lg bg-white p-4 shadow-md transition-transform">
-        {data.map((item) => (
-          <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
-            <Role
-              key={item.listing.id}
-              id={item.listing.id}
-              name={item.listing.role.name}
-              description={item.listing.role.description}
-              start_date={item.start_date}
-              end_date={item.end_date}
-              status={item.status}
-              skills={item.listing.role.skills}
-              currentPage={currentPage}
+        {data.length === 0 ? ( // Check if there are no filtered results
+          <div>
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: animationData,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+              height={100}
+              width={100}
             />
-          </Link>
-        ))}
-        <Pagination
-          className="flex justify-center pt-[2%]"
-          count={totalPages}
-          page={currentPage}
-          onChange={(_, newPage) => {
-            if (typeof newPage === "number") {
-              setCurrentPage(newPage)
-            }
-          }}
-        />
+            <div className="text-center">
+              <p className="pt-5">No results found.</p>
+              <p>Please try other search terms or remove selected filters.</p>
+            </div>
+          </div>
+        ) : (
+          // Render the filtered data
+          data.map((item) => (
+            <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
+              <Role
+                key={item.listing.id}
+                id={item.listing.id}
+                name={item.listing.role.name}
+                description={item.listing.role.description}
+                start_date={item.start_date}
+                end_date={item.end_date}
+                status={item.status}
+                skills={item.listing.role.skills}
+                currentPage={currentPage}
+              />
+            </Link>
+          ))
+        )}
+        {data.length > 0 && ( // Display pagination only when there are results
+          <Pagination
+            className="flex justify-center pt-[2%]"
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, newPage) => {
+              if (typeof newPage === "number") {
+                setCurrentPage(newPage)
+              }
+            }}
+          />
+        )}
       </div>
     </>
   )
