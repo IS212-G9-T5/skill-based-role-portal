@@ -1,28 +1,29 @@
 import { useEffect, useState } from "react"
 
+import { getRoleListingById, getUserSkills } from "../../api/RoleListingAPI"
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
-import { getRoleListingById, getUserSkills } from "../../api/RoleListingAPI"
 
 const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
-  const[roleMatchData, setRoleMatchData] = useState<RoleMatch | null>(null)
+  const [roleMatchData, setRoleMatchData] = useState<RoleMatch | null>(null)
 
   // To obtain the skills of the user
-  const [userSkills, setUserSkills] = useState<{ name: string; description: string }[]>([]);
+  const [userSkills, setUserSkills] = useState<
+    { name: string; description: string }[]
+  >([])
 
   useEffect(() => {
-
     const fetchSkills = async () => {
       try {
-        const data = await getUserSkills();
-        setUserSkills(data);
+        const data = await getUserSkills()
+        setUserSkills(data)
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
-    }  
-    fetchSkills();
-  }, []);
+    }
+    fetchSkills()
+  }, [])
 
   useEffect(() => {
     const currUrl = window.location.href
@@ -30,22 +31,22 @@ const ViewRoleListing = () => {
 
     const fetchData = async () => {
       try {
-        const data = await getRoleListingById(id);
-        console.log(data);
-        setApiRoleData(data["listing"]);
+        const data = await getRoleListingById(id)
+        console.log(data)
+        setApiRoleData(data["listing"])
         const roleDataObj = {
           skills_match_count: data["skills_match_count"],
           skills_match_pct: data["skills_match_pct"],
           skills_matched: data["skills_matched"],
           skills_unmatched: data["skills_unmatched"],
         }
-        setRoleMatchData(roleDataObj);
+        setRoleMatchData(roleDataObj)
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
-    };
+    }
 
-    fetchData();
+    fetchData()
   }, [])
 
   const title = "SKILLS BASED ROLE PORTAL"
@@ -66,7 +67,7 @@ const ViewRoleListing = () => {
           skills={apiRoleData["role"].skills}
           userSkills={userSkills}
           roleMatchData={roleMatchData}
-      />
+        />
       )}
     </div>
   )

@@ -73,10 +73,10 @@ const RolelistingForm = () => {
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
     function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+      const value = `; ${document.cookie}`
+      const parts = value.split(`; ${name}=`)
+      if (parts.length === 2) return parts.pop().split(";").shift()
+    }
     try {
       const response = await fetch("/api/listings", {
         method: "POST",
