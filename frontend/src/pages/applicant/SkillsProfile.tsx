@@ -13,9 +13,6 @@ import { getUserSkills } from "../../api/RoleListingAPI"
 import NavBar from "../../components/Navbar"
 
 const SkillsProfile = () => {
-  const title = "SKILLS BASED ROLE PORTAL"
-  const items = ["View Listings", "View Profile", "Logout"]
-
   // To obtain the skills of the user
   const [userSkills, setUserSkills] = useState<
     { name: string; description: string }[]
@@ -48,9 +45,18 @@ const SkillsProfile = () => {
     setOpen(false)
   }
 
+  const navbarProps = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: "View Listings", to: "/all-role-listing" },
+      { label: "View Profile", to: "/profile" },
+      { label: "Logout", to: "/" },
+    ],
+  }
+
   return (
     <div>
-      <NavBar title={title} items={items} />
+      <NavBar {...navbarProps} />
       <div className="pl-[10%] pr-[10%] pt-[2%]">
         <strong>
           <Typography variant="h3">My Profile</Typography>

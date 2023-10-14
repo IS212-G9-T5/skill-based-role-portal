@@ -90,6 +90,26 @@ const routes: RouteObject[] = [
     ),
   },
   {
+    path: "applications",
+    element: (
+      <AccessControl
+        userPermissions={role ? role : ""}
+        allowedPermissions={["Admin"]}
+        renderNoAccess={() => (
+          <div className="p-5">
+            You do not have permission to access this page. Please proceed to{" "}
+            {""}
+            <Link to="/" className="font-medium text-blue-600 hover:underline">
+              log in
+            </Link>
+          </div>
+        )}
+      >
+        <CreateRoleListing />
+      </AccessControl>
+    ),
+  },
+  {
     path: "/",
     element: <LoginForm />,
   },

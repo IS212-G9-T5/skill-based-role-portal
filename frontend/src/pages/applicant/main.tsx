@@ -49,12 +49,18 @@ const ViewRoleListing = () => {
     fetchData()
   }, [])
 
-  const title = "SKILLS BASED ROLE PORTAL"
-  const items = ["View Listings", "View Profile", "Logout"]
+  const navbarProps = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: "View Listings", to: "/all-role-listing" },
+      { label: "View Profile", to: "/profile" },
+      { label: "Logout", to: "/" },
+    ],
+  }
 
   return (
     <div>
-      <NavBar title={title} items={items} />
+      <NavBar {...navbarProps} />
       {apiRoleData && (
         <RoleListing
           key={apiRoleData.id}
