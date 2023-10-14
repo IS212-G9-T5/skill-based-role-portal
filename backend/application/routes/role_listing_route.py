@@ -40,10 +40,7 @@ def find_all_listings_paginated():
     app.logger.info(f"GET /listings with params: {request.args}")
 
     role = request.args.get("role") or ""
-    body = request.get_json(silent=True)
-    skills_to_filter = []
-    if body is not None:
-        skills_to_filter = body.get("skills") or []
+    skills_to_filter = request.args.getlist("skills") or []
 
     current_user_id = get_jwt_identity()
     user = staff_service.find_by_id(current_user_id)
@@ -53,7 +50,7 @@ def find_all_listings_paginated():
     user_skills = (
         set([s.name for s in user.skills]) if user.skills is not None else set()
     )
-    app.logger.info(f"user skills: {user_skills}")
+    # app.logger.info(f"user skills: {user_skills}")
 
     paginated_listings = role_listing_service.find_all_by_role_and_skills_paginated(
         skills_to_filter=skills_to_filter, role=role, page=page, page_size=page_size

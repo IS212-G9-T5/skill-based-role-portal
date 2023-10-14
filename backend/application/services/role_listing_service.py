@@ -18,12 +18,12 @@ def find_all_by_role_and_skills_paginated(
         (
             select(role_skills.c.role_name)
             .where(role_skills.c.skill_name.in_(skills_to_filter))
-            .where(role_skills.c.role_name.icontains(role))
+            .where(role_skills.c.role_name.ilike(f"{role}%"))
         )
         if skills_to_filter
         else (
             select(role_skills.c.role_name).where(
-                role_skills.c.role_name.icontains(role)
+                role_skills.c.role_name.ilike(f"{role}%")
             )
         )
     )
