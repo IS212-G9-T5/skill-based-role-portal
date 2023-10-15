@@ -8,7 +8,7 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
-
+import {getRoleListingById} from "../../../src/api/RoleListingAPI"
 import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
@@ -28,7 +28,6 @@ const signupSchema = yup.object().shape({
 
 const RolelistingForm = () => {
   const { id } = useParams()
-  const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
   const title = "SKILLS BASED ROLE PORTAL"
   const items = ["View Listings", "View Profile", "Logout"]
   const status = ["OPEN", "CLOSED"]
@@ -46,14 +45,17 @@ const RolelistingForm = () => {
   })
 
   useEffect(() => {
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        const result = res.data
-        setData(result)
-      })
-      .catch((error) => console.error(error))
-  })
+    const fetchData = async () => {
+      try {
+        const data = await getRoleListingById(id);
+        console.log(data);
+        setData(data["listing"]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [])
 
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
@@ -76,11 +78,19 @@ const RolelistingForm = () => {
         ? dayjs(values.end_date).format("YYYY-MM-DD")
         : "",
     }
-
+    function getCookie(name) {
+      const value = `; ${document.cookie}`
+      const parts = value.split(`; ${name}=`)
+      if (parts.length === 2) return parts.pop().split(";").shift()
+    }
     try {
       const response = await fetch(`http://127.0.0.1:5000/api/listings/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": getCookie('csrf_access_token'),
+        },
         body: JSON.stringify(formattedValues),
       })
       if (response.ok) {
