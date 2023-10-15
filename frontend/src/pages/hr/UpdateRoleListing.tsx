@@ -8,7 +8,11 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
-import {getRoleListingById, updateRoleListing} from "../../../src/api/RoleListingAPI"
+
+import {
+  getRoleListingById,
+  updateRoleListing,
+} from "../../../src/api/RoleListingAPI"
 import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
@@ -47,14 +51,14 @@ const RolelistingForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getRoleListingById(id);
-        setData(data["listing"]);
+        const data = await getRoleListingById(id)
+        setData(data["listing"])
       } catch (error) {
         handleError("Error occured when fetching role listing")
         console.error(error)
       }
-    };
-    fetchData();
+    }
+    fetchData()
   }, [id])
 
   const initialValues: MyFormValues = {
@@ -173,7 +177,7 @@ const RolelistingForm = () => {
                               <strong>Description</strong>
                             </Typography>
                             <Typography variant="body2">
-                                {storeData.role.description}
+                              {storeData.role.description}
                             </Typography>
                           </div>
                         </Grid>

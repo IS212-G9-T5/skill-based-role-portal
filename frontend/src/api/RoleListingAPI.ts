@@ -70,7 +70,10 @@ export const createRoleListing = async (data: Roles): Promise<Roles> => {
  * import { updateRoleListing } from ...
  */
 
-export const updateRoleListing = async (data: RoleApplication, id): Promise<Response> => {
+export const updateRoleListing = async (
+  data: RoleApplication,
+  id
+): Promise<Response> => {
   function getCookie(name) {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
@@ -105,10 +108,13 @@ export const getUserSkills = async (): Promise<SkillObject[]> => {
 }
 
 /**
- * API call to retrieve user's skills 
+ * API call to retrieve user's skills
  * import { updateApplyRoleListing } from ...
  */
-export const updateApplyRoleListing = async (has_applied: boolean, id: string): Promise<void> => {
+export const updateApplyRoleListing = async (
+  has_applied: boolean,
+  id: string
+): Promise<void> => {
   function getCookie(name) {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
@@ -116,29 +122,27 @@ export const updateApplyRoleListing = async (has_applied: boolean, id: string): 
   }
   try {
     const response = await fetch(`/api/listings/${id}`, {
-      method: "PATCH", 
+      method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-        
       },
       body: JSON.stringify({
-        "apply" : !has_applied
-      })
-    });
+        apply: !has_applied,
+      }),
+    })
 
     if (!response.ok) {
-      throw new Error("Failed to update role listing");
+      throw new Error("Failed to update role listing")
     }
 
-    const res = await response.json();
+    const res = await response.json()
 
-    return res;
-
+    return res
   } catch (error) {
     // Handle errors here or re-throw the error for higher-level handling
-    console.error("Error updating role listing:", error);
-    throw error;
+    console.error("Error updating role listing:", error)
+    throw error
   }
-};
+}
