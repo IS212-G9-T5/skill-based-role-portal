@@ -42,11 +42,12 @@ jobs:
           cd ./backend
           poetry install
 
-      - name: Run backend tests (future use)
+      - name: Run backend tests
         env:
           SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
-          SQLALCHEMY_TEST_DATABASE_UR: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
+          SQLALCHEMY_TEST_DATABASE_URI: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
         run: |
+          echo $SQLALCHEMY_TEST_DATABASE_URI
           cd ./backend
           poetry run python -B -m pytest -s
 
