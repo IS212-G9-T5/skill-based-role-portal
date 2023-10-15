@@ -84,8 +84,9 @@ const RolelistingForm = () => {
       if (parts.length === 2) return parts.pop().split(";").shift()
     }
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/listings/${id}`, {
+      const response = await fetch(`/api/listings/${id}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": getCookie('csrf_access_token'),
