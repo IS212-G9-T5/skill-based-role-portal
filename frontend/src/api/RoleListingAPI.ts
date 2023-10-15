@@ -87,12 +87,12 @@ export const getUserSkills = async (): Promise<SkillObject[]> => {
  * import { updateApplyRoleListing } from ...
  */
 export const updateApplyRoleListing = async (has_applied: boolean, id: string): Promise<void> => {
+  function getCookie(name) {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(";").shift()
+  }
   try {
-    function getCookie(name) {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop().split(";").shift()
-    }
     const response = await fetch(`/api/listings/${id}`, {
       method: "PATCH", 
       credentials: "include",
