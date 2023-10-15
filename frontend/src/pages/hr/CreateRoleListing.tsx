@@ -26,8 +26,6 @@ const createRoleSchema = yup.object().shape({
 
 const endpointUrl = "http://127.0.0.1:5000/api/roles"
 const RolelistingForm = () => {
-  const title = "SKILLS BASED ROLE PORTAL"
-  const items = ["View Listings", "View Profile", "Logout"]
   const navigate = useNavigate()
   const [data, setData] = useState(null)
   const [roles, setRoles] = useState<string[]>([])
@@ -72,10 +70,10 @@ const RolelistingForm = () => {
     //temporary fix before endpoint is fixed to take in role description
     delete formattedValues.description
     function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+      const value = `; ${document.cookie}`
+      const parts = value.split(`; ${name}=`)
+      if (parts.length === 2) return parts.pop().split(";").shift()
+    }
     try {
       const response = await fetch("/api/listings", {
         method: "POST",
@@ -112,9 +110,19 @@ const RolelistingForm = () => {
       }
     })
   }
+
+  const navbarProps = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: "View Applications", to: "/applications" },
+      { label: "Create Listing", to: "/create-role-listing" },
+      { label: "Logout", to: "/" },
+    ],
+  }
+
   return (
     <>
-      <StaffNavbar title={title} items={items} />
+      <StaffNavbar {...navbarProps} />
       <Toaster />
       <Grid container className="mt-5">
         <Grid item xs={12}>

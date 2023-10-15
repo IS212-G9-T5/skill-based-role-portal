@@ -14,12 +14,15 @@ import { Logout } from "../api/AuthAPI"
 const Navbar = (props: NavBar) => {
   const navigate = useNavigate()
 
-  function handleButtonClick() {
-    if (props.items[2] === "Logout") {
+  function handleButtonClick(item) {
+    if (item.label === "Logout") {
       Logout()
       navigate("/")
+    } else {
+      navigate(item.to)
     }
   }
+
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -30,17 +33,13 @@ const Navbar = (props: NavBar) => {
           <b className="text-2xl"> {props.title} </b>
         </Typography>
         <Stack spacing={6} direction="row">
-          <Button color="inherit">
-            <b className="text-lg">{props.items[0]}</b>
-          </Button>
-          <Button color="inherit">
-            <b className="text-lg">{props.items[1]}</b>
-          </Button>
-          <Button color="inherit">
-            <b className="text-lg" onClick={handleButtonClick}>
-              {props.items[2]}
-            </b>
-          </Button>
+          {props.items.map((item, index) => (
+            <Button color="inherit" key={index}>
+              <b className="text-lg" onClick={() => handleButtonClick(item)}>
+                {item.label}
+              </b>
+            </Button>
+          ))}
         </Stack>
       </Toolbar>
     </AppBar>

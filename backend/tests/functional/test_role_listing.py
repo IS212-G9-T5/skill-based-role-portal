@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 from flask.testing import FlaskClient
+from sqlalchemy import select
 from application.services import role_service, role_listing_service
 from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 from application.models.role import Role
@@ -579,11 +580,11 @@ def test_get_role_listing_paginated_search_by_role(
 ):
     """
     GIVEN the user is logged in as user, there is a role listing with role name "Software Developer" created,
-    WHEN the API endpoint 'role_listing' is requested (GET) with query params `role=dev`,
+    WHEN the API endpoint 'role_listing' is requested (GET) with query params `role=software`,
     THEN check that
         - the response returns HTTP 200
         - there is at least 1 item in the `items` field
-        - each of the item in the `items` field has a role name that contains "dev"
+        - each of the item in the `items` field has a role name that contains "software"
     """
     # create role listing with role Software Developer
     skills = skill_service.find_unique(2)
@@ -597,7 +598,7 @@ def test_get_role_listing_paginated_search_by_role(
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
     role_listing_service.save(role_listing)
 
-    response = random_user_client.get(path=ENDPOINT, query_string={"role": "dev"})
+    response = random_user_client.get(path=ENDPOINT, query_string={"role": "software"})
 
     # check response
     assert response.status_code == 200
@@ -622,7 +623,17 @@ def test_get_role_listing_paginated_search_by_role_empty_string(
     """
 
     response = random_user_client.get(path=ENDPOINT, query_string={"role": ""})
-    db_res = db.session.execute(db.select(RoleListing)).scalars().all()
+    # db_res = db.session.execute(db.select(RoleListing)).scalars().all()
+    # db_res = role_listing_service.find_all_by_role_and_skills_paginated([], "", 1, 10)
+    stmt = (
+        select(RoleListing)
+        .where(
+            RoleListing.start_date <= db.func.current_date(),
+            db.func.current_date() <= RoleListing.end_date,
+        )
+        .order_by(RoleListing.end_date.asc())
+    )
+    db_res = db.session.execute(stmt).scalars().all()
 
     # check response
     assert response.status_code == 200
@@ -659,11 +670,11 @@ def test_get_role_listing_paginated_search_by_skills(
 ):
     """
     GIVEN the user is logged in as user role, there is a role listing created with certain skills,
-    WHEN the API endpoint 'role_listing' is requested (GET) with request body containing the skills,
+    WHEN the API endpoint 'role_listing' is requested (GET) with request param containing the skills,
     THEN check that
         - the response returns HTTP 200
         - there is at least 1 item in the `items` field
-        - each of the item in the `items` field has a role that contains the skills in the request body
+        - each of the item in the `items` field has a role that contains the skills in the request param
     """
     # create role listing with some skills
     skills = skill_service.find_unique(2)
@@ -678,8 +689,11 @@ def test_get_role_listing_paginated_search_by_skills(
     role_listing_service.save(role_listing)
 
     # search by skills
-    body = [skill.name for skill in skills]
-    response = random_user_client.get(path=ENDPOINT, json={"skills": body})
+    request_param = [skill.name for skill in skills]
+    # body = [skill.name for skill in skills]
+    response = random_user_client.get(
+        path=ENDPOINT, query_string={"skills": request_param}
+    )
 
     # check response
     assert response.status_code == 200
@@ -689,8 +703,8 @@ def test_get_role_listing_paginated_search_by_skills(
     assert len(items) > 0
     for item in items:
         skills_required = set(item["listing"]["role"]["skills"])
-        skills_matched = set(body).intersection(skills_required)
-        assert len(skills_matched) > 0
+        skills_matched = set(request_param).intersection(skills_required)
+        assert len(skills_matched) >= len(request_param)
 
 
 def test_get_role_listing_paginated_search_by_role_and_skills(
@@ -720,10 +734,11 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
     role_listing_service.save(role_listing)
 
     # search by role and skills
-    body = [skill.name for skill in skills]
-    role_to_search = "man"
+    request_param = [skill.name for skill in skills]
+    role_to_search = "risk"
     response = random_user_client.get(
-        path=ENDPOINT, query_string={"role": role_to_search}, json={"skills": body}
+        path=ENDPOINT,
+        query_string={"role": role_to_search, "skills": request_param},
     )
 
     # check response
@@ -736,8 +751,74 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
         role_res = item["listing"]["role"]
         assert role_to_search in role_res["name"].lower()
         skills_required = set(role_res["skills"])
-        skills_matched = set(body).intersection(skills_required)
-        assert len(skills_matched) > 0
+        skills_matched = set(request_param).intersection(skills_required)
+        assert len(skills_matched) >= len(request_param)
+
+
+# endregion
+
+
+# region: apply role listing
+def test_apply_role_listing_success(
+    random_user_client: FlaskClient,
+    random_user_client_x_csrf_token_header,
+    init_database,
+):
+    """
+    GIVEN the user is logged in as user, there are role listings created
+    WHEN PATCH 'api/listings/{id}' to the created listing id  with request body containing
+        - `apply` field is `true`
+    THEN check that
+        - the response returns HTTP 200
+        - the `has_applied` field is `true`
+    """
+    listing = role_listing_service.find_one_random()
+
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": True},
+    )
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["has_applied"] == True
+
+
+def test_withdraw_role_listing_success(
+    random_user_client: FlaskClient,
+    random_user_client_x_csrf_token_header,
+    init_database,
+):
+    """
+    GIVEN the user is logged in as user, the user has already applied for a role listing
+    WHEN PATCH 'api/listings/{id}' to the created listing id  with request body containing
+        - `apply` field is `false`
+    THEN check that
+        - the response returns HTTP 200
+        - the `has_applied` field is `false`
+    """
+    # create an application for role listing
+    listing = role_listing_service.find_one_random()
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": True},
+    )
+
+    assert response.status_code == 200
+    assert response.json["has_applied"] == True
+
+    # withdraw application
+    response = random_user_client.patch(
+        path=f"{ENDPOINT}/{listing.id}",
+        headers=random_user_client_x_csrf_token_header,
+        json={"apply": False},
+    )
+
+    # check response
+    assert response.status_code == 200
+    assert response.json["has_applied"] == False
 
 
 # endregion

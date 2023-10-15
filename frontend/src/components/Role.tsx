@@ -9,7 +9,8 @@ const Role = (props) => {
             <Typography variant="h4">{props.name}</Typography>
           </strong>
           <Typography variant="subtitle1" className="mb-[2%] text-[#B0B0B4]">
-            Role ID: {props.id} | Status: {props.status} | Closing Date: {props.end_date}
+            Role ID: {props.id} | Status: {props.status} | Closing Date:{" "}
+            {props.end_date}
           </Typography>
 
           <Typography variant="h6" gutterBottom style={{ marginTop: "3%" }}>

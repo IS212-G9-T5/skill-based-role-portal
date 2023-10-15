@@ -4,14 +4,23 @@
  */
 export const getRoleListings = async (
   page: number,
-  size: number
+  size: number,
+  roleName?: string // Make roleName optional
 ): Promise<RoleListings> => {
-  const response = await fetch(`/api/listings?page=${page}&size=${size}`, {
+  // Construct the URL conditionally based on the presence of roleName
+  let url = `/api/listings?page=${page}&size=${size}`
+  if (roleName) {
+    url += `&role=${roleName}`
+  }
+
+  const response = await fetch(url, {
     credentials: "include",
   })
+
   if (!response.ok) {
     throw new Error("Failed to fetch roles")
   }
+
   const res = await response.json()
   return res
 }
@@ -58,7 +67,7 @@ export const createRoleListing = async (data: Roles): Promise<Roles> => {
 }
 
 /**
- * API call to retrieve user's skills 
+ * API call to retrieve user's skills
  * import { getUserSkills } from ...
  */
 
