@@ -110,9 +110,9 @@ const AllRoleListing: React.FC = () => {
                 id={item.listing.id}
                 name={item.listing.role.name}
                 description={item.listing.role.description}
-                start_date={item.start_date}
-                end_date={item.end_date}
-                status={item.status}
+                start_date={item.listing.start_date}
+                end_date={item.listing.end_date}
+                status={item.listing.status}
                 skills={item.listing.role.skills}
                 currentPage={currentPage}
               />
