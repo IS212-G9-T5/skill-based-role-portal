@@ -4,10 +4,10 @@ import { Link } from "react-router-dom"
 import AccessControl from "./auth/AccessControl"
 import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
+import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
 import SkillsProfile from "./pages/applicant/SkillsProfile"
 import CreateRoleListing from "./pages/hr/CreateRoleListing"
 import LoginForm from "./pages/login"
-
 const role = localStorage.getItem("role")
 
 const routes: RouteObject[] = [
@@ -113,6 +113,10 @@ const routes: RouteObject[] = [
     path: "/",
     element: <LoginForm />,
   },
+  {
+    path: "update-role-listing/:id",
+    element: <UpdateRoleListing/>
+  }
 ]
 
 export default routes

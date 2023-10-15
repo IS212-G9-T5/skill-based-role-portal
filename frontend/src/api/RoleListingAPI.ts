@@ -65,6 +65,28 @@ export const createRoleListing = async (data: Roles): Promise<Roles> => {
   const res = await response.json()
   return res.data
 }
+/**
+ * API call to update a role listing
+ * import { updateRoleListing } from ...
+ */
+
+export const updateRoleListing = async (data: RoleApplication, id): Promise<Response> => {
+  function getCookie(name) {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(";").shift()
+  }
+  const response = await fetch(`/api/listings/${id}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+    },
+    body: JSON.stringify(data),
+  })
+  return response
+}
 
 /**
  * API call to retrieve user's skills
