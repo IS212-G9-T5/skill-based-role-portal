@@ -1,14 +1,11 @@
 import { Button, Chip, Grid, Typography} from "@mui/material"
+import { useState , useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { updateApplyRoleListing } from "../../api/RoleListingAPI"
-
-import { useState } from "react";
-
 import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
 
@@ -97,17 +94,6 @@ const RoleListing = (props: Roles) => {
   // useEffect(() => {
   //   const currUrl = window.location.href
   //   const id = currUrl.split("/").pop()
-  //   const endpointUrl = `http://127.0.0.1:5000/api/listings/${id}`
-  //   fetch(endpointUrl)
-  //   .then((response) => response.json())   
-  //   .then((res) => {
-  //     console.log(res.data)
-  //   })
-  // }, [])
-
-  // useEffect(() => {
-  //   const currUrl = window.location.href
-  //   const id = currUrl.split("/").pop()
 
   //   const fetchData = async () => {
   //     try {
@@ -121,57 +107,6 @@ const RoleListing = (props: Roles) => {
 
   //   fetchData();
   // }, [])
-
-
-
-
-
-  const [openApply, setOpenApply] = useState(false);
-  const [openWithdraw, setOpenWithdraw] = useState(false);
-
-
-  const handleApplyOpen = () => {
-    setOpenApply(true);
-  };
-
-  const handleApplyClose = () => {
-    setOpenApply(false);
-  };
-
-  const handleWithdrawOpen = () => {
-    setOpenWithdraw(true);
-  };
-
-  const handleWithdrawClose = () => {
-    setOpenWithdraw(false);
-  };
-
-  const handleApplySubmit = () => {
-    // Handle the submission logic for applying here
-    // This function should be replaced with your actual submission logic
-    updateApplyRoleListing(props.roleMatchData.has_applied,props.id);
-    console.log(props);
-    location.reload();
-
-
-    console.log('Application submitted');
-    setOpenApply(false);
-  };
-
-  const handleWithdrawSubmit = () => {
-    // Handle the submission logic for withdrawing here
-    // This function should be replaced with your actual withdrawal logic
-    
-    updateApplyRoleListing(props.roleMatchData.has_applied,props.id);
-    console.log(props);
-    location.reload();
-
-    console.log('Application withdrawn');
-    setOpenWithdraw(false);
-  };
-  
-
-  console.log(props)
 
 
 
