@@ -11,6 +11,12 @@ declare global {
     roleMatchData: RoleMatch
   }
 
+  type RoleApplication = {
+    status: string
+    start_date: string
+    end_date: string
+  }
+
   type RoleMatch = {
     skills_match_count: number
     skills_match_pct: number

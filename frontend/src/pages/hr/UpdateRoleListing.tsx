@@ -8,7 +8,7 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
-import {getRoleListingById} from "../../../src/api/RoleListingAPI"
+import {getRoleListingById, updateRoleListing} from "../../../src/api/RoleListingAPI"
 import StaffNavbar from "../../components/Navbar"
 
 interface MyFormValues {
@@ -28,8 +28,6 @@ const signupSchema = yup.object().shape({
 
 const RolelistingForm = () => {
   const { id } = useParams()
-  const title = "SKILLS BASED ROLE PORTAL"
-  const items = ["View Listings", "View Profile", "Logout"]
   const status = ["OPEN", "CLOSED"]
   const navigate = useNavigate()
   const [storeData, setData] = useState({
@@ -43,22 +41,21 @@ const RolelistingForm = () => {
     start_date: dayjs(Date.now()),
     end_date: dayjs(Date.now()),
   })
+  const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
+  const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getRoleListingById(id);
-        console.log(data);
         setData(data["listing"]);
       } catch (error) {
-        console.error(error);
+        handleError("Error occured when fetching role listing")
+        console.error(error)
       }
     };
     fetchData();
   }, [id])
-
-  const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
-  const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
   const initialValues: MyFormValues = {
     role_name: storeData.role.name,
@@ -78,38 +75,33 @@ const RolelistingForm = () => {
         ? dayjs(values.end_date).format("YYYY-MM-DD")
         : "",
     }
-    function getCookie(name) {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop().split(";").shift()
-    }
     try {
-      const response = await fetch(`/api/listings/${id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie('csrf_access_token'),
-        },
-        body: JSON.stringify(formattedValues),
-      })
-      if (response.ok) {
+      const response = await updateRoleListing(formattedValues, id)
+      if (response.status === 200) {
         handleSuccess("Update Role Listing")
         setTimeout(() => {
           navigate(`/role-listing/${id}`)
         }, 1000)
       } else {
-        handleError("Failed to update Role Listing")
+        handleError("Error occured when updating role listing")
         resetForm()
       }
     } catch (error) {
-      handleError("Error occurred when updating role listing")
+      handleError("Error occured when updating role listing")
       resetForm()
     }
   }
+  const navbarProps = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: "View Applications", to: "/applications" },
+      { label: "Create Listing", to: "/create-role-listing" },
+      { label: "Logout", to: "/" },
+    ],
+  }
   return (
     <>
-      <StaffNavbar title={title} items={items} />
+      <StaffNavbar {...navbarProps} />
       <Toaster />
       <Grid container className="mt-5">
         <Grid item xs={12}>
