@@ -17,16 +17,20 @@ declare global {
     skills_matched: SkillObject[]
     skills_unmatched: SkillObject[]
   }
-  
+
   type SkillObject = {
-    name: string;
-    description: string;
-  };
-  
+    name: string
+    description: string
+  }
+
+  type NavItem = {
+    label: string
+    to: string
+  }
 
   type NavBar = {
     title: string
-    items: string[]
+    items: NavItem[]
   }
 
   type MyFormValues = {
@@ -53,8 +57,3 @@ export type AccessControlProps = {
   children: React.ReactNode
   renderNoAccess: () => React.ReactNode
 }
-
-
-
-
-
