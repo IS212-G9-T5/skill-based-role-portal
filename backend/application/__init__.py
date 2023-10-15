@@ -15,6 +15,8 @@ def init_app(config=Config):
     app = Flask(__name__)
     app.config.from_object(config)
 
+    print(vars(config))
+
     configure_extensions(app)
     app = register_blueprints(app)
     app = register_error_handlers(app)

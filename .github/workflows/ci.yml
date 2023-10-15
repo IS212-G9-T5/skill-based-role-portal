@@ -48,7 +48,7 @@ jobs:
           SQLALCHEMY_TEST_DATABASE_UR: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
         run: |
           cd ./backend
-          poetry run python -B -m pytest
+          poetry run python -B -m pytest -s
 
   frontend-test:
     runs-on: ubuntu-latest
