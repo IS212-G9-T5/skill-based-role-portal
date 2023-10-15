@@ -74,3 +74,8 @@ class Staff(db.Model):
 
     def __repr__(self):
         return f"{self.json()}"
+
+    def __eq__(self, __value: object) -> bool:
+        if isinstance(__value, Staff):
+            return self.id == __value.id
+        return False
