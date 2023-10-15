@@ -43,7 +43,7 @@ jobs:
           poetry install
 
       - name: Run backend tests (future use)
-        with:
+        env:
           SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
           SQLALCHEMY_TEST_DATABASE_UR: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
         run: |
