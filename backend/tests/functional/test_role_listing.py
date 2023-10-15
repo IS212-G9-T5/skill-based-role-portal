@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 from flask.testing import FlaskClient
+from sqlalchemy import select
 from application.services import role_service, role_listing_service
 from application.routes.role_listing_route import DEFAULT_PAGE_SIZE
 from application.models.role import Role
@@ -622,7 +623,17 @@ def test_get_role_listing_paginated_search_by_role_empty_string(
     """
 
     response = random_user_client.get(path=ENDPOINT, query_string={"role": ""})
-    db_res = db.session.execute(db.select(RoleListing)).scalars().all()
+    # db_res = db.session.execute(db.select(RoleListing)).scalars().all()
+    # db_res = role_listing_service.find_all_by_role_and_skills_paginated([], "", 1, 10)
+    stmt = (
+        select(RoleListing)
+        .where(
+            RoleListing.start_date <= db.func.current_date(),
+            db.func.current_date() <= RoleListing.end_date,
+        )
+        .order_by(RoleListing.end_date.asc())
+    )
+    db_res = db.session.execute(stmt).scalars().all()
 
     # check response
     assert response.status_code == 200
@@ -693,7 +704,7 @@ def test_get_role_listing_paginated_search_by_skills(
     for item in items:
         skills_required = set(item["listing"]["role"]["skills"])
         skills_matched = set(request_param).intersection(skills_required)
-        assert len(skills_matched) > 0
+        assert len(skills_matched) >= len(request_param)
 
 
 def test_get_role_listing_paginated_search_by_role_and_skills(
@@ -741,7 +752,7 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
         assert role_to_search in role_res["name"].lower()
         skills_required = set(role_res["skills"])
         skills_matched = set(request_param).intersection(skills_required)
-        assert len(skills_matched) > 0
+        assert len(skills_matched) >= len(request_param)
 
 
 # endregion

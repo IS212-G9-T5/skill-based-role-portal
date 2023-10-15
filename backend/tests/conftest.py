@@ -1,4 +1,3 @@
-import calendar
 from flask import Flask
 from flask.testing import FlaskClient
 import pytest
@@ -6,7 +5,6 @@ from datetime import date
 from application.config import TestConfig
 from application import init_app
 from application.extensions import db as _db
-from application import register_blueprints, register_error_handlers
 from sqlalchemy.orm import close_all_sessions
 from application.services import staff_service
 from application.enums import AccessControlRole
@@ -306,7 +304,7 @@ def create_role_listings(db):
     mm = today.month
     end_month = (mm % 12) + 1
     yyyy = today.year
-    days = calendar.monthrange(yyyy, mm)[1] - 1
+    days = 25
 
     for i in range(1, days):
         role = role_service.find_one_random()
