@@ -5,7 +5,7 @@ declare global {
     description: string
     start_date: string
     end_date: string
-    status: boolean
+    status: string
     skills: string[]
     userSkills: SkillObject[]
     roleMatchData: RoleMatch
@@ -22,6 +22,7 @@ declare global {
     skills_match_pct: number
     skills_matched: SkillObject[]
     skills_unmatched: SkillObject[]
+    has_applied: boolean
   }
 
   type SkillObject = {
