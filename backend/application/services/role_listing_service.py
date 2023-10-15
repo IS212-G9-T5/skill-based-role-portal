@@ -17,13 +17,17 @@ def find_all_by_role_and_skills_paginated(
     roles_filtered_by_skills = (
         (
             select(role_skills.c.role_name)
-            .where(role_skills.c.skill_name.in_(skills_to_filter))
-            .where(role_skills.c.role_name.icontains(role))
+            .where(
+                role_skills.c.skill_name.in_(skills_to_filter),
+                role_skills.c.role_name.ilike(f"{role}%"),
+            )
+            .group_by(role_skills.c.role_name)
+            .having(db.func.count(role_skills.c.skill_name) >= len(skills_to_filter))
         )
         if skills_to_filter
         else (
             select(role_skills.c.role_name).where(
-                role_skills.c.role_name.icontains(role)
+                role_skills.c.role_name.ilike(f"{role}%")
             )
         )
     )
@@ -35,7 +39,7 @@ def find_all_by_role_and_skills_paginated(
             db.func.current_date() <= RoleListing.end_date,
         )
         .where(RoleListing.role_name.in_(roles_filtered_by_skills))
-        .order_by(RoleListing.end_date.desc())
+        .order_by(RoleListing.end_date.asc())
     )
 
     return db.paginate(stmt, page=page, per_page=page_size, error_out=False)
