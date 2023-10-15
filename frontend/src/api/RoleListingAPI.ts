@@ -112,12 +112,6 @@ export const updateApplyRoleListing = async (has_applied: boolean, id: string): 
 
     const res = await response.json();
 
-    // if (res.hasOwnProperty('has_applied')) {
-    //   res.has_applied = !res.has_applied;
-    // } else {
-    //   throw new Error("Response object does not contain 'has_applied' property.");
-    // }
-
     return res;
 
   } catch (error) {
