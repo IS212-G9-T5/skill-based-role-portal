@@ -7,6 +7,7 @@ import ViewRoleListing from "./pages/applicant/main"
 import SkillsProfile from "./pages/applicant/SkillsProfile"
 import CreateRoleListing from "./pages/hr/CreateRoleListing"
 import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
+import ViewApplications from "./pages/hr/ViewApplications"
 import LoginForm from "./pages/login"
 
 const role = localStorage.getItem("role")
@@ -17,7 +18,7 @@ const routes: RouteObject[] = [
     element: (
       <AccessControl
         userPermissions={role ? role : ""}
-        allowedPermissions={["Admin", "User", "Manager", "Hr"]}
+        allowedPermissions={["Admin", "User", "Manager", "HR"]}
         renderNoAccess={() => (
           <div className="p-5">
             You are not authenticated. Please proceed to {""}
@@ -75,7 +76,7 @@ const routes: RouteObject[] = [
     element: (
       <AccessControl
         userPermissions={role ? role : ""}
-        allowedPermissions={["Admin"]}
+        allowedPermissions={["Admin", "HR"]}
         renderNoAccess={() => (
           <div className="p-5">
             You do not have permission to access this page. Please proceed to{" "}
@@ -95,7 +96,7 @@ const routes: RouteObject[] = [
     element: (
       <AccessControl
         userPermissions={role ? role : ""}
-        allowedPermissions={["Admin"]}
+        allowedPermissions={["Admin", "HR"]}
         renderNoAccess={() => (
           <div className="p-5">
             You do not have permission to access this page. Please proceed to{" "}
@@ -111,12 +112,48 @@ const routes: RouteObject[] = [
     ),
   },
   {
-    path: "/",
-    element: <LoginForm />,
+    path: "update-role-listing/:id",
+    element: (
+      <AccessControl
+        userPermissions={role ? role : ""}
+        allowedPermissions={["Admin", "HR"]}
+        renderNoAccess={() => (
+          <div className="p-5">
+            You do not have permission to access this page. Please proceed to{" "}
+            {""}
+            <Link to="/" className="font-medium text-blue-600 hover:underline">
+              log in
+            </Link>
+          </div>
+        )}
+      >
+        <UpdateRoleListing />
+      </AccessControl>
+    ),
   },
   {
-    path: "update-role-listing/:id",
-    element: <UpdateRoleListing />,
+    path: "view-applications",
+    element: (
+      <AccessControl
+        userPermissions={role ? role : ""}
+        allowedPermissions={["Admin", "Manager", "HR"]}
+        renderNoAccess={() => (
+          <div className="p-5">
+            You do not have permission to access this page. Please proceed to{" "}
+            {""}
+            <Link to="/" className="font-medium text-blue-600 hover:underline">
+              log in
+            </Link>
+          </div>
+        )}
+      >
+        <ViewApplications />
+      </AccessControl>
+    ),
+  },
+  {
+    path: "/",
+    element: <LoginForm />,
   },
 ]
 
