@@ -1,6 +1,7 @@
 import EditIcon from "@mui/icons-material/Edit"
 import PersonIcon from "@mui/icons-material/Person"
 import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 export type OpenRoleApplication = {
@@ -16,7 +17,18 @@ export type OpenRoleApplication = {
 export const columns: ColumnDef<OpenRoleApplication>[] = [
   {
     accessorKey: "id",
-    header: "ID",
+    header: ({ column }) => {
+      return (
+        <div className="flex align-middle">
+          <div>ID</div>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      )
+    },
   },
   {
     accessorKey: "name",
@@ -28,15 +40,48 @@ export const columns: ColumnDef<OpenRoleApplication>[] = [
   },
   {
     accessorKey: "start_date",
-    header: "Start Date",
+    header: ({ column }) => {
+      return (
+        <div className="flex align-middle">
+          <div>Start Date</div>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      )
+    },
   },
   {
     accessorKey: "end_date",
-    header: "End Date",
+    header: ({ column }) => {
+      return (
+        <div className="flex align-middle">
+          <div>End Date</div>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      )
+    },
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      return (
+        <div className="flex align-middle">
+          <div>Status</div>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        </div>
+      )
+    },
   },
   {
     id: "actions",
