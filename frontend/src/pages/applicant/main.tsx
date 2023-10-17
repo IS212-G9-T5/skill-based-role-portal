@@ -39,6 +39,7 @@ const ViewRoleListing = () => {
           skills_match_pct: data["skills_match_pct"],
           skills_matched: data["skills_matched"],
           skills_unmatched: data["skills_unmatched"],
+          has_applied: data["has_applied"],
         }
         setRoleMatchData(roleDataObj)
       } catch (error) {

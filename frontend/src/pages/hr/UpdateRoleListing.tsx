@@ -1,116 +1,100 @@
 import { useEffect, useState } from "react"
-import {
-  Button,
-  Chip,
-  Container,
-  Grid,
-  MenuItem,
-  Typography,
-} from "@mui/material"
+import { Button, Chip, Container, Grid, Typography } from "@mui/material"
+import MenuItem from "@mui/material/MenuItem"
 import TextField from "@mui/material/TextField"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs, { Dayjs } from "dayjs"
 import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import * as yup from "yup"
 
+import {
+  getRoleListingById,
+  updateRoleListing,
+} from "../../../src/api/RoleListingAPI"
 import StaffNavbar from "../../components/Navbar"
 
-const createRoleSchema = yup.object().shape({
-  role_name: yup.string().required("Role Name is required"),
-  description: yup.string().required("Description is required"),
+interface MyFormValues {
+  id?: string
+  role_name: string
+  description: string
+  skills?: string[]
+  status: string
+  start_date: Dayjs
+  end_date: Dayjs
+}
+const signupSchema = yup.object().shape({
+  status: yup.string().required("Status is required"),
   start_date: yup.date().required("Start Date is required"),
   end_date: yup.date().required("End Date is required"),
 })
 
-const endpointUrl = "http://127.0.0.1:5000/api/roles"
 const RolelistingForm = () => {
+  const { id } = useParams()
+  const status = ["OPEN", "CLOSED"]
   const navigate = useNavigate()
-  const [data, setData] = useState(null)
-  const [roles, setRoles] = useState<string[]>([])
-  const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
-  const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null)
-  const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
-
-  useEffect(() => {
-    const rolesArray = new Array<string>()
-    const skillsSet = new Set<string>()
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        setData(res.data)
-        const result = res.data
-        result.forEach((item) => {
-          const roleName = item.name
-          const skills = item.skills
-          skills.forEach((skill) => {
-            skillsSet.add(skill)
-          })
-          rolesArray.push(roleName)
-          setRoles(rolesArray)
-        })
-      })
-  }, [])
+  const [storeData, setData] = useState({
+    id: id,
+    role: {
+      name: "",
+      description: "",
+      skills: [],
+    },
+    status: "",
+    start_date: dayjs(Date.now()),
+    end_date: dayjs(Date.now()),
+  })
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getRoleListingById(id)
+        setData(data["listing"])
+      } catch (error) {
+        handleError("Error occured when fetching role listing")
+        console.error(error)
+      }
+    }
+    fetchData()
+  }, [id])
+
   const initialValues: MyFormValues = {
-    role_name: "",
-    description: "",
-    start_date: dayjs(null),
-    end_date: dayjs(null),
+    role_name: storeData.role.name,
+    description: storeData.role.description,
+    status: storeData.status,
+    skills: storeData.role.skills,
+    start_date: dayjs(storeData.start_date),
+    end_date: dayjs(storeData.end_date),
   }
   const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
-      ...values,
-      start_date: startDateValue ? startDateValue.format("YYYY-MM-DD") : "",
-      end_date: endDateValue ? endDateValue.format("YYYY-MM-DD") : "",
-    }
-    //temporary fix before endpoint is fixed to take in role description
-    delete formattedValues.description
-    function getCookie(name) {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop().split(";").shift()
+      status: values.status,
+      start_date: values.start_date
+        ? dayjs(values.start_date).format("YYYY-MM-DD")
+        : "",
+      end_date: values.end_date
+        ? dayjs(values.end_date).format("YYYY-MM-DD")
+        : "",
     }
     try {
-      const response = await fetch("/api/listings", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-        },
-        body: JSON.stringify(formattedValues),
-      })
-      if (response.ok) {
-        handleSuccess("Create Role Listing")
-        resetForm()
+      const response = await updateRoleListing(formattedValues, id)
+      if (response.status === 200) {
+        handleSuccess("Update Role Listing")
+        setTimeout(() => {
+          navigate(`/role-listing/${id}`)
+        }, 1000)
       } else {
-        handleError("Failed to create Role Listing")
+        handleError("Error occured when updating role listing")
         resetForm()
       }
-      setTimeout(() => {
-        navigate("/all-role-listing")
-      }, 2000)
     } catch (error) {
-      handleError("Error occurred when submitting form")
+      handleError("Error occured when updating role listing")
       resetForm()
     }
   }
-  const handleDropDownChange = (event) => {
-    const selectedRoleName = event.target.value
-    const items = data
-    items.forEach((item) => {
-      const roleName = item.name
-      const skills = item.skills
-      if (roleName === selectedRoleName) {
-        setRetrievedSkills(skills)
-      }
-    })
-  }
-
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
@@ -119,7 +103,6 @@ const RolelistingForm = () => {
       { label: "Logout", to: "/" },
     ],
   }
-
   return (
     <>
       <StaffNavbar {...navbarProps} />
@@ -127,7 +110,7 @@ const RolelistingForm = () => {
       <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
-            Role Listing Form
+            Update Role Listing
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -136,16 +119,21 @@ const RolelistingForm = () => {
               <Formik
                 initialValues={initialValues}
                 onSubmit={handleFormSubmit}
-                validationSchema={createRoleSchema}
+                validationSchema={signupSchema}
+                enableReinitialize={true}
               >
                 {({ values, touched, errors, handleChange, handleSubmit }) => {
-                  const handleDropDown = (event) => {
-                    console.log("role event", event)
-                    handleDropDownChange(event)
+                  const handleStatusChange = (event) => {
+                    const updatedArray = storeData
+                    updatedArray.status = event.target.value
+                    setData(updatedArray)
                     handleChange(event)
                   }
                   const handleStartDateChange = (event) => {
-                    setstartDateValue(event)
+                    //retrieve storeData, edit array and setData
+                    const updatedArray = storeData
+                    updatedArray.start_date = event
+                    setData(updatedArray)
                     const newEvent = {
                       ...event,
                       target: {
@@ -156,7 +144,9 @@ const RolelistingForm = () => {
                     handleChange(newEvent)
                   }
                   const handleEndDateChange = (event) => {
-                    setendDateValue(event)
+                    const updatedArray = storeData
+                    updatedArray.end_date = event
+                    setData(updatedArray)
                     const newEvent = {
                       ...event,
                       target: {
@@ -176,25 +166,9 @@ const RolelistingForm = () => {
                           <Typography variant="h5">
                             <strong>Role</strong>
                           </Typography>
-                          <TextField
-                            name="role_name"
-                            id="role_name"
-                            value={values.role_name}
-                            select
-                            onChange={handleDropDown}
-                            fullWidth
-                            error={
-                              Boolean(touched.role_name) &&
-                              Boolean(errors.role_name)
-                            }
-                            helperText={touched.role_name && errors.role_name}
-                          >
-                            {roles.map((option, index) => (
-                              <MenuItem key={index} value={option}>
-                                {option}
-                              </MenuItem>
-                            ))}
-                          </TextField>
+                          <Typography variant="h5">
+                            {storeData.role.name}
+                          </Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -202,22 +176,37 @@ const RolelistingForm = () => {
                             <Typography variant="h5">
                               <strong>Description</strong>
                             </Typography>
+                            <Typography variant="body2">
+                              {storeData.role.description}
+                            </Typography>
+                          </div>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <div className="text-left">
+                            <Typography variant="h5">
+                              <strong>Status</strong>
+                            </Typography>
+
                             <TextField
-                              name="description"
-                              id="description"
-                              label="Description"
-                              value={values.description}
+                              name="status"
+                              id="status"
+                              select
+                              value={values.status}
                               fullWidth
-                              placeholder="Description"
-                              onChange={handleChange}
+                              onChange={handleStatusChange}
                               error={
-                                Boolean(touched.description) &&
-                                Boolean(errors.description)
+                                Boolean(touched.status) &&
+                                Boolean(errors.status)
                               }
-                              helperText={
-                                touched.description && errors.description
-                              }
-                            />
+                              helperText={touched.status && errors.status}
+                            >
+                              {status.map((name) => (
+                                <MenuItem key={name} value={name}>
+                                  {name}
+                                </MenuItem>
+                              ))}
+                            </TextField>
                           </div>
                         </Grid>
 
@@ -238,13 +227,13 @@ const RolelistingForm = () => {
                                 },
                               }}
                               format="DD/MM/YYYY"
-                              disablePast
-                              value={dayjs(values.start_date)}
+                              value={values.start_date}
                               onChange={handleStartDateChange}
                               className="w-full"
                             />
                           </div>
                         </Grid>
+
                         <Grid item xs={6}>
                           <div className="text-left">
                             <Typography variant="h5">
@@ -260,14 +249,15 @@ const RolelistingForm = () => {
                                     touched.end_date && errors.end_date,
                                 },
                               }}
-                              format="DD/MM/YYYY"
                               disablePast
-                              value={dayjs(values.end_date)}
+                              format="DD/MM/YYYY"
+                              value={values.end_date}
                               onChange={handleEndDateChange}
                               className="w-full"
                             />
                           </div>
                         </Grid>
+
                         <Grid item xs={12} className="mb-1">
                           <Typography variant="h5">
                             <strong>
@@ -275,7 +265,7 @@ const RolelistingForm = () => {
                               Skills Required
                             </strong>
                             <br></br>
-                            {retrievedSkills.map((skill, index) => (
+                            {storeData.role.skills.map((skill, index) => (
                               <Chip
                                 key={index}
                                 label={skill}
@@ -284,6 +274,7 @@ const RolelistingForm = () => {
                             ))}
                           </Typography>
                         </Grid>
+
                         <Grid item xs={12}>
                           <Button variant="contained" fullWidth type="submit">
                             Submit

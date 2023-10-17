@@ -6,6 +6,7 @@ import AllRoleListing from "./pages/applicant/AllRoleListing"
 import ViewRoleListing from "./pages/applicant/main"
 import SkillsProfile from "./pages/applicant/SkillsProfile"
 import CreateRoleListing from "./pages/hr/CreateRoleListing"
+import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
 import LoginForm from "./pages/login"
 
 const role = localStorage.getItem("role")
@@ -112,6 +113,10 @@ const routes: RouteObject[] = [
   {
     path: "/",
     element: <LoginForm />,
+  },
+  {
+    path: "update-role-listing/:id",
+    element: <UpdateRoleListing />,
   },
 ]
 

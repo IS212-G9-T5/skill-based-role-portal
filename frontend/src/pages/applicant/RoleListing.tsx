@@ -7,6 +7,8 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useNavigate } from "react-router-dom"
 
+import { updateApplyRoleListing } from "../../api/RoleListingAPI"
+
 const RoleListing = (props: Roles) => {
   const navigate = useNavigate()
 
@@ -40,6 +42,53 @@ const RoleListing = (props: Roles) => {
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
   }
+  const handleEditListing = () => {
+    navigate(`/update-role-listing/${props.id}`)
+  }
+
+  const [openApply, setOpenApply] = useState(false)
+  const [openWithdraw, setOpenWithdraw] = useState(false)
+
+  const handleApplyOpen = () => {
+    setOpenApply(true)
+  }
+
+  const handleApplyClose = () => {
+    setOpenApply(false)
+  }
+
+  const handleWithdrawOpen = () => {
+    setOpenWithdraw(true)
+  }
+
+  const handleWithdrawClose = () => {
+    setOpenWithdraw(false)
+  }
+
+  const handleApplySubmit = () => {
+    // Handle the submission logic for applying here
+    // This function should be replaced with your actual submission logic
+    updateApplyRoleListing(props.roleMatchData.has_applied, props.id)
+    console.log(props)
+    location.reload()
+
+    console.log("Application submitted")
+    setOpenApply(false)
+  }
+
+  const handleWithdrawSubmit = () => {
+    // Handle the submission logic for withdrawing here
+    // This function should be replaced with your actual withdrawal logic
+
+    updateApplyRoleListing(props.roleMatchData.has_applied, props.id)
+    console.log(props)
+    location.reload()
+
+    console.log("Application withdrawn")
+    setOpenWithdraw(false)
+  }
+
+  console.log(props)
 
   return (
     <div>
@@ -48,10 +97,19 @@ const RoleListing = (props: Roles) => {
           <strong>
             <Typography variant="h4">{props.name}</Typography>
           </strong>
-          <Typography variant="subtitle1" className="mb-[2%] text-[#B0B0B4]">
+
+          <Typography
+            variant="subtitle1"
+            className="mb-[2%] py-1 text-[#B0B0B4]"
+          >
             Role ID: {props.id} | Status: {props.status} | Closing Date:{" "}
             {props.end_date}
           </Typography>
+          {props.roleMatchData.has_applied ? (
+            <span className="rounded-full bg-green-500 px-4 py-1 text-white">
+              Applied
+            </span>
+          ) : null}
 
           <Typography variant="h6" gutterBottom style={{ marginTop: "3%" }}>
             <b>
@@ -70,6 +128,12 @@ const RoleListing = (props: Roles) => {
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
                 Skills Required [Matched Skills:{" "}
                 {props.roleMatchData.skills_match_count}/
+                {props.roleMatchData.skills_matched.length +
+                  props.roleMatchData.skills_unmatched.length}{" "}
+                ({props.roleMatchData.skills_match_pct * 100}%)] Skills Required
+                [Matched Skills: {props.roleMatchData.skills_match_count} (
+                {props.roleMatchData.skills_match_pct}%)] Skills Required
+                [Matched Skills: {props.roleMatchData.skills_match_count}/
                 {props.roleMatchData.skills_matched.length +
                   props.roleMatchData.skills_unmatched.length}{" "}
                 ({props.roleMatchData.skills_match_pct * 100}%)]
@@ -113,13 +177,63 @@ const RoleListing = (props: Roles) => {
             </DialogActions>
           </Dialog>
 
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: "20px" }}
-          >
-            Apply Now
-          </Button>
+          {props.roleMatchData.has_applied ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginTop: "20px" }}
+              onClick={handleWithdrawOpen}
+              disabled={props.status !== "OPEN"}
+            >
+              Withdraw Application
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "20px" }}
+              onClick={handleApplyOpen}
+              disabled={props.status !== "OPEN"}
+            >
+              Apply Now
+            </Button>
+          )}
+
+          <Dialog open={openApply} onClose={handleApplyClose}>
+            <DialogTitle></DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Click on the Submit button if you confirm your application
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleApplySubmit}
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog open={openWithdraw} onClose={handleWithdrawClose}>
+            <DialogTitle></DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to withdraw your application?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleWithdrawSubmit}
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           <Button
             variant="contained"
@@ -131,6 +245,17 @@ const RoleListing = (props: Roles) => {
             onClick={handleBackToListings}
           >
             Back to Listings
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              marginTop: "20px",
+              marginLeft: "10px",
+            }}
+            onClick={handleEditListing}
+          >
+            Edit Role Listing
           </Button>
         </div>
       </div>
