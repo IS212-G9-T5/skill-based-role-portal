@@ -256,3 +256,31 @@ def patch_role_listing(id: int):
     res["listing"] = listing.json()
     res["has_applied"] = user in listing.applicants
     return jsonify(res), 200
+
+
+@api.route("/listings/relevant", methods=["GET"])
+@jwt_required()
+def find_relevant_listings_by_skills_matched():
+    current_user_id = get_jwt_identity()
+    user = staff_service.find_by_id(current_user_id)
+    if user is None:
+        return jsonify(msg="User not found."), 404
+
+    user_skills = [s.name for s in user.skills] if user.skills is not None else []
+
+    limit = request.args.get("limit", 10, type=int) or 10
+    limit = limit if limit > 0 else 10
+
+    listings = role_listing_service.find_by_most_matched_skills(user_skills, limit)
+    print(f"number of listings: {len(listings)}")
+    res = []
+    for listing in listings:
+        data = role_listing_service.compute_skills_match_data(user, listing)
+
+        data["listing"] = listing.json()
+        res.append(data)
+
+    # sort listings in descending order of skills match count
+    res.sort(key=lambda r: r["skills_match_pct"], reverse=True)
+
+    return jsonify({"listings": res}), 200

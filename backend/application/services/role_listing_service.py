@@ -6,6 +6,7 @@ from sqlalchemy import select
 from application.models.role_skill import role_skills
 from application.models.role_application import role_applications
 from application.models.staff import Staff
+from application.enums import RoleStatus
 
 
 def find_all_by_role_and_skills_paginated(
@@ -106,3 +107,44 @@ def delete_role_application(role_listing_id: int, staff_id: int):
     )
     db.session.execute(stmt)
     db.session.commit()
+
+
+def find_by_most_matched_skills(
+    skills_to_filter: List[str], limit: int = 10
+) -> List[RoleListing]:
+    open_listings = (
+        select(RoleListing.role_name)
+        .where(
+            RoleListing.start_date <= db.func.current_date(),
+            db.func.current_date() <= RoleListing.end_date,
+            RoleListing.status == RoleStatus.OPEN.value,
+        )
+        .distinct(RoleListing.role_name)
+    )
+
+    best_matched_roles = (
+        select(RoleListing.role_name)
+        .join(role_skills, RoleListing.role_name == role_skills.c.role_name)
+        .where(
+            role_skills.c.role_name.in_(open_listings),
+            role_skills.c.skill_name.in_(skills_to_filter),
+        )
+        .group_by(RoleListing.role_name)
+        .order_by(
+            (
+                db.func.count(db.func.distinct(role_skills.c.skill_name))
+                / len(skills_to_filter)
+            ).desc()
+        )
+        .limit(limit)
+    )
+    stmt = (
+        select(RoleListing)
+        .distinct(RoleListing.role_name)  # return role listings with unique role names
+        .where(
+            RoleListing.role_name.in_(best_matched_roles),
+        )
+    )
+
+    res = db.session.execute(stmt).scalars().all()
+    return res
