@@ -22,28 +22,27 @@ def login():
     # Use id to retrieve role
     id = request.json.get("staffId", None)
     # password = request.json.get("password", None)
-    results = staff_service.find_by_id(id)
+    user = staff_service.find_by_id(id)
 
-    if results is None:
+    if user is None:
         abort(404, description=f"Staff with {id} not found.")
-    data = results.json()
 
-    if data["id"] != id:
-        return jsonify({"msg": "user is not registered in system"}), 400
+    role = (
+        None
+        if user.access_control is None
+        else user.access_control.json().get("name", None)
+    )
 
     # Create the tokens
     access_token = create_access_token(
         identity=id,
-        additional_claims={"role": data["access_control"]},
+        additional_claims={"role": role},
         expires_delta=timedelta(hours=4),
     )
     refresh_token = create_refresh_token(identity=id)
 
     # Set the JWTs and the CSRF double submit protection cookies in this response
-    data = {
-        "status": "success",
-        "role": data["access_control"],
-    }
+    data = {"status": "success", "role": role}
     resp = jsonify(data)
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)

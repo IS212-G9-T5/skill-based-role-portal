@@ -69,7 +69,7 @@ def find_one_random() -> Optional[RoleListing]:
     return res
 
 
-def construct_indiv_role_listing_dto(staff: Staff, listing: RoleListing):
+def compute_skills_match_data(staff: Staff, listing: RoleListing):
     staff_skills = set(staff.skills)
 
     listing_skills = listing.role.skills
@@ -81,12 +81,10 @@ def construct_indiv_role_listing_dto(staff: Staff, listing: RoleListing):
     skills_match_pct = round(skills_match_count / len(skills_required), 2)
 
     res = {
-        "listing": listing.json(),
         "skills_matched": [s.json() for s in skills_matched],
         "skills_unmatched": [s.json() for s in skills_unmatched],
         "skills_match_count": skills_match_count,
         "skills_match_pct": skills_match_pct,
-        "has_applied": staff in listing.applicants,
     }
 
     return res

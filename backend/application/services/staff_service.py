@@ -17,17 +17,17 @@ def find_by_id(id: int) -> Optional[Staff]:
     return res
 
 
-def find_random_user() -> Optional[Staff]:
+def find_random_users(n: int = 1) -> List[Staff]:
     res = (
         db.session.execute(
             select(Staff)
             .join(AccessControl)
             .where(AccessControl.name == AccessControlRole.User.name)
             .order_by(db.func.random())
-            .limit(1)
+            .limit(n)
         )
         .scalars()
-        .first()
+        .all()
     )
 
     return res
