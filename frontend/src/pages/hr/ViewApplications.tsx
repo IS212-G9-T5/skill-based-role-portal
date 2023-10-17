@@ -5,8 +5,8 @@ const ViewApplications = () => {
   const navbarProps: NavBar = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
-      { label: "View Applications", to: "/all-role-listing" },
-      { label: "Create Listings", to: "/profile" },
+      { label: "View Applications", to: "/view-applications" },
+      { label: "Create Listings", to: "/create-role-listing" },
       { label: "Logout", to: "/" },
     ],
   }
@@ -15,7 +15,7 @@ const ViewApplications = () => {
       <StaffNavbar {...navbarProps} />
       <div className="p-10">
         <h1 className="text-2xl font-bold text-[#1976d2]">
-          Open Role Listings
+          Available Role Listings
         </h1>
         <div className="pt-4">
           <ApplicationTable />

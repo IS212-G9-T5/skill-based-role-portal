@@ -1,7 +1,7 @@
 import { DataTable } from "../data-table"
 import { columns, OpenRoleApplication } from "./columns"
 
-const data : OpenRoleApplication[] = [
+const data: OpenRoleApplication[] = [
   {
     id: "1",
     name: "Role 1",
