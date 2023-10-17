@@ -14,9 +14,6 @@ const ViewApplications = () => {
     <div>
       <StaffNavbar {...navbarProps} />
       <div className="p-10">
-        <h1 className="text-2xl font-bold text-[#1976d2]">
-          Available Role Listings
-        </h1>
         <div className="pt-4">
           <ApplicationTable />
         </div>
