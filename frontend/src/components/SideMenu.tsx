@@ -5,7 +5,7 @@ import { IconButton } from '@material-ui/core';
 import { useNavigate } from "react-router-dom"
 import { Logout } from "../api/AuthAPI"
 
-const DrawerComp = ({links}) => {
+const SideMenu = ({links}) => {
     const navigate = useNavigate()
 
     function handleButtonClick(item) {
@@ -40,4 +40,4 @@ const DrawerComp = ({links}) => {
     )
 }
 
-export default DrawerComp
+export default SideMenu

@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom"
 
 import { Logout } from "../api/AuthAPI"
-import DrawerComp from "./DrawerComp"
+import SideMenu from "./SideMenu"
 
 const Navbar = (props: NavBar) => {
   const theme = useTheme();
@@ -39,7 +39,7 @@ const Navbar = (props: NavBar) => {
           <b className="text-2xl"> {props.title} </b>
         </Typography>
 
-        {isMatch ? <><DrawerComp links={props.items}/></> :
+        {isMatch ? <><SideMenu links={props.items}/></> :
         
         <Stack spacing={6} direction="row">
           {props.items.map((item, index) => (
