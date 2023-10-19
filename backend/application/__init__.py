@@ -59,6 +59,7 @@ def register_blueprints(app: Flask):
             skills_route,
             role_route,
             auth_route,
+            profile_route,
         )
 
         # Register routes
