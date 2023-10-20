@@ -36,7 +36,7 @@ class Staff(db.Model):
         "Skill",
         secondary=staff_skills,
         back_populates="staff_with_skill",
-        lazy="subquery",
+        lazy=True,
     )
 
     applications = relationship(
