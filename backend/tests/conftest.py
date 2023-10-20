@@ -13,7 +13,8 @@ from application.models.access_control import AccessControl
 from application.models.role import Role
 from application.models.staff import Staff
 from application.models.role_listing import RoleListing
-from application.services import role_service
+from application.models.role_application import role_applications
+from application.services import role_service, role_listing_service
 
 
 @pytest.fixture(scope="session")
@@ -22,7 +23,7 @@ def app():
     return app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def db(app):
     with app.app_context():
         close_all_sessions()
@@ -223,12 +224,15 @@ def init_database(db):
     db.session.add(role_junior_engineer)
 
     db.session.commit()
+    # print("db init done")
     # endregion
 
 
 @pytest.fixture(scope="function")
 def random_user(init_database):
-    user = staff_service.find_random_user()
+    users = staff_service.find_random_users()
+    assert len(users) > 0
+    user = users[0]
     assert user is not None
     return user
 
@@ -315,3 +319,19 @@ def create_role_listings(db):
         )
         db.session.add(role_listing)
         db.session.commit()
+    # print("role listings created")
+
+
+@pytest.fixture(scope="module")
+def listing_with_applicants(db, init_database, create_role_listings) -> RoleListing:
+    # find 5 random users
+    users = staff_service.find_random_users(5)
+
+    # for each user, apply to 1 random role listing
+    listing = role_listing_service.find_one_random()
+    for user in users:
+        role_listing_service.create_role_application(
+            role_listing_id=listing.id, staff_id=user.id
+        )
+
+    return listing

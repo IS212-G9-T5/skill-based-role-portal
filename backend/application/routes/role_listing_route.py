@@ -11,6 +11,7 @@ from application.dto.role_listing import (
 )
 from application.services import staff_service
 from application.enums import RoleStatus
+from application.models.staff import Staff
 from . import api
 from application.services import (
     role_listing_service,
@@ -28,6 +29,29 @@ DEFAULT_PAGE_SIZE = 10
 @api.route("/hi", methods=["GET"])
 def hello():
     return jsonify(msg="hello world"), 200
+
+
+@api.route("/listings/<int:id>/applications", methods=["GET"])
+@admin_or_hr_required()
+def find_user_role_applications(id: int):
+    # find listing
+    listing = role_listing_service.find_by_id(id)
+    if listing is None:
+        abort(404, description=f"RoleListing {id} not found.")
+
+    # find applicants
+    applicants: List[Staff] = listing.applicants
+
+    # compute skills match data
+    res = []
+    for applicant in applicants:
+        data = role_listing_service.compute_skills_match_data(applicant, listing)
+        data["applicant"] = applicant.json()
+        res.append(data)
+
+    # sort applicants in descending order of skills match count
+    res.sort(key=lambda r: r["skills_match_pct"], reverse=True)
+    return jsonify({"applicants": res}), 200
 
 
 @api.route("/listings", methods=["GET"])
@@ -107,7 +131,10 @@ def find_listing_by_id(id: int):
     if user is None:
         return jsonify(msg="User not found."), 401
 
-    res = role_listing_service.construct_indiv_role_listing_dto(user, listing)
+    res = role_listing_service.compute_skills_match_data(user, listing)
+
+    res["listing"] = listing.json()
+    res["has_applied"] = user in listing.applicants
     return jsonify(res), 200
 
 
@@ -225,5 +252,7 @@ def patch_role_listing(id: int):
                 role_listing_id=id, staff_id=current_user_id
             )
 
-    res = role_listing_service.construct_indiv_role_listing_dto(user, listing)
+    res = role_listing_service.compute_skills_match_data(user, listing)
+    res["listing"] = listing.json()
+    res["has_applied"] = user in listing.applicants
     return jsonify(res), 200

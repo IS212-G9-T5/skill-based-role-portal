@@ -7,14 +7,7 @@ from application.models.role import Role
 from application.models.skill import Skill
 from application.models.role_listing import RoleListing
 from application.services import skill_service
-
-ENDPOINT = "/api/listings"
-
-
-# def test_stuff(db):
-#     role = Role(name="Astronaut", description="To go to space")
-#     role_service.create(role)
-#     assert role.name == "Astronaut"
+from . import LISTINGS_ENDPOINT as ENDPOINT
 
 
 # region: get individual role listing
