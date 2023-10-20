@@ -130,34 +130,32 @@ const RoleListing = (props: Roles) => {
                 {props.roleMatchData.skills_match_count}/
                 {props.roleMatchData.skills_matched.length +
                   props.roleMatchData.skills_unmatched.length}{" "}
-                ({props.roleMatchData.skills_match_pct * 100}%)] Skills Required
-                [Matched Skills: {props.roleMatchData.skills_match_count} (
-                {props.roleMatchData.skills_match_pct}%)] Skills Required
-                [Matched Skills: {props.roleMatchData.skills_match_count}/
-                {props.roleMatchData.skills_matched.length +
-                  props.roleMatchData.skills_unmatched.length}{" "}
-                ({props.roleMatchData.skills_match_pct * 100}%)]
+                ({props.roleMatchData.skills_match_pct * 100}%)] 
               </strong>
               <br></br>
-              {props.skills.map((skill, index) => (
-                <Chip
-                  key={index}
-                  label={skill}
-                  style={{ margin: "5px" }}
-                  className={`mr-[1%] mt-[1%] ${
-                    props.roleMatchData.skills_matched.find(
-                      (matchedSkill) => matchedSkill.name === skill
-                    )
-                      ? "bg-[#49d861] font-bold"
-                      : props.roleMatchData.skills_unmatched.find(
-                          (unmatchedSkill) => unmatchedSkill.name === skill
-                        )
-                      ? "bg-[#cff8db] opacity-50"
-                      : ""
-                  }`}
-                  onClick={() => handleChipClick(skill)}
-                />
-              ))}
+              {props.skills.map((skill, index) => {
+                const isMatched = props.roleMatchData.skills_matched.some(
+                  (matchedSkill) => matchedSkill.name === skill
+                );
+                const chipStyle = {
+                  marginRight: "1%",
+                  marginTop: "1%",
+                  fontWeight: isMatched ? "bold" : "normal",
+                  backgroundColor: isMatched ? "#33eb91" : "lightgray",
+                  opacity: isMatched ? 1 : 0.5,
+                  cursor: "default",
+                };
+                return (
+                  <Chip
+                    key={index}
+                    label={skill}
+                    className="mr-[1%] mt-[1%]"
+                    style={chipStyle}
+                    // disabled={!isMatched}
+                    onClick={() => handleChipClick(skill)}
+                  />
+                );
+              })}
             </Typography>
           </Grid>
 
@@ -180,7 +178,7 @@ const RoleListing = (props: Roles) => {
           {props.roleMatchData.has_applied ? (
             <Button
               variant="contained"
-              color="secondary"
+              color="error"
               style={{ marginTop: "20px" }}
               onClick={handleWithdrawOpen}
               disabled={props.status !== "OPEN"}
@@ -190,7 +188,7 @@ const RoleListing = (props: Roles) => {
           ) : (
             <Button
               variant="contained"
-              color="primary"
+              color="success"
               style={{ marginTop: "20px" }}
               onClick={handleApplyOpen}
               disabled={props.status !== "OPEN"}
@@ -203,6 +201,8 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
+                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you sure you want to apply for this role?</p> 
+                <br />
                 Click on the Submit button if you confirm your application
               </DialogContentText>
             </DialogContent>
@@ -221,7 +221,9 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to withdraw your application?
+                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you   sure you want to withdraw your application?</p> 
+                <br />
+                Click on the Submit button if you confirm your application withdrawal
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -237,7 +239,7 @@ const RoleListing = (props: Roles) => {
 
           <Button
             variant="contained"
-            color="secondary"
+            color="info"
             style={{
               marginTop: "20px",
               marginLeft: "10px",
@@ -248,7 +250,7 @@ const RoleListing = (props: Roles) => {
           </Button>
           <Button
             variant="contained"
-            color="primary"
+            color="warning"
             style={{
               marginTop: "20px",
               marginLeft: "10px",

@@ -9,7 +9,7 @@ declare global {
     skills: string[]
     userSkills: SkillObject[]
     roleMatchData: RoleMatch
-  }
+  } 
 
   type RoleApplication = {
     status: string
@@ -55,6 +55,15 @@ declare global {
     pages: number
     size: number
     total: number
+  }
+
+  type UserProfile = {
+    country: string
+    dept: string
+    email: string
+    fname: string
+    lname: string
+    skills: SkillObject[]
   }
 }
 
