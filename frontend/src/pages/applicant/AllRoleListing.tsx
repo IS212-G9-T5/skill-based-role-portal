@@ -18,6 +18,8 @@ const AllRoleListing: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [searchRoleName, setSearchRoleName] = useState("")
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({})
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
 
   const location = useLocation()
   const query = new URLSearchParams(location.search)
@@ -35,10 +37,10 @@ const AllRoleListing: React.FC = () => {
 
   const fetchData = async (page, roleName = "") => {
     // Make a request for the current page with roleName filter
-    const res = await getRoleListings(page, listingsPerPage, roleName)
+    const res = await getRoleListings(page, listingsPerPage, roleName, selectedSkills);
 
     if (res) {
-      setData(res.items)
+      setData(res.items);
       setTotalListings(res.total)
 
       // Calculate the total pages based on the filtered results
@@ -47,23 +49,27 @@ const AllRoleListing: React.FC = () => {
   }
 
   useEffect(() => {
-    fetchData(currentPage, searchRoleName)
-  }, [currentPage, searchRoleName])
+    fetchData(currentPage, searchRoleName);
+  }, [currentPage, searchRoleName, selectedSkills]);
 
+  // reset activeFilter when all checkboxes are unchecked
   useEffect(() => {
-    // Append the searchRoleName to the URL
-    const searchParams = new URLSearchParams()
-    searchParams.set("page", currentPage.toString())
-    searchParams.set("size", listingsPerPage.toString())
-
-    if (searchRoleName) {
-      searchParams.set("role", searchRoleName.toLowerCase()) // Convert to lowercase
-    } else {
-      searchParams.delete("role") // Remove the role parameter if no search term
+    const areAllFiltersUnchecked = Object.values(activeFilter).every(
+      (value) => !value
+    );
+    if (areAllFiltersUnchecked) {
+      setActiveFilter({});
     }
+  }, [activeFilter]);
 
-    window.history.pushState({}, "", `?${searchParams.toString()}`)
-  }, [searchRoleName, currentPage])
+  // Update the setSelectedSkills function to clear activeFilter
+  // const handleSetSelectedSkills = (newSkills: string[]) => {
+  //   setSelectedSkills(newSkills);
+  //   if (newSkills.length === 0) {
+  //     setActiveFilter({});
+  //   }
+  // };
+
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
@@ -99,6 +105,8 @@ const AllRoleListing: React.FC = () => {
           <Filter
             activeFilter={activeFilter}
             setActiveFilter={setActiveFilter}
+            selectedSkills={selectedSkills}
+            setSelectedSkills={setSelectedSkills}
           />
         </div>
 

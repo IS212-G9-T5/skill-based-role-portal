@@ -16,9 +16,13 @@ interface SkillCollection {
 const Filter = ({
   activeFilter,
   setActiveFilter,
+  selectedSkills,
+  setSelectedSkills,
 }: {
   activeFilter: Record<string, boolean>
   setActiveFilter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+  selectedSkills: string[];
+  setSelectedSkills: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
   const data = useSelector(
     (state: { skill: { collections: SkillCollection[] } }) =>
@@ -32,6 +36,11 @@ const Filter = ({
         [text]: event.target.checked,
       }
       setActiveFilter(updatedFilter)
+      if (event.target.checked) {
+        setSelectedSkills([...selectedSkills, text]);
+      } else {
+        setSelectedSkills(selectedSkills.filter((skill) => skill !== text));
+      }
     }
 
   const uniqueSkills = [
