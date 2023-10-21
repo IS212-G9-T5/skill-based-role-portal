@@ -1,75 +1,59 @@
-import React, { useEffect, useState } from "react"
-import { Pagination } from "@mui/material"
-import Lottie from "react-lottie"
-import { Link, useLocation } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { Pagination } from "@mui/material";
+import Lottie from "react-lottie";
+import { Link, useLocation } from "react-router-dom";
 
-import { getRoleListings } from "../../api/RoleListingAPI"
-import animationData from "../../assets/animation_lngbtih0.json"
-import Filter from "../../components/Filter"
-import Navbar from "../../components/Navbar"
-import Role from "../../components/Role"
-import Search from "../../components/Search"
+import { getRoleListings } from "../../api/RoleListingAPI";
+import animationData from "../../assets/animation_lngbtih0.json";
+import Filter from "../../components/Filter";
+import Navbar from "../../components/Navbar";
+import Role from "../../components/Role";
+import Search from "../../components/Search";
 
 const AllRoleListing: React.FC = () => {
-  const [data, setData] = useState([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalListings, setTotalListings] = useState(0)
-  const listingsPerPage = 10
-  const [totalPages, setTotalPages] = useState(1)
-  const [searchRoleName, setSearchRoleName] = useState("")
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({})
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalListings, setTotalListings] = useState(0);
+  const listingsPerPage = 10;
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchRoleName, setSearchRoleName] = useState("");
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({});
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
-
-  const location = useLocation()
-  const query = new URLSearchParams(location.search)
-  const initialPage = parseInt(query.get("page") || "1", 10)
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const initialPage = parseInt(query.get("page") || "1", 10);
 
   const handleClearFilters = () => {
-    setActiveFilter({})
-  }
+    setActiveFilter({});
+  };
 
   useEffect(() => {
-    setCurrentPage(initialPage)
-    fetchData(initialPage, searchRoleName)
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }, [initialPage, searchRoleName])
+    setCurrentPage(initialPage);
+    fetchData(initialPage, searchRoleName);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [initialPage, searchRoleName]);
 
   const fetchData = async (page, roleName = "") => {
-    // Make a request for the current page with roleName filter
     const res = await getRoleListings(page, listingsPerPage, roleName, selectedSkills);
 
     if (res) {
       setData(res.items);
-      setTotalListings(res.total)
-
-      // Calculate the total pages based on the filtered results
-      setTotalPages(Math.ceil(res.total / listingsPerPage))
+      setTotalListings(res.total);
+      setTotalPages(Math.ceil(res.total / listingsPerPage));
     }
-  }
+  };
 
   useEffect(() => {
     fetchData(currentPage, searchRoleName);
   }, [currentPage, searchRoleName, selectedSkills]);
 
-  // reset activeFilter when all checkboxes are unchecked
   useEffect(() => {
-    const areAllFiltersUnchecked = Object.values(activeFilter).every(
-      (value) => !value
-    );
+    const areAllFiltersUnchecked = Object.values(activeFilter).every((value) => !value);
     if (areAllFiltersUnchecked) {
       setActiveFilter({});
     }
   }, [activeFilter]);
-
-  // Update the setSelectedSkills function to clear activeFilter
-  // const handleSetSelectedSkills = (newSkills: string[]) => {
-  //   setSelectedSkills(newSkills);
-  //   if (newSkills.length === 0) {
-  //     setActiveFilter({});
-  //   }
-  // };
-
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
@@ -78,7 +62,7 @@ const AllRoleListing: React.FC = () => {
       { label: "View Profile", to: "/profile" },
       { label: "Logout", to: "/" },
     ],
-  }
+  };
 
   return (
     <>
@@ -86,10 +70,10 @@ const AllRoleListing: React.FC = () => {
         <Navbar {...navbarProps} />
       </div>
 
-      <div className="flex">
-        {/* Left Panel */}
-        <div className="sticky top-0 flex h-screen w-1/4 flex-col overflow-y-auto p-4">
-          <div className="flex items-center justify-between pt-[8%]">
+      <div className="flex flex-col lg:flex-row">
+        {/* Filter Panel */}
+        <div className="lg:w-1/4 lg:sticky lg:top-0 p-4">
+          <div className="flex items-center justify-between">
             <h2 className="font-bold">Filter by skills:</h2>
             <button
               className={`rounded p-2 text-sm ${
@@ -110,8 +94,8 @@ const AllRoleListing: React.FC = () => {
           />
         </div>
 
-        {/* Right Panel */}
-        <div className="w-3/4 overflow-y-auto p-4">
+        {/* Main Content */}
+        <div className="lg:w-3/4 p-4">
           <div className="pl-[5%] pr-[5%] pt-[2%]">
             <Search setSearchRoleName={setSearchRoleName} />
           </div>
@@ -121,7 +105,7 @@ const AllRoleListing: React.FC = () => {
             </h1>
           </div>
           <div className="transform rounded-lg bg-white p-4 shadow-md transition-transform">
-            {data.length === 0 ? ( // Check if there are no filtered results
+            {data.length === 0 ? (
               <div>
                 <Lottie
                   options={{
@@ -137,18 +121,12 @@ const AllRoleListing: React.FC = () => {
                 />
                 <div className="text-center">
                   <p className="pt-5">No results found.</p>
-                  <p>
-                    Please try other search terms or remove selected filters.
-                  </p>
+                  <p>Please try other search terms or remove selected filters.</p>
                 </div>
               </div>
             ) : (
-              // Render the filtered data
               data.map((item) => (
-                <Link
-                  key={item.listing.id}
-                  to={`/role-listing/${item.listing.id}`}
-                >
+                <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
                   <Role
                     key={item.listing.id}
                     id={item.listing.id}
@@ -163,14 +141,14 @@ const AllRoleListing: React.FC = () => {
                 </Link>
               ))
             )}
-            {data.length > 0 && ( // Display pagination only when there are results
+            {data.length > 0 && (
               <Pagination
                 className="flex justify-center pt-[2%]"
                 count={totalPages}
                 page={currentPage}
                 onChange={(_, newPage) => {
                   if (typeof newPage === "number") {
-                    setCurrentPage(newPage)
+                    setCurrentPage(newPage);
                   }
                 }}
               />
@@ -179,7 +157,7 @@ const AllRoleListing: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AllRoleListing
+export default AllRoleListing;
