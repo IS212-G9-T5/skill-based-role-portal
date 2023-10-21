@@ -1,41 +1,45 @@
-import React, { useState } from "react";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
-import Button from "@mui/material/Button";
-import { useSelector } from "react-redux";
+import React, { useState } from "react"
+import Button from "@mui/material/Button"
+import Checkbox from "@mui/material/Checkbox"
+import Divider from "@mui/material/Divider"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemText from "@mui/material/ListItemText"
+import { useSelector } from "react-redux"
 
 interface SkillCollection {
   listing: {
-    skills: string[];
-  };
+    skills: string[]
+  }
 }
 
 const Filter = ({
   activeFilter,
   setActiveFilter,
 }: {
-  activeFilter: Record<string, boolean>;
-  setActiveFilter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  activeFilter: Record<string, boolean>
+  setActiveFilter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
 }) => {
   const data = useSelector(
-    (state: { skill: { collections: SkillCollection[] } }) => state.skill.collections
-  );
+    (state: { skill: { collections: SkillCollection[] } }) =>
+      state.skill.collections
+  )
 
-  const handleChange = (text: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedFilter = {
-      ...activeFilter,
-      [text]: event.target.checked,
-    };
-    setActiveFilter(updatedFilter);
-  };
+  const handleChange =
+    (text: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const updatedFilter = {
+        ...activeFilter,
+        [text]: event.target.checked,
+      }
+      setActiveFilter(updatedFilter)
+    }
 
-  const uniqueSkills = [...new Set(data.flatMap((c) => c.listing.skills))].sort();
+  const uniqueSkills = [
+    ...new Set(data.flatMap((c) => c.listing.skills)),
+  ].sort()
 
-  const maxSkillsToShow = 10;
-  const [showAllSkills, setShowAllSkills] = useState(false);
+  const maxSkillsToShow = 10
+  const [showAllSkills, setShowAllSkills] = useState(false)
 
   return (
     <div>
@@ -62,12 +66,16 @@ const Filter = ({
             ))}
       </List>
       {uniqueSkills.length > maxSkillsToShow && (
-        <Button onClick={() => setShowAllSkills(!showAllSkills)} color="primary" className="pl-[8%] py-1 text-sm text-blue-500">
+        <Button
+          onClick={() => setShowAllSkills(!showAllSkills)}
+          color="primary"
+          className="py-1 pl-[8%] text-sm text-blue-500"
+        >
           {showAllSkills ? "Show Less" : "Show More"}
         </Button>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Filter;
+export default Filter
