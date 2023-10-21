@@ -56,6 +56,11 @@ declare global {
     size: number
     total: number
   }
+
+  type ActiveFilter = {
+    [category: string]: boolean
+  }
+
 }
 
 export type AccessControlProps = {

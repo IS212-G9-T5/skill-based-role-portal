@@ -8,6 +8,7 @@ import animationData from "../../assets/animation_lngbtih0.json"
 import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
+import Filter from "../../components/Filter"
 
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
@@ -16,10 +17,16 @@ const AllRoleListing: React.FC = () => {
   const listingsPerPage = 10
   const [totalPages, setTotalPages] = useState(1)
   const [searchRoleName, setSearchRoleName] = useState("")
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({})
 
   const location = useLocation()
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)
+
+
+  const handleClearFilters = () => {
+    setActiveFilter({})
+  }
 
   useEffect(() => {
     setCurrentPage(initialPage)
@@ -73,6 +80,32 @@ const AllRoleListing: React.FC = () => {
       <div>
         <Navbar {...navbarProps} />
       </div>
+
+      <div className="flex">
+        {/* Left Panel */}
+        <div className="sticky top-0 flex h-screen w-1/4 flex-col overflow-y-auto p-4">
+          <div className="flex items-center justify-between pt-[8%]">
+            <h2 className="font-bold">Filter by skills:</h2>
+            <button
+              className={`rounded p-2 text-sm ${
+                Object.values(activeFilter).some((value) => value === true)
+                  ? "text-blue-500"
+                  : "text-gray-400"
+              }`}
+              onClick={handleClearFilters}
+            >
+              Clear
+            </button>
+          </div>
+          <Filter
+            activeFilter={activeFilter}
+            setActiveFilter={setActiveFilter}
+          />
+        </div>
+
+         {/* Right Panel */}
+         <div className="w-3/4 overflow-y-auto p-4">
+
       <div className="pl-[5%] pr-[5%] pt-[2%]">
         <Search setSearchRoleName={setSearchRoleName} />
       </div>
@@ -132,6 +165,8 @@ const AllRoleListing: React.FC = () => {
           />
         )}
       </div>
+      </div>
+    </div>
     </>
   )
 }
