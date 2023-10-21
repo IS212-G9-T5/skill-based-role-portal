@@ -6,12 +6,18 @@ import {
   Stack,
   Toolbar,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 
 import { Logout } from "../api/AuthAPI"
+import SideMenu from "./SideMenu"
 
 const Navbar = (props: NavBar) => {
+  const theme = useTheme();
+  const isMatch = useMediaQuery(theme.breakpoints.down('md'));
+
   const navigate = useNavigate()
 
   function handleButtonClick(item) {
@@ -32,6 +38,9 @@ const Navbar = (props: NavBar) => {
         <Typography variant="h5" component="div" className="flex flex-grow">
           <b className="text-2xl"> {props.title} </b>
         </Typography>
+
+        {isMatch ? <><SideMenu links={props.items}/></> :
+        
         <Stack spacing={6} direction="row">
           {props.items.map((item, index) => (
             <Button color="inherit" key={index}>
@@ -40,7 +49,10 @@ const Navbar = (props: NavBar) => {
               </b>
             </Button>
           ))}
-        </Stack>
+        </Stack>}
+
+        
+        
       </Toolbar>
     </AppBar>
   )
