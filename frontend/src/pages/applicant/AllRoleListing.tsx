@@ -1,59 +1,66 @@
-import React, { useEffect, useState } from "react";
-import { Pagination } from "@mui/material";
-import Lottie from "react-lottie";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { Pagination } from "@mui/material"
+import Lottie from "react-lottie"
+import { Link, useLocation } from "react-router-dom"
 
-import { getRoleListings } from "../../api/RoleListingAPI";
-import animationData from "../../assets/animation_lngbtih0.json";
-import Filter from "../../components/Filter";
-import Navbar from "../../components/Navbar";
-import Role from "../../components/Role";
-import Search from "../../components/Search";
+import { getRoleListings } from "../../api/RoleListingAPI"
+import animationData from "../../assets/animation_lngbtih0.json"
+import Filter from "../../components/Filter"
+import Navbar from "../../components/Navbar"
+import Role from "../../components/Role"
+import Search from "../../components/Search"
 
 const AllRoleListing: React.FC = () => {
-  const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalListings, setTotalListings] = useState(0);
-  const listingsPerPage = 10;
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchRoleName, setSearchRoleName] = useState("");
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({});
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [data, setData] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalListings, setTotalListings] = useState(0)
+  const listingsPerPage = 10
+  const [totalPages, setTotalPages] = useState(1)
+  const [searchRoleName, setSearchRoleName] = useState("")
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({})
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const initialPage = parseInt(query.get("page") || "1", 10);
+  const location = useLocation()
+  const query = new URLSearchParams(location.search)
+  const initialPage = parseInt(query.get("page") || "1", 10)
 
   const handleClearFilters = () => {
-    setActiveFilter({});
-  };
+    setActiveFilter({})
+  }
 
   useEffect(() => {
-    setCurrentPage(initialPage);
-    fetchData(initialPage, searchRoleName);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [initialPage, searchRoleName]);
+    setCurrentPage(initialPage)
+    fetchData(initialPage, searchRoleName)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [initialPage, searchRoleName])
 
   const fetchData = async (page, roleName = "") => {
-    const res = await getRoleListings(page, listingsPerPage, roleName, selectedSkills);
+    const res = await getRoleListings(
+      page,
+      listingsPerPage,
+      roleName,
+      selectedSkills
+    )
 
     if (res) {
-      setData(res.items);
-      setTotalListings(res.total);
-      setTotalPages(Math.ceil(res.total / listingsPerPage));
+      setData(res.items)
+      setTotalListings(res.total)
+      setTotalPages(Math.ceil(res.total / listingsPerPage))
     }
-  };
+  }
 
   useEffect(() => {
-    fetchData(currentPage, searchRoleName);
-  }, [currentPage, searchRoleName, selectedSkills]);
+    fetchData(currentPage, searchRoleName)
+  }, [currentPage, searchRoleName, selectedSkills])
 
   useEffect(() => {
-    const areAllFiltersUnchecked = Object.values(activeFilter).every((value) => !value);
+    const areAllFiltersUnchecked = Object.values(activeFilter).every(
+      (value) => !value
+    )
     if (areAllFiltersUnchecked) {
-      setActiveFilter({});
+      setActiveFilter({})
     }
-  }, [activeFilter]);
+  }, [activeFilter])
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
@@ -62,7 +69,7 @@ const AllRoleListing: React.FC = () => {
       { label: "View Profile", to: "/profile" },
       { label: "Logout", to: "/" },
     ],
-  };
+  }
 
   return (
     <>
@@ -72,7 +79,7 @@ const AllRoleListing: React.FC = () => {
 
       <div className="flex flex-col lg:flex-row">
         {/* Filter Panel */}
-        <div className="lg:w-1/4 lg:sticky lg:top-0 p-4">
+        <div className="p-4 lg:sticky lg:top-0 lg:w-1/4">
           <div className="flex items-center justify-between">
             <h2 className="font-bold">Filter by skills:</h2>
             <button
@@ -95,7 +102,7 @@ const AllRoleListing: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="lg:w-3/4 p-4">
+        <div className="p-4 lg:w-3/4">
           <div className="pl-[5%] pr-[5%] pt-[2%]">
             <Search setSearchRoleName={setSearchRoleName} />
           </div>
@@ -121,12 +128,17 @@ const AllRoleListing: React.FC = () => {
                 />
                 <div className="text-center">
                   <p className="pt-5">No results found.</p>
-                  <p>Please try other search terms or remove selected filters.</p>
+                  <p>
+                    Please try other search terms or remove selected filters.
+                  </p>
                 </div>
               </div>
             ) : (
               data.map((item) => (
-                <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
+                <Link
+                  key={item.listing.id}
+                  to={`/role-listing/${item.listing.id}`}
+                >
                   <Role
                     key={item.listing.id}
                     id={item.listing.id}
@@ -148,7 +160,7 @@ const AllRoleListing: React.FC = () => {
                 page={currentPage}
                 onChange={(_, newPage) => {
                   if (typeof newPage === "number") {
-                    setCurrentPage(newPage);
+                    setCurrentPage(newPage)
                   }
                 }}
               />
@@ -157,7 +169,7 @@ const AllRoleListing: React.FC = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default AllRoleListing;
+export default AllRoleListing

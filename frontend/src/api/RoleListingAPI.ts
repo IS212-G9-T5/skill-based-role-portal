@@ -17,8 +17,8 @@ export const getRoleListings = async (
 
   if (skills && skills.length > 0) {
     skills.forEach((skill) => {
-      url += `&skills=${encodeURIComponent(skill)}`;
-    });
+      url += `&skills=${encodeURIComponent(skill)}`
+    })
   }
 
   console.log(url)

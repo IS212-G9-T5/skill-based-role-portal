@@ -21,8 +21,8 @@ const Filter = ({
 }: {
   activeFilter: Record<string, boolean>
   setActiveFilter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
-  selectedSkills: string[];
-  setSelectedSkills: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSkills: string[]
+  setSelectedSkills: React.Dispatch<React.SetStateAction<string[]>>
 }) => {
   const data = useSelector(
     (state: { skill: { collections: SkillCollection[] } }) =>
@@ -37,9 +37,9 @@ const Filter = ({
       }
       setActiveFilter(updatedFilter)
       if (event.target.checked) {
-        setSelectedSkills([...selectedSkills, text]);
+        setSelectedSkills([...selectedSkills, text])
       } else {
-        setSelectedSkills(selectedSkills.filter((skill) => skill !== text));
+        setSelectedSkills(selectedSkills.filter((skill) => skill !== text))
       }
     }
 
