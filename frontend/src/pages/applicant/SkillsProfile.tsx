@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import Button from "@mui/material/Button"
 import Chip from "@mui/material/Chip"
@@ -76,7 +77,7 @@ const SkillsProfile = () => {
   }, [matchLimit]);
 
   // Have the next line accept make profileDetails into type of UserProfile
-  const [profileDetails, setProfileDetails] = useState<UserProfile>(null);
+  const [profileDetails, setProfileDetails] = useState<any>([]);
 
   const fetchProfile = async () => {
     const response = await getUserProfile();
