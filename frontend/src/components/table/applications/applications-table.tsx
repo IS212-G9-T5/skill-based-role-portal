@@ -1,57 +1,50 @@
+import { useEffect, useState } from "react"
+
+import { getAvailableListings } from "../../.../../../api/ApplicationsAPI"
 import { DataTable } from "../data-table"
 import { columns, OpenRoleApplication } from "./columns"
 
-const data: OpenRoleApplication[] = [
-  {
-    id: "1",
-    name: "Role 1",
-    description: "Description 1",
-    start_date: "2021-01-01",
-    end_date: "2021-01-01",
-    status: "Open",
-    applicants: "View Applicants",
-  },
-  {
-    id: "2",
-    name: "Role 2",
-    description: "Description 2",
-    start_date: "2021-01-01",
-    end_date: "2021-01-01",
-    status: "Open",
-    applicants: "View Applicants",
-  },
-  {
-    id: "3",
-    name: "Role 3",
-    description: "Description 3",
-    start_date: "2021-01-01",
-    end_date: "2021-01-01",
-    status: "Open",
-    applicants: "View Applicants",
-  },
-  {
-    id: "4",
-    name: "Role 4",
-    description: "Description 4",
-    start_date: "2021-01-01",
-    end_date: "2021-01-01",
-    status: "Closed",
-    applicants: "View Applicants",
-  },
-  {
-    id: "5",
-    name: "Role 5",
-    description: "Description 5",
-    start_date: "2021-01-01",
-    end_date: "2021-01-01",
-    status: "Closed",
-    applicants: "View Applicants",
-  },
-]
 const ApplicationTable = () => {
+  const [data, setData] = useState<OpenRoleApplication[]>([])
+  const [totalPages, setTotalPages] = useState(0)
+  const handleTotalPagesChange = (newTotalPages: number) => {
+    setTotalPages(newTotalPages)
+  }
+  const size = 200
+
+  const fetchData = async (page: number, size: number) => {
+    const res = await getAvailableListings(page, size)
+    if (res) {
+      const filteredData: OpenRoleApplication[] = []
+
+      for (let i = 0; i < res.items.length; i++) {
+        const item = res.items[i]
+        const temp: OpenRoleApplication = {
+          id: item.id,
+          name: item.role.name,
+          description: item.role.description,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          status: item.status,
+        }
+        filteredData.push(temp)
+      }
+
+      setData(filteredData)
+    }
+  }
+
+  useEffect(() => {
+    fetchData(totalPages, size)
+  }, [])
+
   return (
     <div>
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        columns={columns}
+        data={data}
+        onTotalPagesChange={handleTotalPagesChange}
+      />
     </div>
   )
 }

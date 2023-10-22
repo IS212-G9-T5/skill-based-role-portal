@@ -11,7 +11,6 @@ export type OpenRoleApplication = {
   start_date: string
   end_date: string
   status: "Open" | "Closed"
-  applicants: string
 }
 
 export const columns: ColumnDef<OpenRoleApplication>[] = [
@@ -87,16 +86,16 @@ export const columns: ColumnDef<OpenRoleApplication>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const user = row.original
+      const role = row.original
       const navigate = useNavigate()
       return (
         <div className="flex gap-4">
           <EditIcon
-            onClick={() => navigate(`/update-role-listing/${user.id}`)}
+            onClick={() => navigate(`/update-role-listing/${role.id}`)}
             className="h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
           <PersonIcon
-            onClick={() => navigator.clipboard.writeText(user.id)}
+            onClick={() => navigate(`/view-applicants/${role.id}`)}
             className="mr-2 h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
         </div>

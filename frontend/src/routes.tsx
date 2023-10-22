@@ -7,6 +7,7 @@ import ViewRoleListing from "./pages/applicant/main"
 import SkillsProfile from "./pages/applicant/SkillsProfile"
 import CreateRoleListing from "./pages/hr/CreateRoleListing"
 import UpdateRoleListing from "./pages/hr/UpdateRoleListing"
+import ViewApplicants from "./pages/hr/ViewApplicants"
 import ViewApplications from "./pages/hr/ViewApplications"
 import LoginForm from "./pages/login"
 
@@ -148,6 +149,26 @@ const routes: RouteObject[] = [
         )}
       >
         <ViewApplications />
+      </AccessControl>
+    ),
+  },
+  {
+    path: "view-applicants/:id",
+    element: (
+      <AccessControl
+        userPermissions={role ? role : ""}
+        allowedPermissions={["Admin", "Manager", "HR"]}
+        renderNoAccess={() => (
+          <div className="p-5">
+            You do not have permission to access this page. Please proceed to{" "}
+            {""}
+            <Link to="/" className="font-medium text-blue-600 hover:underline">
+              log in
+            </Link>
+          </div>
+        )}
+      >
+        <ViewApplicants />
       </AccessControl>
     ),
   },

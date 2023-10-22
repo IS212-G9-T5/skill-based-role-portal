@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -24,14 +24,21 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onTotalPagesChange: (newTotalPages: number) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onTotalPagesChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  useEffect(() => {
+    const newTotalPages = table.getPageCount()
+    onTotalPagesChange(newTotalPages)
+  }, [data])
 
   const table = useReactTable({
     data,
@@ -86,19 +93,28 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={
+                          cell.column.id === "description"
+                            ? "h-[3.6em] max-w-[150px] overflow-hidden truncate"
+                            : ""
+                        }
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </>
               ))
             ) : (
               <TableRow>
