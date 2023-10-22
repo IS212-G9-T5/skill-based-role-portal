@@ -32,7 +32,7 @@ const RoleCard = (role: OpenRoleApplication) => {
               </div>
             </div>
           </div>
-          <div className="mb-2 text-base text-sm text-gray-700 sm:text-base">
+          <div className="mb-2 md:text-base text-sm text-gray-700 sm:text-base">
             <span
               className={`${isExpanded ? "" : "line-clamp-3 overflow-hidden"}`}
             >
@@ -49,7 +49,7 @@ const RoleCard = (role: OpenRoleApplication) => {
             {role.skills.map((skill) => (
               <span
                 key={skill}
-                className="mb-2 mr-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-sm text-xs text-blue-700 sm:text-sm"
+                className="mb-2 mr-2 inline-block rounded-full bg-blue-100 px-3 py-1 md:text-sm text-xs text-blue-700 sm:text-sm"
               >
                 {skill}
               </span>
