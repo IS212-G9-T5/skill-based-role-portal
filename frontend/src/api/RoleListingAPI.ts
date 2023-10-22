@@ -8,7 +8,7 @@ export const getRoleListings = async (
   roleName?: string,
   skills?: string[]
 ): Promise<RoleListings> => {
-  // Construct the URL conditionally based on the presence of roleName
+
   let url = `/api/listings?page=${page}&size=${size}`
 
   if (roleName) {

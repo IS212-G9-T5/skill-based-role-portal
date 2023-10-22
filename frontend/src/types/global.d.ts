@@ -60,6 +60,7 @@ declare global {
   type ActiveFilter = {
     [category: string]: boolean
   }
+  
 }
 
 export type AccessControlProps = {
