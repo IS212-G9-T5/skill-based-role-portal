@@ -4,7 +4,7 @@ const ApplicantCardBottom = (application: Application) => {
       {application.skills_matched && application.skills_matched.length > 0 ? (
         <span className="inline-block w-full overflow-hidden text-ellipsis align-top">
           {application.skills_matched.map((skill) => (
-            <div className="mr-1 inline-block">
+            <div key={skill.name} className="mr-1 inline-block">
               <div className="rounded-[5px] bg-slate-100 text-slate-500">
                 <div className="px-2 py-1.5 font-mono font-black">
                   {skill.name}

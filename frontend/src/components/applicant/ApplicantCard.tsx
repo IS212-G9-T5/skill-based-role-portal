@@ -11,7 +11,7 @@ const ApplicantCard = ({
   selectedApplicant,
 }: {
   application: Application
-  setSelectedApplicant: Function
+  setSelectedApplicant: (email: string) => void
   selectedApplicant: string
 }) => {
   const isSelected = application.applicant.email === selectedApplicant

@@ -43,6 +43,7 @@ const ViewApplicants = () => {
       }
     }
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.role.id])
 
   return (

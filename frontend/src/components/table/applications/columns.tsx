@@ -88,6 +88,7 @@ export const columns: ColumnDef<OpenRoleApplication>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const role = row.original
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const navigate = useNavigate()
       return (
         <div className="flex gap-4">

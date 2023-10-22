@@ -38,6 +38,7 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     const newTotalPages = table.getPageCount()
     onTotalPagesChange(newTotalPages)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   const table = useReactTable({
