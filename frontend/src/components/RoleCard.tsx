@@ -18,7 +18,7 @@ const RoleCard = (role: OpenRoleApplication) => {
       <div className="overflow-hidden rounded-lg border-2 border-slate-200 p-4">
         <div className="px-6 py-4">
           <div className="mb-2 flex flex-wrap items-center text-lg sm:text-xl">
-            <div className="font-bold">{role.name}</div>
+            <div className="font-bold text-slate-700">{role.name}</div>
             <div className="flex items-center md:pl-4">
               <div
                 className={`${
@@ -27,12 +27,12 @@ const RoleCard = (role: OpenRoleApplication) => {
               >
                 {role.status}
               </div>
-              <div className="pl-4 text-xs text-gray-500 sm:text-sm">
+              <div className="pl-4 text-xs text-slate-500 sm:text-sm">
                 Date: {role.start_date} to {role.end_date}
               </div>
             </div>
           </div>
-          <div className="mb-2 md:text-base text-sm text-gray-700 sm:text-base">
+          <div className="mb-2 md:text-base text-sm text-slate-700 sm:text-base">
             <span
               className={`${isExpanded ? "" : "line-clamp-3 overflow-hidden"}`}
             >

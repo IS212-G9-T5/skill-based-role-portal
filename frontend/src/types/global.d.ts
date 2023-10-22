@@ -56,6 +56,22 @@ declare global {
     size: number
     total: number
   }
+
+  type Applicant = {
+    fname: string
+    lname: string
+    email: string
+    dept: string
+    country: string
+  }
+
+  type Application = {
+    applicant: Applicant
+    skills_match_count: number
+    skills_match_pct: number
+    skills_matched: SkillObject[]
+    skills_unmatched: SkillObject[]
+  }
 }
 
 export type AccessControlProps = {
