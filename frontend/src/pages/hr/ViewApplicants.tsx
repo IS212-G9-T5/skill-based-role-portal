@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import { useLocation } from "react-router-dom"
 
 import { getAllApplications } from "../../api/ApplicationsAPI"
 import ApplicantCard from "../../components/applicant/ApplicantCard"
+import ApplicantDetail from "../../components/applicant/ApplicantDetail"
 import StaffNavbar from "../../components/Navbar"
 import RoleCard from "../../components/RoleCard"
 
 const ViewApplicants = () => {
   const { state } = useLocation()
-  const [data, setData] = useState<Application[]>([])
-  const [selectedApplicant, setSelectedApplicant] = useState<string>(data[0]?.applicant.email);
-  const navbarProps: NavBar = {
+  const [data, setData] = useState([]) // Assuming Application[] type
+  const [selectedApplicant, setSelectedApplicant] = useState(null)
+  const isMobile = useMediaQuery("(max-width:1000px)")
+
+  const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
       { label: "View Applications", to: "/view-applications" },
@@ -18,14 +22,18 @@ const ViewApplicants = () => {
       { label: "Logout", to: "/" },
     ],
   }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (state.role && state.role.id) {
           const res = await getAllApplications(state.role.id)
-          if (res) {
+          if (res && res.length > 0) {
             setData(res)
-            setSelectedApplicant(res[0]?.applicant.email);
+            setSelectedApplicant(res[0]?.applicant.email)
+          } else {
+            setData([])
+            setSelectedApplicant(null)
           }
         } else {
           console.log("role id not found")
@@ -45,14 +53,18 @@ const ViewApplicants = () => {
           <div className="pb-6 text-2xl font-bold text-[#1976d2]">
             View Applicants for Application {state.role.id}
           </div>
-          <RoleCard {...state.role} />
-        </div>
-        <div>
-          <div className="pb-6 text-2xl font-bold text-[#1976d2]">
-            All Applicants
+          <div>
+            <RoleCard {...state.role} />
           </div>
-          <div className="flex gap-6">
-            <div className="flex flex-col basis-1/3">
+        </div>
+        <div className="pb-6 text-2xl font-bold text-[#1976d2]">
+          All Applicants
+        </div>
+        {data.length === 0 ? (
+          <div>No Applicants</div>
+        ) : (
+          <div className={`flex ${isMobile ? "gap-0 flex-col" : "gap-6"}`}>
+            <div className={`flex flex-col ${isMobile ? "" : "basis-1/3"}`}>
               {data.map((application) => (
                 <ApplicantCard
                   key={application.applicant.email}
@@ -62,9 +74,16 @@ const ViewApplicants = () => {
                 />
               ))}
             </div>
-            <div>More details</div>
+            <div className={`flex h-fit ${isMobile ? "" : "basis-2/3"}`}>
+              <ApplicantDetail
+                application={data.find(
+                  (application) =>
+                    application.applicant.email === selectedApplicant
+                )}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

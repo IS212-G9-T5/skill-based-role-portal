@@ -1,6 +1,7 @@
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
 import EmailIcon from "@mui/icons-material/Email"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 
 import ApplicantCardBottom from "./ApplicantCardBottom"
 
@@ -14,9 +15,10 @@ const ApplicantCard = ({
   selectedApplicant: string
 }) => {
   const isSelected = application.applicant.email === selectedApplicant
+  const isMobile = useMediaQuery("(max-width:1000px)")
   return (
     <div
-      className="mb-4 max-w-xl"
+      className={`mb-4 ${isMobile ? "" : "max-w-xl"}`}
       onClick={() => setSelectedApplicant(application.applicant.email)}
     >
       <div
@@ -24,7 +26,7 @@ const ApplicantCard = ({
           isSelected ? "border-4 border-blue-300" : "border-2 border-slate-200"
         }`}
       >
-        <div className="flex flex-col rounded-t-lg border-b px-5 pb-2 pt-5">
+        <div className="flex flex-col rounded-t-lg px-5 pb-2 pt-5">
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap items-center justify-start sm:flex-nowrap">
               <div className="mr-2.5">
@@ -44,7 +46,7 @@ const ApplicantCard = ({
               {application.skills_match_pct * 100}% match
             </div>
           </div>
-          <div className="whitespace-pre-wrap pl-10">
+          <div className="whitespace-pre-wrap md:pl-10">
             <div className="text-sm text-slate-500">
               <LocationOnIcon sx={{ fontSize: "14px" }} />{" "}
               <span className="pl-2">{application.applicant.country}</span>
@@ -56,6 +58,7 @@ const ApplicantCard = ({
             <div className="mt-2.5 h-[1px]"></div>
           </div>
         </div>
+        <hr className="h-px mx-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
         <ApplicantCardBottom {...application} />
       </div>
     </div>
