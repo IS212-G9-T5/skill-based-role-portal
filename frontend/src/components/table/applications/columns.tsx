@@ -8,9 +8,10 @@ export type OpenRoleApplication = {
   id: string
   name: string
   description: string
+  skills: string[]
   start_date: string
   end_date: string
-  status: "Open" | "Closed"
+  status: "OPEN" | "CLOSED"
 }
 
 export const columns: ColumnDef<OpenRoleApplication>[] = [
@@ -95,7 +96,7 @@ export const columns: ColumnDef<OpenRoleApplication>[] = [
             className="h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
           <PersonIcon
-            onClick={() => navigate(`/view-applicants/${role.id}`)}
+            onClick={() => navigate(`/view-applicants/${role.id}`, { state: { role } })}
             className="mr-2 h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
         </div>

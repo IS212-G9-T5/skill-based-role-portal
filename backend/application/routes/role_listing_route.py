@@ -55,6 +55,7 @@ def find_user_role_applications(id: int):
 
 @api.route("/available-listings", methods=["GET"])
 @jwt_required()
+@admin_or_hr_required()
 def find_available_listings_paginated():
     page = request.args.get("page", 1, type=int)
     page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)

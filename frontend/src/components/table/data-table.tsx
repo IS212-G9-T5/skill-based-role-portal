@@ -58,9 +58,9 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex justify-between py-4">
-        <h1 className="text-2xl font-bold text-[#1976d2]">
+        <div className="text-2xl font-bold text-[#1976d2]">
           Available Role Listings
-        </h1>
+        </div>
         <Input
           placeholder="Search by role name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Fetching results.
                 </TableCell>
               </TableRow>
             )}

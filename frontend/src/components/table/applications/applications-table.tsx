@@ -16,20 +16,19 @@ const ApplicationTable = () => {
     const res = await getAvailableListings(page, size)
     if (res) {
       const filteredData: OpenRoleApplication[] = []
-
       for (let i = 0; i < res.items.length; i++) {
         const item = res.items[i]
         const temp: OpenRoleApplication = {
           id: item.id,
           name: item.role.name,
           description: item.role.description,
+          skills: item.role.skills,
           start_date: item.start_date,
           end_date: item.end_date,
           status: item.status,
         }
         filteredData.push(temp)
       }
-
       setData(filteredData)
     }
   }
