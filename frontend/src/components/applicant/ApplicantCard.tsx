@@ -1,7 +1,7 @@
+import useMediaQuery from "@material-ui/core/useMediaQuery"
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined"
 import EmailIcon from "@mui/icons-material/Email"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
 
 import ApplicantCardBottom from "./ApplicantCardBottom"
 
@@ -58,7 +58,7 @@ const ApplicantCard = ({
             <div className="mt-2.5 h-[1px]"></div>
           </div>
         </div>
-        <hr className="h-px mx-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+        <hr className="mx-4 h-px border-0 bg-gray-200 dark:bg-gray-700"></hr>
         <ApplicantCardBottom {...application} />
       </div>
     </div>

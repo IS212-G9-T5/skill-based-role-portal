@@ -96,7 +96,9 @@ export const columns: ColumnDef<OpenRoleApplication>[] = [
             className="h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
           <PersonIcon
-            onClick={() => navigate(`/view-applicants/${role.id}`, { state: { role } })}
+            onClick={() =>
+              navigate(`/view-applicants/${role.id}`, { state: { role } })
+            }
             className="mr-2 h-5 w-5 cursor-pointer text-blue-500 hover:scale-105"
           />
         </div>

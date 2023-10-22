@@ -63,7 +63,7 @@ const ViewApplicants = () => {
         {data.length === 0 ? (
           <div>No Applicants</div>
         ) : (
-          <div className={`flex ${isMobile ? "gap-0 flex-col" : "gap-6"}`}>
+          <div className={`flex ${isMobile ? "flex-col gap-0" : "gap-6"}`}>
             <div className={`flex flex-col ${isMobile ? "" : "basis-1/3"}`}>
               {data.map((application) => (
                 <ApplicantCard
