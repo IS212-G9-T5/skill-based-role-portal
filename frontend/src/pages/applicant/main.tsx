@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-
 import { getRoleListingById, getUserSkills } from "../../api/RoleListingAPI"
 import NavBar from "../../components/Navbar"
 import RoleListing from "./RoleListing"
