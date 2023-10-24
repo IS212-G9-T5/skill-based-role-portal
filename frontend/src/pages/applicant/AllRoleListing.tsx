@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
 import Lottie from "react-lottie"
 import { Link, useLocation } from "react-router-dom"
-
 import { getRoleListings } from "../../api/RoleListingAPI"
 import animationData from "../../assets/animation_lngbtih0.json"
 import Filter from "../../components/Filter"
