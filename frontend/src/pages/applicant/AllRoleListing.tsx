@@ -22,7 +22,6 @@ const AllRoleListing: React.FC = () => {
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)
 
-
   useEffect(() => {
     setCurrentPage(initialPage)
     fetchData(initialPage, searchRoleName)
