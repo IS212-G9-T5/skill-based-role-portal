@@ -13,7 +13,7 @@ class Role(db.Model):
     role_listing = relationship("RoleListing", back_populates="role", lazy=True)
 
     skills = relationship(
-        "Skill", secondary=role_skills, lazy="subquery", back_populates="roles"
+        "Skill", secondary=role_skills, lazy=True, back_populates="roles"
     )
 
     @property

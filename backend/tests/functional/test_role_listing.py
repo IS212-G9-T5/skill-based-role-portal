@@ -7,14 +7,7 @@ from application.models.role import Role
 from application.models.skill import Skill
 from application.models.role_listing import RoleListing
 from application.services import skill_service
-
-ENDPOINT = "/api/listings"
-
-
-# def test_stuff(db):
-#     role = Role(name="Astronaut", description="To go to space")
-#     role_service.create(role)
-#     assert role.name == "Astronaut"
+from . import LISTINGS_ENDPOINT as ENDPOINT
 
 
 # region: get individual role listing
@@ -819,6 +812,38 @@ def test_withdraw_role_listing_success(
     # check response
     assert response.status_code == 200
     assert response.json["has_applied"] == False
+
+
+# endregion
+
+
+# region Get relevant role listings by most matched skills
+def test_relevant_role_listings_by_most_matched_skills(
+    random_user_client: FlaskClient,
+    init_database,
+    create_role_listings,
+):
+    """
+    GIVEN the user is logged in as user, there are role listings created,
+    WHEN user sends request to view the listings that has most matched skills
+    THEN check that
+        - the response returns HTTP 200
+        - the listings returned are sorted in descending order of percentage of user's matched skills with the listing's skills
+    """
+
+    response = random_user_client.get(
+        path=f"{ENDPOINT}/relevant",
+    )
+
+    # check response
+    assert response.status_code == 200
+    data = response.json
+    listings = data["listings"]
+
+    sorted_listings = sorted(
+        listings, key=lambda l: l["skills_match_pct"], reverse=True
+    )
+    assert listings == sorted_listings
 
 
 # endregion
