@@ -22,15 +22,16 @@ const AllRoleListing: React.FC = () => {
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)
 
-  const handleClearFilters = () => {
-    setActiveFilter({})
-  }
 
   useEffect(() => {
     setCurrentPage(initialPage)
     fetchData(initialPage, searchRoleName)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [initialPage, searchRoleName])
+
+  const handleClearFilters = () => {
+    setActiveFilter({})
+  }
 
   const fetchData = async (page, roleName = "") => {
     const res = await getRoleListings(
