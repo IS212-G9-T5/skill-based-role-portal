@@ -1,2 +1,4 @@
 localDev.bat
 __pycache__
+.venv
+*/__pycache__/*
