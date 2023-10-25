@@ -47,6 +47,13 @@ poetry install
 poetry run python -m flask --app wsgi:app run
 ```
 
+### Running backend with Waitress server (production)
+
+```
+cd backend
+poetry run waitress-serve --port 5000 wsgi:app
+```
+
 ### Running tests
 
 ```

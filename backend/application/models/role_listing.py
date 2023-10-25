@@ -39,7 +39,7 @@ class RoleListing(db.Model):
         name="status", type_=Enum(RoleStatus), nullable=False, default=RoleStatus.OPEN
     )
 
-    role = db.relationship("Role", back_populates="role_listing", lazy="subquery")
+    role = db.relationship("Role", back_populates="role_listing", lazy="joined")
 
     applicants = relationship(
         "Staff",

@@ -1,7 +1,5 @@
-FROM python:3.11-buster
+FROM python:3.11.6-slim
 WORKDIR /app
-
-RUN useradd -r -s /bin/bash appuser
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -9,14 +7,18 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.4.0
+    POETRY_VERSION=1.6.1
 
 RUN pip install "poetry==$POETRY_VERSION"
 
-COPY . ./
-RUN poetry config virtualenvs.create false \
+COPY poetry.lock pyproject.toml ./
+
+RUN poetry config virtualenvs.create true \
     && poetry install --no-interaction --no-ansi
+
+COPY . .
 
 EXPOSE 5000
 
-CMD [ "python", "./wsgi.py" ]
+# Run Flask app
+CMD ["poetry", "run", "waitress-serve", "--port", "5000", "wsgi:app"]

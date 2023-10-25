@@ -36,7 +36,7 @@ class Staff(db.Model):
         "Skill",
         secondary=staff_skills,
         back_populates="staff_with_skill",
-        lazy="subquery",
+        lazy=True,
     )
 
     applications = relationship(
@@ -58,15 +58,15 @@ class Staff(db.Model):
 
     def json(self) -> dict:
         return {
-            "id": self.id,
+            # "id": self.id,
             "fname": self.fname,
             "lname": self.lname,
             "dept": self.dept,
             "country": self.country,
             "email": self.email,
-            "access_control": None
-            if self.access_control is None
-            else self.access_control.json().get("name", None),
+            # "access_control": None
+            # if self.access_control is None
+            # else self.access_control.json().get("name", None),
             # "role_applications": [
             #     application.json() for application in self.applications
             # ],

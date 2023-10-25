@@ -17,6 +17,7 @@ marshmallow = "^3.20.1"
 load-dotenv = "^0.1.0"
 flask-jwt-extended = "^4.5.2"
 flask-migrate = "^4.0.5"
+waitress = "^2.1.2"
 
 
 [build-system]
