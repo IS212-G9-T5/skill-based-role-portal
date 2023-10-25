@@ -31,6 +31,7 @@ const AllRoleListing: React.FC = () => {
     setCurrentPage(initialPage)
     fetchData(initialPage, searchRoleName)
     window.scrollTo({ top: 0, behavior: "smooth" })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPage, searchRoleName])
 
   const fetchData = async (page, roleName = "") => {
@@ -50,6 +51,7 @@ const AllRoleListing: React.FC = () => {
 
   useEffect(() => {
     fetchData(currentPage, searchRoleName)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, searchRoleName, selectedSkills])
 
   useEffect(() => {
