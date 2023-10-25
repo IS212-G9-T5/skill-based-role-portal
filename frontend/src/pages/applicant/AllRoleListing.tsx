@@ -18,7 +18,6 @@ const AllRoleListing: React.FC = () => {
   const [searchRoleName, setSearchRoleName] = useState("")
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({})
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-
   const location = useLocation()
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)

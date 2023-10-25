@@ -7,7 +7,7 @@ const ViewRoleListing = () => {
   const [apiRoleData, setApiRoleData] = useState<Roles | null>(null)
   const [roleMatchData, setRoleMatchData] = useState<RoleMatch | null>(null)
 
-  // To obtain the skills of the user
+  // To obtain the skills of the user 
   const [userSkills, setUserSkills] = useState<
     { name: string; description: string }[]
   >([])
