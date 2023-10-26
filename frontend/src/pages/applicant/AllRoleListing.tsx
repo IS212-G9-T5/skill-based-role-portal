@@ -30,6 +30,7 @@ const AllRoleListing: React.FC = () => {
 
   const handleClearFilters = () => {
     setActiveFilter({})
+    setSelectedSkills([])
   }
 
   const fetchData = async (page, roleName = "") => {
