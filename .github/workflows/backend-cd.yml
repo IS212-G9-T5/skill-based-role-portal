@@ -1,0 +1,32 @@
+name: Backend Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Docker Logout (to make sure we are logged out)
+        run: docker logout
+
+      - name: Docker Login to DigitalOcean Container Registry
+        run: docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_KEY }} -p ${{ secrets.DIGITALOCEAN_SECRET_KEY }} registry.digitalocean.com
+
+      - name: Docker Build
+        run: docker buildx build --platform linux/amd64 -f ./Dockerfile -t backend .
+        working-directory: ./backend
+
+      - name: Docker Tag
+        run: docker tag backend registry.digitalocean.com/spmg9t5/backend
+
+      - name: Docker Push
+        run: docker push registry.digitalocean.com/spmg9t5/backend
