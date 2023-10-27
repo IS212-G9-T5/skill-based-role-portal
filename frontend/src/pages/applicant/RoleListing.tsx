@@ -6,10 +6,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useNavigate } from "react-router-dom"
+import { useMediaQuery } from 'react-responsive';
+
 
 import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
 const RoleListing = (props: Roles) => {
+  // Use the useMediaQuery hook to check the screen size
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
   const navigate = useNavigate()
 
   const [selectedChip, setSelectedChip] = useState(props.userSkills[0] || null)
@@ -41,9 +45,6 @@ const RoleListing = (props: Roles) => {
 
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
-  }
-  const handleEditListing = () => {
-    navigate(`/update-role-listing/${props.id}`)
   }
 
   const [openApply, setOpenApply] = useState(false)
@@ -144,6 +145,14 @@ const RoleListing = (props: Roles) => {
                   backgroundColor: isMatched ? "#33eb91" : "lightgray",
                   opacity: isMatched ? 1 : 0.5,
                   cursor: "default",
+                  ...(isSmallScreen && {
+                    fontWeight: isMatched ? "bold" : "normal",
+                    backgroundColor: isMatched ? "#33eb91" : "lightgray",
+                    opacity: isMatched ? 1 : 0.5,
+                    cursor: "default",
+                    borderRadius: "25px",
+                    
+                  }),                  
                 };
                 return (
                   <Chip
@@ -179,7 +188,19 @@ const RoleListing = (props: Roles) => {
             <Button
               variant="contained"
               color="error"
-              style={{ marginTop: "20px" }}
+              style={{
+                marginTop: "20px",
+                ...(isSmallScreen && {
+                  // Apply responsive styles for small screens
+                  backgroundColor: "#d32f2f",
+                  borderRadius: "4px",
+                  padding: "6px 15px",
+                  color: "white",
+                  fontSize: "14px",
+                  // give slight boxshadow
+                  boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                }),
+              }}
               onClick={handleWithdrawOpen}
               disabled={props.status !== "OPEN"}
             >
@@ -189,7 +210,19 @@ const RoleListing = (props: Roles) => {
             <Button
               variant="contained"
               color="success"
-              style={{ marginTop: "20px" }}
+              style={{
+                marginTop: "20px",
+                ...(isSmallScreen && {
+                  // Apply responsive styles for small screens
+                  backgroundColor: "#2e7d32",
+                  borderRadius: "4px",
+                  padding: "6px 15px",
+                  color: "white",
+                  fontSize: "14px",
+                  // give slight boxshadow
+                  boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                }),
+              }}
               onClick={handleApplyOpen}
               disabled={props.status !== "OPEN"}
             >
@@ -209,8 +242,21 @@ const RoleListing = (props: Roles) => {
             <DialogActions>
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={handleApplySubmit}
+                style={{
+                  marginTop: "20px",
+                  ...(isSmallScreen && {
+                    // Apply responsive styles for small screens
+                    backgroundColor: "#d32f2f",
+                    borderRadius: "4px",
+                    padding: "6px 15px",
+                    color: "white",
+                    fontSize: "14px",
+                    // give slight boxshadow
+                    boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                  }),
+                }}
               >
                 Submit
               </Button>
@@ -229,8 +275,21 @@ const RoleListing = (props: Roles) => {
             <DialogActions>
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={handleWithdrawSubmit}
+                style={{
+                  marginTop: "20px",
+                  ...(isSmallScreen && {
+                    // Apply responsive styles for small screens
+                    backgroundColor: "#d32f2f",
+                    borderRadius: "4px",
+                    padding: "6px 15px",
+                    color: "white",
+                    fontSize: "14px",
+                    // give slight boxshadow
+                    boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                  }),
+                }}
               >
                 Submit
               </Button>
@@ -243,21 +302,20 @@ const RoleListing = (props: Roles) => {
             style={{
               marginTop: "20px",
               marginLeft: "10px",
+              ...(isSmallScreen && {
+                // Apply responsive styles for small screens
+                backgroundColor: "#0288d1",
+                borderRadius: "4px",
+                padding: "6px 15px",
+                color: "white",
+                fontSize: "14px",
+                // give slight boxshadow
+                boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+              }),
             }}
             onClick={handleBackToListings}
           >
             Back to Listings
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            style={{
-              marginTop: "20px",
-              marginLeft: "10px",
-            }}
-            onClick={handleEditListing}
-          >
-            Edit Role Listing
           </Button>
         </div>
       </div>

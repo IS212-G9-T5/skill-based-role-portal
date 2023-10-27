@@ -15,8 +15,12 @@ import { Link } from "react-router-dom"
 import { getMatchingSkillsRoleListings, getUserProfile, getUserSkills } from "../../api/RoleListingAPI"
 import NavBar from "../../components/Navbar"
 import MatchingRole from "../../components/MatchingRole"
+import { useMediaQuery } from 'react-responsive';
 
 const SkillsProfile = () => {
+  // Use the useMediaQuery hook to check the screen size
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
+
   // To obtain the skills of the user
   const [userSkills, setUserSkills] = useState<
     { name: string; description: string }[]
@@ -136,7 +140,14 @@ const SkillsProfile = () => {
                 <Chip
                   key={index}
                   label={skill.name}
-                  style={{ margin: "5px" }}
+                  style={{ 
+                    margin: "5px" ,
+                    ...(isSmallScreen && {
+                      margin:"5px",
+                      backgroundColor: "#e0e0e0",
+                      borderRadius: "25px",
+                    })
+                  }}
                   onClick={() => handleChipClick(skill)}
                 />
               ))
