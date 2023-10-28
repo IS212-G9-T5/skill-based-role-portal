@@ -13,8 +13,6 @@ from application.extensions import db, cors, jwt, migrate
 
 def init_app(config=Config):
     app = Flask(__name__)
-    # if app.config["DEBUG"]:
-    # config = TestConfig
 
     app.config.from_object(config)
 
