@@ -11,7 +11,5 @@ describe('Staff apply for role listing', () => {
     // cy.wait('@loginRequest').its('response.statusCode').should('eq', 200);
     cy.url().should('include', '/all-role-listing?page=1&size=10');
 
-
-
   });
 });
