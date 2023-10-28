@@ -1,0 +1,28 @@
+name: "Check PR Title Format"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+jobs:
+  check-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check PR title"
+        run: |
+          pr_title="${{ github.event.pull_request.title }}"
+          valid_format="^(fix|feat|chore|docs|style|refactor|perf|test): (.{1,})"
+          
+          echo "📝 PR Title: $pr_title"
+
+          if [[ ! ${pr_title} =~ ${valid_format} ]]; then
+            echo "❌ Invalid PR title 😥"
+            echo "📘 Valid PR title should start with fix:, feat:, chore:, docs:, style:, refactor:, perf:, or test: followed by a space, then the actual title"
+            exit 1
+          else
+            echo "✅ Valid PR title 🎉"
+          fi
