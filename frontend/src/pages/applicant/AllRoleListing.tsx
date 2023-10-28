@@ -35,6 +35,11 @@ const AllRoleListing: React.FC = () => {
     setSelectedSkills([])
   }
 
+  useEffect(() => {
+    setCurrentPage(1); // reset the page state to 1 whenever the filter changes
+    fetchData(1, searchRoleName); // fetch data for the first page
+  }, [selectedSkills]); 
+
   const fetchData = async (page, roleName = "") => {
     const res = await getRoleListings(
       page,
@@ -47,6 +52,7 @@ const AllRoleListing: React.FC = () => {
       setData(res.items)
       setTotalListings(res.total)
       setTotalPages(Math.ceil(res.total / listingsPerPage))
+      setCurrentPage(page); 
     }
   }
 
@@ -63,6 +69,7 @@ const AllRoleListing: React.FC = () => {
       setActiveFilter({})
     }
   }, [activeFilter])
+  
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
