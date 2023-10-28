@@ -38,6 +38,7 @@ const AllRoleListing: React.FC = () => {
   useEffect(() => {
     setCurrentPage(1); // reset the page state to 1 whenever the filter changes
     fetchData(1, searchRoleName); // fetch data for the first page
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSkills]); 
 
   const fetchData = async (page, roleName = "") => {
