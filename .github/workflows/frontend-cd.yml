@@ -25,7 +25,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker Buildx Build
-        run: docker buildx build --platform linux/amd64 -f ./Dockerfile -t image .
+        run: docker buildx build --load --platform linux/amd64 -f ./Dockerfile -t image .
         working-directory: ./frontend
 
       - name: Docker Tag
