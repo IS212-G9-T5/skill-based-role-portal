@@ -1,4 +1,7 @@
 localDev.bat
+localDev.sh
+localTest.bat
 __pycache__
 .venv
 */__pycache__/*
+migrations

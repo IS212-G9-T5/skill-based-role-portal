@@ -7,3 +7,4 @@ localDev.bat
 localTest.bat
 localDev.sh
 logs/**
+migrations/**

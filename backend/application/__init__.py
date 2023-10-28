@@ -3,7 +3,7 @@ from datetime import date, datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-from application.config import Config
+from application.config import Config, TestConfig
 
 from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
@@ -13,6 +13,9 @@ from application.extensions import db, cors, jwt, migrate
 
 def init_app(config=Config):
     app = Flask(__name__)
+    # if app.config["DEBUG"]:
+    # config = TestConfig
+
     app.config.from_object(config)
 
     print(vars(config))
