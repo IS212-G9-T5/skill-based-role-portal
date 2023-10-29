@@ -71,6 +71,8 @@ def find_available_listings_paginated():
         "has_prev": paginated_listngs.has_prev,
         "has_next": paginated_listngs.has_next,
     }
+    # sort listings in ID descending order
+    res["items"].sort(key=lambda r: r["id"], reverse=True)
     return jsonify(res), 200
 
 
