@@ -11,6 +11,7 @@ import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
 
+
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
