@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
+import { useMediaQuery } from 'react-responsive';
 import * as yup from "yup"
 
 import {
@@ -31,6 +32,10 @@ const signupSchema = yup.object().shape({
 })
 
 const RolelistingForm = () => {
+
+  // Use the useMediaQuery hook to check the screen size
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
+
   const { id } = useParams()
   const status = ["OPEN", "CLOSED"]
   const navigate = useNavigate()
@@ -276,7 +281,16 @@ const RolelistingForm = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Button variant="contained" fullWidth type="submit">
+                          <Button variant="contained" fullWidth type="submit"
+                          style={{
+                            marginTop: "20px",
+                            ...(isSmallScreen && {
+                              backgroundColor: "#1976d2",
+                              borderRadius: "4px",
+                              padding: "8px",
+                              color: "white",
+                            }),
+                          }}>
                             Submit
                           </Button>
                         </Grid>
