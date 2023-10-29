@@ -19,7 +19,7 @@ from application.services import (
     staff_service,
 )
 from application.dto.response import ResponseBodyJSON
-from .route_decorators import admin_or_hr_required
+from .route_decorators import admin_or_hr_required, admin_or_hr_or_manager_required
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
@@ -55,7 +55,7 @@ def find_user_role_applications(id: int):
 
 @api.route("/available-listings", methods=["GET"])
 @jwt_required()
-@admin_or_hr_required()
+@admin_or_hr_or_manager_required
 def find_available_listings_paginated():
     page = request.args.get("page", 1, type=int)
     page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)
