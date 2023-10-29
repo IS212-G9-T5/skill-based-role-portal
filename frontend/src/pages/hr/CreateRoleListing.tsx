@@ -92,7 +92,7 @@ const RolelistingForm = () => {
         resetForm()
       }
       setTimeout(() => {
-        navigate("/all-role-listing")
+        navigate("/view-applications")
       }, 2000)
     } catch (error) {
       handleError("Error occurred when submitting form")
