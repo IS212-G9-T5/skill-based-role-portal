@@ -53,6 +53,7 @@ def find_user_role_applications(id: int):
     res.sort(key=lambda r: r["skills_match_pct"], reverse=True)
     return jsonify({"applicants": res}), 200
 
+
 @api.route("/available-listings", methods=["GET"])
 @jwt_required()
 @admin_or_hr_or_manager_required
@@ -60,7 +61,9 @@ def find_available_listings_paginated():
     page = request.args.get("page", 1, type=int)
     page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)
     app.logger.info(f"GET /listings with params: {request.args}")
-    paginated_listngs = role_listing_service.find_all_available_listings_paginated(page=page, page_size=page_size)
+    paginated_listngs = role_listing_service.find_all_available_listings_paginated(
+        page=page, page_size=page_size
+    )
     data = [listing.json() for listing in paginated_listngs.items]
     res = {
         "page": paginated_listngs.page,
