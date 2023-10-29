@@ -57,6 +57,10 @@ declare global {
     total: number
   }
 
+  type ActiveFilter = {
+    [category: string]: boolean
+  }
+  
   type UserProfile = {
     country: string
     dept: string

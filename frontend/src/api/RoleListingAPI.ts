@@ -5,13 +5,22 @@
 export const getRoleListings = async (
   page: number,
   size: number,
-  roleName?: string // Make roleName optional
+  roleName?: string,
+  skills?: string[]
 ): Promise<RoleListings> => {
-  // Construct the URL conditionally based on the presence of roleName
   let url = `/api/listings?page=${page}&size=${size}`
+
   if (roleName) {
     url += `&role=${roleName}`
   }
+
+  if (skills && skills.length > 0) {
+    skills.forEach((skill) => {
+      url += `&skills=${encodeURIComponent(skill)}`
+    })
+  }
+
+  console.log(url)
 
   const response = await fetch(url, {
     credentials: "include",
@@ -22,7 +31,7 @@ export const getRoleListings = async (
   }
 
   const res = await response.json()
-  return res.listings
+  return res
 }
 
 /**
