@@ -16,8 +16,13 @@ const LoginForm = () => {
     try {
       const res = await Login(+staffId, password)
       if (res.status == "success") {
-        localStorage.setItem("role", res.role)
-        navigate("/all-role-listing")
+        const role = res.role
+        localStorage.setItem("role", role)
+        if (["Admin", "HR", "Manager"].includes(role)) {
+          navigate("/view-applications")
+        } else {
+          navigate("/all-role-listing")
+        }
         window.location.reload()
       } else {
         setModalOpen(true)

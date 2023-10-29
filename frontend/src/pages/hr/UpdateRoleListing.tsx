@@ -84,7 +84,7 @@ const RolelistingForm = () => {
       if (response.status === 200) {
         handleSuccess("Update Role Listing")
         setTimeout(() => {
-          navigate(`/role-listing/${id}`)
+          navigate('/view-applications')
         }, 1000)
       } else {
         handleError("Error occured when updating role listing")
@@ -98,7 +98,7 @@ const RolelistingForm = () => {
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
-      { label: "View Applications", to: "/applications" },
+      { label: "View Applications", to: "/view-applications" },
       { label: "Create Listing", to: "/create-role-listing" },
       { label: "Logout", to: "/" },
     ],

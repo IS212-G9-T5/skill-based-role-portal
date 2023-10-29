@@ -5,13 +5,22 @@
 export const getRoleListings = async (
   page: number,
   size: number,
-  roleName?: string // Make roleName optional
+  roleName?: string,
+  skills?: string[]
 ): Promise<RoleListings> => {
-  // Construct the URL conditionally based on the presence of roleName
   let url = `/api/listings?page=${page}&size=${size}`
+
   if (roleName) {
     url += `&role=${roleName}`
   }
+
+  if (skills && skills.length > 0) {
+    skills.forEach((skill) => {
+      url += `&skills=${encodeURIComponent(skill)}`
+    })
+  }
+
+  console.log(url)
 
   const response = await fetch(url, {
     credentials: "include",
@@ -24,6 +33,25 @@ export const getRoleListings = async (
   const res = await response.json()
   return res
 }
+
+/**
+ * API call to retrieve relevant role listings based on skills match and limit (paginated)
+ * import { getMatchingSkillsRoleListings } from ...
+ */
+
+export const getMatchingSkillsRoleListings = async (limit: number): Promise<Roles[]> => {
+
+  const response = await fetch(`/api/listings/relevant?limit=${limit}`, {
+    credentials: "include",
+  })
+  if (!response.ok) {
+    throw new Error("Failed to fetch relevant role listings")
+  }
+
+  const res = await response.json();
+  return res.listings
+}
+
 
 /**
  * API call to retrieve role listing by id
@@ -45,17 +73,18 @@ export const getRoleListingById = async (id: string): Promise<Roles> => {
  * import { createRoleListing } from ...
  */
 export const createRoleListing = async (data: Roles): Promise<Roles> => {
-  function getCookie(name) {
+  function getCookie(name: string): string | undefined {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop().split(";").shift()
+    if (parts.length === 2) return parts.pop()!.split(";").shift()!
+    return undefined
   }
   const response = await fetch("/api/example", {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+      "X-CSRF-TOKEN": getCookie("csrf_access_token") ?? "",
     },
     body: JSON.stringify(data),
   })
@@ -72,19 +101,20 @@ export const createRoleListing = async (data: Roles): Promise<Roles> => {
 
 export const updateRoleListing = async (
   data: RoleApplication,
-  id
+  id: string
 ): Promise<Response> => {
-  function getCookie(name) {
+  function getCookie(name: string): string | undefined {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop().split(";").shift()
+    if (parts.length === 2) return parts.pop()!.split(";").shift()!
+    return undefined
   }
   const response = await fetch(`/api/listings/${id}`, {
     method: "PUT",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+      "X-CSRF-TOKEN": getCookie("csrf_access_token") ?? "",
     },
     body: JSON.stringify(data),
   })
@@ -108,17 +138,34 @@ export const getUserSkills = async (): Promise<SkillObject[]> => {
 }
 
 /**
- * API call to retrieve user's skills
+ * API call to retrieve user's profile
+ * import { getUserProfile } from ...
+ */
+export const getUserProfile = async (): Promise<UserProfile> => {
+  const response = await fetch("/api/profile", {
+    credentials: "include",
+  })
+  if (!response.ok) {
+    throw new Error("Failed to fetch user profile")
+  }
+  const res = await response.json()
+  return res;
+}
+
+/**
+ * API call to update role listing after applying
  * import { updateApplyRoleListing } from ...
  */
+
 export const updateApplyRoleListing = async (
   has_applied: boolean,
   id: string
 ): Promise<void> => {
-  function getCookie(name) {
+  function getCookie(name: string): string | undefined {
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop().split(";").shift()
+    if (parts.length === 2) return parts.pop()!.split(";").shift()!
+    return undefined
   }
   try {
     const response = await fetch(`/api/listings/${id}`, {
@@ -126,7 +173,7 @@ export const updateApplyRoleListing = async (
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        "X-CSRF-TOKEN": getCookie("csrf_access_token") ?? "",
       },
       body: JSON.stringify({
         apply: !has_applied,

@@ -1,57 +1,20 @@
-name: Project CI to build and test
+name: Frontend CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "frontend/**"
 
   pull_request:
     branches: [main]
+    paths:
+      - "frontend/**"
 
 permissions:
   contents: read
 
 jobs:
-  backend:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.11
-
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
-
-      - name: Setup a local virtual environment
-        run: |
-          poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
-      
-      - name: Cache virtual environment
-        uses: actions/cache@v3
-        with:
-          path: ./.venv
-          key: venv-${{ hashFiles('backend/poetry.lock') }}
-
-      - name: Install project dependencies
-        run: |
-          cd ./backend
-          poetry install
-
-      - name: Run backend tests
-        env:
-          SQLALCHEMY_DATABASE_URI: ${{ secrets.SQLALCHEMY_DATABASE_URI }}
-          SQLALCHEMY_TEST_DATABASE_URI: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        run: |
-          echo $SQLALCHEMY_TEST_DATABASE_URI
-          cd ./backend
-          poetry run python -B -m pytest -s
-
   frontend-test:
     runs-on: ubuntu-latest
 
@@ -98,7 +61,7 @@ jobs:
         with:
           path: frontend/node_modules
           key: ${{ runner.OS }}-node-${{ hashFiles('frontend/yarn.lock') }}
-        
+
       - name: Install project dependencies
         run: |
           cd ./frontend

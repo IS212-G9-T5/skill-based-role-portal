@@ -6,10 +6,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import { useNavigate } from "react-router-dom"
+import { useMediaQuery } from 'react-responsive';
+
 
 import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
 const RoleListing = (props: Roles) => {
+  // Use the useMediaQuery hook to check the screen size
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
   const navigate = useNavigate()
 
   const [selectedChip, setSelectedChip] = useState(props.userSkills[0] || null)
@@ -41,9 +45,6 @@ const RoleListing = (props: Roles) => {
 
   const handleBackToListings = () => {
     navigate(`/all-role-listing`)
-  }
-  const handleEditListing = () => {
-    navigate(`/update-role-listing/${props.id}`)
   }
 
   const [openApply, setOpenApply] = useState(false)
@@ -130,34 +131,40 @@ const RoleListing = (props: Roles) => {
                 {props.roleMatchData.skills_match_count}/
                 {props.roleMatchData.skills_matched.length +
                   props.roleMatchData.skills_unmatched.length}{" "}
-                ({props.roleMatchData.skills_match_pct * 100}%)] Skills Required
-                [Matched Skills: {props.roleMatchData.skills_match_count} (
-                {props.roleMatchData.skills_match_pct}%)] Skills Required
-                [Matched Skills: {props.roleMatchData.skills_match_count}/
-                {props.roleMatchData.skills_matched.length +
-                  props.roleMatchData.skills_unmatched.length}{" "}
-                ({props.roleMatchData.skills_match_pct * 100}%)]
+                ({(props.roleMatchData.skills_match_pct * 100).toFixed(2)}%)] 
               </strong>
               <br></br>
-              {props.skills.map((skill, index) => (
-                <Chip
-                  key={index}
-                  label={skill}
-                  style={{ margin: "5px" }}
-                  className={`mr-[1%] mt-[1%] ${
-                    props.roleMatchData.skills_matched.find(
-                      (matchedSkill) => matchedSkill.name === skill
-                    )
-                      ? "bg-[#49d861] font-bold"
-                      : props.roleMatchData.skills_unmatched.find(
-                          (unmatchedSkill) => unmatchedSkill.name === skill
-                        )
-                      ? "bg-[#cff8db] opacity-50"
-                      : ""
-                  }`}
-                  onClick={() => handleChipClick(skill)}
-                />
-              ))}
+              {props.skills.map((skill, index) => {
+                const isMatched = props.roleMatchData.skills_matched.some(
+                  (matchedSkill) => matchedSkill.name === skill
+                );
+                const chipStyle = {
+                  marginRight: "1%",
+                  marginTop: "1%",
+                  fontWeight: isMatched ? "bold" : "normal",
+                  backgroundColor: isMatched ? "#33eb91" : "lightgray",
+                  opacity: isMatched ? 1 : 0.5,
+                  cursor: "default",
+                  ...(isSmallScreen && {
+                    fontWeight: isMatched ? "bold" : "normal",
+                    backgroundColor: isMatched ? "#33eb91" : "lightgray",
+                    opacity: isMatched ? 1 : 0.5,
+                    cursor: "default",
+                    borderRadius: "25px",
+                    
+                  }),                  
+                };
+                return (
+                  <Chip
+                    key={index}
+                    label={skill}
+                    className="mr-[1%] mt-[1%]"
+                    style={chipStyle}
+                    // disabled={!isMatched}
+                    onClick={() => handleChipClick(skill)}
+                  />
+                );
+              })}
             </Typography>
           </Grid>
 
@@ -180,8 +187,20 @@ const RoleListing = (props: Roles) => {
           {props.roleMatchData.has_applied ? (
             <Button
               variant="contained"
-              color="secondary"
-              style={{ marginTop: "20px" }}
+              color="error"
+              style={{
+                marginTop: "20px",
+                ...(isSmallScreen && {
+                  // Apply responsive styles for small screens
+                  backgroundColor: "#d32f2f",
+                  borderRadius: "4px",
+                  padding: "6px 15px",
+                  color: "white",
+                  fontSize: "14px",
+                  // give slight boxshadow
+                  boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                }),
+              }}
               onClick={handleWithdrawOpen}
               disabled={props.status !== "OPEN"}
             >
@@ -190,8 +209,20 @@ const RoleListing = (props: Roles) => {
           ) : (
             <Button
               variant="contained"
-              color="primary"
-              style={{ marginTop: "20px" }}
+              color="success"
+              style={{
+                marginTop: "20px",
+                ...(isSmallScreen && {
+                  // Apply responsive styles for small screens
+                  backgroundColor: "#2e7d32",
+                  borderRadius: "4px",
+                  padding: "6px 15px",
+                  color: "white",
+                  fontSize: "14px",
+                  // give slight boxshadow
+                  boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                }),
+              }}
               onClick={handleApplyOpen}
               disabled={props.status !== "OPEN"}
             >
@@ -203,14 +234,29 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
+                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you sure you want to apply for this role?</p> 
+                <br />
                 Click on the Submit button if you confirm your application
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={handleApplySubmit}
+                style={{
+                  marginTop: "20px",
+                  ...(isSmallScreen && {
+                    // Apply responsive styles for small screens
+                    backgroundColor: "#d32f2f",
+                    borderRadius: "4px",
+                    padding: "6px 15px",
+                    color: "white",
+                    fontSize: "14px",
+                    // give slight boxshadow
+                    boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                  }),
+                }}
               >
                 Submit
               </Button>
@@ -221,14 +267,29 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to withdraw your application?
+                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you   sure you want to withdraw your application?</p> 
+                <br />
+                Click on the Submit button if you confirm your application withdrawal
               </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button
                 variant="contained"
-                color="primary"
+                color="error"
                 onClick={handleWithdrawSubmit}
+                style={{
+                  marginTop: "20px",
+                  ...(isSmallScreen && {
+                    // Apply responsive styles for small screens
+                    backgroundColor: "#d32f2f",
+                    borderRadius: "4px",
+                    padding: "6px 15px",
+                    color: "white",
+                    fontSize: "14px",
+                    // give slight boxshadow
+                    boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+                  }),
+                }}
               >
                 Submit
               </Button>
@@ -237,25 +298,24 @@ const RoleListing = (props: Roles) => {
 
           <Button
             variant="contained"
-            color="secondary"
+            color="info"
             style={{
               marginTop: "20px",
               marginLeft: "10px",
+              ...(isSmallScreen && {
+                // Apply responsive styles for small screens
+                backgroundColor: "#0288d1",
+                borderRadius: "4px",
+                padding: "6px 15px",
+                color: "white",
+                fontSize: "14px",
+                // give slight boxshadow
+                boxShadow: "0px 1px 2px 1px rgba(0,0,0,0.2)",
+              }),
             }}
             onClick={handleBackToListings}
           >
             Back to Listings
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{
-              marginTop: "20px",
-              marginLeft: "10px",
-            }}
-            onClick={handleEditListing}
-          >
-            Edit Role Listing
           </Button>
         </div>
       </div>
