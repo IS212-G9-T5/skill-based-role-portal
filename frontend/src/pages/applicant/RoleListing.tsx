@@ -5,15 +5,14 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
+import { useMediaQuery } from "react-responsive"
 import { useNavigate } from "react-router-dom"
-import { useMediaQuery } from 'react-responsive';
-
 
 import { updateApplyRoleListing } from "../../api/RoleListingAPI"
 
 const RoleListing = (props: Roles) => {
   // Use the useMediaQuery hook to check the screen size
-  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 992px)" })
   const navigate = useNavigate()
 
   const [selectedChip, setSelectedChip] = useState(props.userSkills[0] || null)
@@ -131,13 +130,13 @@ const RoleListing = (props: Roles) => {
                 {props.roleMatchData.skills_match_count}/
                 {props.roleMatchData.skills_matched.length +
                   props.roleMatchData.skills_unmatched.length}{" "}
-                ({(props.roleMatchData.skills_match_pct * 100).toFixed(2)}%)] 
+                ({(props.roleMatchData.skills_match_pct * 100).toFixed(2)}%)]
               </strong>
               <br></br>
               {props.skills.map((skill, index) => {
                 const isMatched = props.roleMatchData.skills_matched.some(
                   (matchedSkill) => matchedSkill.name === skill
-                );
+                )
                 const chipStyle = {
                   marginRight: "1%",
                   marginTop: "1%",
@@ -151,9 +150,8 @@ const RoleListing = (props: Roles) => {
                     opacity: isMatched ? 1 : 0.5,
                     cursor: "default",
                     borderRadius: "25px",
-                    
-                  }),                  
-                };
+                  }),
+                }
                 return (
                   <Chip
                     key={index}
@@ -163,7 +161,7 @@ const RoleListing = (props: Roles) => {
                     // disabled={!isMatched}
                     onClick={() => handleChipClick(skill)}
                   />
-                );
+                )
               })}
             </Typography>
           </Grid>
@@ -234,7 +232,9 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you sure you want to apply for this role?</p> 
+                <p style={{ fontSize: 25, fontWeight: "bold" }}>
+                  Are you sure you want to apply for this role?
+                </p>
                 <br />
                 Click on the Submit button if you confirm your application
               </DialogContentText>
@@ -267,9 +267,12 @@ const RoleListing = (props: Roles) => {
             <DialogTitle></DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                <p style={{"fontSize":25, "fontWeight":"bold"}}>Are you   sure you want to withdraw your application?</p> 
+                <p style={{ fontSize: 25, fontWeight: "bold" }}>
+                  Are you sure you want to withdraw your application?
+                </p>
                 <br />
-                Click on the Submit button if you confirm your application withdrawal
+                Click on the Submit button if you confirm your application
+                withdrawal
               </DialogContentText>
             </DialogContent>
             <DialogActions>

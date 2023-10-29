@@ -39,8 +39,9 @@ export const getRoleListings = async (
  * import { getMatchingSkillsRoleListings } from ...
  */
 
-export const getMatchingSkillsRoleListings = async (limit: number): Promise<Roles[]> => {
-
+export const getMatchingSkillsRoleListings = async (
+  limit: number
+): Promise<Roles[]> => {
   const response = await fetch(`/api/listings/relevant?limit=${limit}`, {
     credentials: "include",
   })
@@ -48,10 +49,9 @@ export const getMatchingSkillsRoleListings = async (limit: number): Promise<Role
     throw new Error("Failed to fetch relevant role listings")
   }
 
-  const res = await response.json();
+  const res = await response.json()
   return res.listings
 }
-
 
 /**
  * API call to retrieve role listing by id
@@ -148,7 +148,7 @@ export const getUserProfile = async (): Promise<UserProfile> => {
     throw new Error("Failed to fetch user profile")
   }
   const res = await response.json()
-  return res;
+  return res
 }
 
 /**

@@ -5,7 +5,13 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 
-export default function LoginModal({ open, handleClose } : { open: boolean, handleClose: () => void }) {
+export default function LoginModal({
+  open,
+  handleClose,
+}: {
+  open: boolean
+  handleClose: () => void
+}) {
   return (
     <div>
       <Dialog
