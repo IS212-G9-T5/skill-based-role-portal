@@ -173,6 +173,7 @@ const AllRoleListing: React.FC = () => {
                     to={`/role-listing/${item.listing.id}`}
                   >
                     <Role
+                      className="roleDetails"
                       key={item.listing.id}
                       id={item.listing.id}
                       name={item.listing.role.name}
