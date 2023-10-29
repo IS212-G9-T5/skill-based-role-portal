@@ -8,18 +8,23 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Grid from "@mui/material/Grid"
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem"
+import Select from "@mui/material/Select"
 import Typography from "@mui/material/Typography"
+import { useMediaQuery } from "react-responsive"
 import { Link } from "react-router-dom"
-import { getMatchingSkillsRoleListings, getUserProfile, getUserSkills } from "../../api/RoleListingAPI"
-import NavBar from "../../components/Navbar"
+
+import {
+  getMatchingSkillsRoleListings,
+  getUserProfile,
+  getUserSkills,
+} from "../../api/RoleListingAPI"
 import MatchingRole from "../../components/MatchingRole"
-import { useMediaQuery } from 'react-responsive';
+import NavBar from "../../components/Navbar"
 
 const SkillsProfile = () => {
   // Use the useMediaQuery hook to check the screen size
-  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 992px)" })
 
   // To obtain the skills of the user
   const [userSkills, setUserSkills] = useState<
@@ -62,40 +67,36 @@ const SkillsProfile = () => {
     ],
   }
 
-  // To handle fetching the top x most relevant role listings and display them in a paginated manner 
+  // To handle fetching the top x most relevant role listings and display them in a paginated manner
 
-  const [data , setData] = useState([]);
-  const [matchLimit, setMatchLimit] = useState<number>(5);
-
+  const [data, setData] = useState([])
+  const [matchLimit, setMatchLimit] = useState<number>(5)
 
   const fetchData = async (limit) => {
-    const res = await getMatchingSkillsRoleListings(limit);
+    const res = await getMatchingSkillsRoleListings(limit)
     if (res) {
-      console.log(res);
-      setData(res);
+      console.log(res)
+      setData(res)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchData(matchLimit);
-  }, [matchLimit]);
+    fetchData(matchLimit)
+  }, [matchLimit])
 
   // Have the next line accept make profileDetails into type of UserProfile
-  const [profileDetails, setProfileDetails] = useState<any>([]);
+  const [profileDetails, setProfileDetails] = useState<any>([])
 
   const fetchProfile = async () => {
-    const response = await getUserProfile();
+    const response = await getUserProfile()
     if (response) {
-      setProfileDetails(response);
+      setProfileDetails(response)
+    }
   }
-}
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
-
-
-
+    fetchProfile()
+  }, [])
 
   return (
     <div>
@@ -104,14 +105,14 @@ const SkillsProfile = () => {
         <strong>
           <Typography variant="h3" className="pb-[3%]">
             My Skills Profile
-            </Typography>
+          </Typography>
         </strong>
-  
+
         <Grid item xs={12} style={{ marginBottom: "3%" }}>
           <Typography variant="h6">
             <strong>
               <span className="mr-2 bg-[#1976D2] pl-2"></span>
-              My Details: 
+              My Details:
             </strong>
             <br></br>
             <Typography variant="body1">
@@ -123,7 +124,7 @@ const SkillsProfile = () => {
             </Typography>
           </Typography>
         </Grid>
-        
+
         <Grid item xs={12} style={{ marginBottom: "3%" }}>
           <Typography variant="h6">
             <strong>
@@ -140,13 +141,13 @@ const SkillsProfile = () => {
                 <Chip
                   key={index}
                   label={skill.name}
-                  style={{ 
-                    margin: "5px" ,
+                  style={{
+                    margin: "5px",
                     ...(isSmallScreen && {
-                      margin:"5px",
+                      margin: "5px",
                       backgroundColor: "#e0e0e0",
                       borderRadius: "25px",
-                    })
+                    }),
                   }}
                   onClick={() => handleChipClick(skill)}
                 />
@@ -168,7 +169,7 @@ const SkillsProfile = () => {
             <Button onClick={handleCloseModal}>Close</Button>
           </DialogActions>
         </Dialog>
-        
+
         <Grid item xs={12} style={{ marginBottom: "3%" }}>
           <Typography variant="h6">
             <strong>
@@ -180,8 +181,8 @@ const SkillsProfile = () => {
             <Select
               value={matchLimit}
               onChange={(e) => {
-                const newMatchLimit = Number(e.target.value);
-                setMatchLimit(newMatchLimit);
+                const newMatchLimit = Number(e.target.value)
+                setMatchLimit(newMatchLimit)
                 // fetchData(newMatchLimit);
               }}
               sx={{
@@ -198,11 +199,10 @@ const SkillsProfile = () => {
             </Select>
           </Typography>
         </Grid>
-                
-        
+
         {
-        // Render the matchingRoleListings
-        data.map((item) => (
+          // Render the matchingRoleListings
+          data.map((item) => (
             <Link key={item.listing.id} to={`/role-listing/${item.listing.id}`}>
               <MatchingRole
                 key={item.listing.id}
@@ -221,7 +221,6 @@ const SkillsProfile = () => {
             </Link>
           ))
         }
-
       </div>
     </div>
   )

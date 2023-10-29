@@ -84,7 +84,7 @@ const RolelistingForm = () => {
       if (response.status === 200) {
         handleSuccess("Update Role Listing")
         setTimeout(() => {
-          navigate('/view-applications')
+          navigate("/view-applications")
         }, 1000)
       } else {
         handleError("Error occured when updating role listing")
