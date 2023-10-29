@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
 import Lottie from "react-lottie"
 import { Link, useLocation } from "react-router-dom"
+import { debounce } from 'lodash';
 
 import { getRoleListings } from "../../api/RoleListingAPI"
 import animationData from "../../assets/animation_lngbtih0.json"
@@ -33,6 +34,10 @@ const AllRoleListing: React.FC = () => {
     setIsFiltersApplied(false)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }, [initialPage, searchRoleName])
+
+  const debouncedFetchData = debounce((newSearchRoleName) => {
+    setSearchRoleName(newSearchRoleName);
+  }, 1000);
 
   const fetchData = async (page, roleName = "", skills = []) => {
     setIsLoading(true)
@@ -124,7 +129,7 @@ const AllRoleListing: React.FC = () => {
         {/* Main Content */}
         <div className="p-4 lg:w-3/4">
           <div className="pl-[5%] pr-[5%] pt-[2%]">
-            <Search setSearchRoleName={setSearchRoleName} />
+            <Search setSearchRoleName={debouncedFetchData} />
           </div>
           <div>
             <h1 className="pl-[5%] pt-[2%] text-3xl font-bold">

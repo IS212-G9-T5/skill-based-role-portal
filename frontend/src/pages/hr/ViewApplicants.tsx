@@ -13,12 +13,14 @@ const ViewApplicants = () => {
   const [data, setData] = useState([]) // Assuming Application[] type
   const [selectedApplicant, setSelectedApplicant] = useState(null)
   const isMobile = useMediaQuery("(max-width:1000px)")
-
-  const navbarProps = {
+  const user = localStorage.getItem("role")
+  const CRlabel = user === "HR" ? "Create Listings" : ""
+  const CRurl = user === "HR" ? "/create-role-listing" : ""
+  const navbarProps: NavBar = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
+      { label: CRlabel, to: CRurl },
       { label: "View Applications", to: "/view-applications" },
-      { label: "Create Listings", to: "/create-role-listing" },
       { label: "Logout", to: "/" },
     ],
   }
