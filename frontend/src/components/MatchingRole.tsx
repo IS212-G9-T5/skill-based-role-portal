@@ -32,7 +32,7 @@ const MatchingRole = (props) => {
                 {props.skills_match_count}/
                 {props.skills_matched.length +
                   props.skills_unmatched.length}{" "}
-                ({props.skills_match_pct * 100}%)]
+                ({(props.skills_match_pct * 100).toFixed(2)}%)]
               </strong>
               <br />
               {props.skills.map((skill, index) => {
