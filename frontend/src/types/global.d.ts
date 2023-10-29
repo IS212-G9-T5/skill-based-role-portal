@@ -73,6 +73,10 @@ declare global {
     skills_unmatched: SkillObject[]
   }
   
+  type ActiveFilter = {
+    [category: string]: boolean
+  }
+  
   type UserProfile = {
     country: string
     dept: string
