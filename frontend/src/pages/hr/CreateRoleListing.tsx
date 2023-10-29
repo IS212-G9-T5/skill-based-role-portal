@@ -14,7 +14,7 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 import * as yup from "yup"
-
+import { getRoles } from "../../../src/api/RoleAPI"
 import StaffNavbar from "../../components/Navbar"
 
 const createRoleSchema = yup.object().shape({
@@ -24,7 +24,6 @@ const createRoleSchema = yup.object().shape({
   end_date: yup.date().required("End Date is required"),
 })
 
-const endpointUrl = "http://127.0.0.1:5000/api/roles"
 const RolelistingForm = () => {
   const navigate = useNavigate()
   const [data, setData] = useState(null)
@@ -36,21 +35,22 @@ const RolelistingForm = () => {
   useEffect(() => {
     const rolesArray = new Array<string>()
     const skillsSet = new Set<string>()
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        setData(res.data)
-        const result = res.data
-        result.forEach((item) => {
-          const roleName = item.name
-          const skills = item.skills
-          skills.forEach((skill) => {
-            skillsSet.add(skill)
-          })
-          rolesArray.push(roleName)
-          setRoles(rolesArray)
+    const fetchData = async () => {
+      const data = await getRoles()
+      console.log("data", data)
+      setData(data)
+      const result = data
+      result.forEach((item) => {
+        const roleName = item.name
+        const skills = item.skills
+        skills.forEach((skill) => {
+          skillsSet.add(skill)
         })
+        rolesArray.push(roleName)
+        setRoles(rolesArray)
       })
+    }
+    fetchData()
   }, [])
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
