@@ -10,6 +10,7 @@ declare global {
     userSkills: SkillObject[]
     roleMatchData: RoleMatch
   }
+
   type CreateRoleListing = {
     role_name: string
     start_date: string
@@ -77,11 +78,11 @@ declare global {
     skills_matched: SkillObject[]
     skills_unmatched: SkillObject[]
   }
-  
+
   type ActiveFilter = {
     [category: string]: boolean
   }
-  
+
   type UserProfile = {
     country: string
     dept: string

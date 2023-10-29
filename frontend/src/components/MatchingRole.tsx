@@ -28,24 +28,22 @@ const MatchingRole = (props) => {
             <Typography variant="h6">
               <strong>
                 <span className="mr-2 bg-[#1976D2] pl-2"></span>
-                Skills Required [Matched Skills:{" "}
-                {props.skills_match_count}/
-                {props.skills_matched.length +
-                  props.skills_unmatched.length}{" "}
-                ({(props.skills_match_pct * 100).toFixed(2)}%)]
+                Skills Required [Matched Skills: {props.skills_match_count}/
+                {props.skills_matched.length + props.skills_unmatched.length} (
+                {(props.skills_match_pct * 100).toFixed(2)}%)]
               </strong>
               <br />
               {props.skills.map((skill, index) => {
                 const isMatched = props.skills_matched.some(
                   (matchedSkill) => matchedSkill.name === skill
-                );
+                )
                 const chipStyle = {
                   marginRight: "1%",
                   marginTop: "1%",
                   fontWeight: isMatched ? "bold" : "normal",
                   backgroundColor: isMatched ? "#33eb91" : "gray",
                   cursor: "default",
-                };
+                }
                 return (
                   <Chip
                     key={index}
@@ -54,17 +52,16 @@ const MatchingRole = (props) => {
                     style={chipStyle}
                     disabled={!isMatched}
                   />
-                );
+                )
               })}
             </Typography>
           </Grid>
 
           {props.matchingSkillPercentage}
-
         </div>
       </div>
     </div>
   )
 }
 
-export default MatchingRole;
+export default MatchingRole
