@@ -85,7 +85,6 @@ const RolelistingForm = () => {
     }
     try {
       const response  = await createRoleListing(formattedValues)
-      console.log("this is response", response)
       if (response.ok) {
         handleSuccess("Create Role Listing")
         resetForm()
@@ -97,7 +96,6 @@ const RolelistingForm = () => {
         navigate("/view-applications")
       }, 2000)
     } catch (error) {
-      console.log("error", error)
       handleError("Error occurred when submitting form")
       resetForm()
     }
