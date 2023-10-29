@@ -31,7 +31,7 @@ export const getRoleListings = async (
   }
 
   const res = await response.json()
-  return res.listings
+  return res
 }
 
 /**
