@@ -8,7 +8,11 @@ const Role = (props) => {
           <strong>
             <Typography variant="h4">{props.name}</Typography>
           </strong>
-          <Typography variant="subtitle1" id="roleDetails" className="mb-[2%] text-[#B0B0B4]">
+          <Typography
+            variant="subtitle1"
+            id="roleDetails"
+            className="mb-[2%] text-[#B0B0B4]"
+          >
             Role ID: {props.id} | Status: {props.status} | Closing Date:{" "}
             {props.end_date}
           </Typography>

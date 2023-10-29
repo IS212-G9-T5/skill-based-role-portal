@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { Pagination } from "@mui/material"
+import { debounce } from "lodash"
 import Lottie from "react-lottie"
 import { Link, useLocation } from "react-router-dom"
-import { debounce } from 'lodash';
 
 import { getRoleListings } from "../../api/RoleListingAPI"
 import animationData from "../../assets/animation_lngbtih0.json"
@@ -36,8 +36,8 @@ const AllRoleListing: React.FC = () => {
   }, [initialPage, searchRoleName])
 
   const debouncedFetchData = debounce((newSearchRoleName) => {
-    setSearchRoleName(newSearchRoleName);
-  }, 1000);
+    setSearchRoleName(newSearchRoleName)
+  }, 1000)
 
   const fetchData = async (page, roleName = "", skills = []) => {
     setIsLoading(true)
