@@ -8,7 +8,6 @@ export const getRoleListings = async (
   roleName?: string,
   skills?: string[]
 ): Promise<RoleListings> => {
-
   let url = `/api/listings?page=${page}&size=${size}`
 
   if (roleName) {
