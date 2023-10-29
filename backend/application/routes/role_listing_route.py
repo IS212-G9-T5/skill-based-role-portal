@@ -19,7 +19,7 @@ from application.services import (
     staff_service,
 )
 from application.dto.response import ResponseBodyJSON
-from .route_decorators import admin_or_hr_required
+from .route_decorators import admin_or_hr_required, admin_or_hr_or_manager_required
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 
@@ -52,6 +52,31 @@ def find_user_role_applications(id: int):
     # sort applicants in descending order of skills match count
     res.sort(key=lambda r: r["skills_match_pct"], reverse=True)
     return jsonify({"applicants": res}), 200
+
+
+@api.route("/available-listings", methods=["GET"])
+@jwt_required()
+@admin_or_hr_or_manager_required()
+def find_available_listings_paginated():
+    page = request.args.get("page", 1, type=int)
+    page_size = request.args.get("size", DEFAULT_PAGE_SIZE, type=int)
+    app.logger.info(f"GET /listings with params: {request.args}")
+    paginated_listngs = role_listing_service.find_all_available_listings_paginated(
+        page=page, page_size=page_size
+    )
+    data = [listing.json() for listing in paginated_listngs.items]
+    res = {
+        "page": paginated_listngs.page,
+        "size": paginated_listngs.per_page,
+        "items": data,
+        "total": paginated_listngs.total,
+        "pages": paginated_listngs.pages,
+        "has_prev": paginated_listngs.has_prev,
+        "has_next": paginated_listngs.has_next,
+    }
+    # sort listings in ID descending order
+    res["items"].sort(key=lambda r: r["id"], reverse=True)
+    return jsonify(res), 200
 
 
 @api.route("/listings", methods=["GET"])

@@ -92,7 +92,7 @@ const RolelistingForm = () => {
         resetForm()
       }
       setTimeout(() => {
-        navigate("/all-role-listing")
+        navigate("/view-applications")
       }, 2000)
     } catch (error) {
       handleError("Error occurred when submitting form")
@@ -114,7 +114,7 @@ const RolelistingForm = () => {
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
     items: [
-      { label: "View Applications", to: "/applications" },
+      { label: "View Applications", to: "/view-applications" },
       { label: "Create Listing", to: "/create-role-listing" },
       { label: "Logout", to: "/" },
     ],

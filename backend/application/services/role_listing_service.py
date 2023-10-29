@@ -46,6 +46,19 @@ def find_all_by_role_and_skills_paginated(
     return db.paginate(stmt, page=page, per_page=page_size, error_out=False)
 
 
+def find_all_available_listings_paginated(page: int, page_size: int) -> Pagination:
+    stmt = (
+        select(RoleListing)
+        .where(
+            RoleListing.start_date <= db.func.current_date(),
+            db.func.current_date() <= RoleListing.end_date,
+        )
+        .order_by(RoleListing.end_date.asc())
+    )
+
+    return db.paginate(stmt, page=page, per_page=page_size, error_out=False)
+
+
 def find_by_id(id: int) -> Optional[RoleListing]:
     listing = (
         db.session.execute(db.select(RoleListing).where(RoleListing.id == id))
