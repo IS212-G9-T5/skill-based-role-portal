@@ -9,7 +9,12 @@ declare global {
     skills: string[]
     userSkills: SkillObject[]
     roleMatchData: RoleMatch
-  } 
+  }
+  type CreateRoleListing = {
+    role_name: string
+    start_date: string
+    end_date: string
+  }
 
   type RoleApplication = {
     status: string

@@ -45,6 +45,17 @@ const RolelistingForm = () => {
     start_date: dayjs(Date.now()),
     end_date: dayjs(Date.now()),
   })
+  const user = localStorage.getItem("role")
+  const CRlabel = user === "HR" ? "Create Listings" : ""
+  const CRurl = user === "HR" ? "/create-role-listing" : ""
+  const navbarProps: NavBar = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: CRlabel, to: CRurl },
+      { label: "View Applications", to: "/view-applications" },
+      { label: "Logout", to: "/" },
+    ],
+  }
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
@@ -94,14 +105,6 @@ const RolelistingForm = () => {
       handleError("Error occured when updating role listing")
       resetForm()
     }
-  }
-  const navbarProps = {
-    title: "SKILLS BASED ROLE PORTAL",
-    items: [
-      { label: "View Applications", to: "/view-applications" },
-      { label: "Create Listing", to: "/create-role-listing" },
-      { label: "Logout", to: "/" },
-    ],
   }
   return (
     <>

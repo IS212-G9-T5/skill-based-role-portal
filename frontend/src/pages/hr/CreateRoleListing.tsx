@@ -14,17 +14,16 @@ import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 import * as yup from "yup"
-
 import StaffNavbar from "../../components/Navbar"
+import { getRoles } from "../../../src/api/RoleAPI"
+import { createRoleListing } from "../../../src/api/RoleListingAPI"
 
 const createRoleSchema = yup.object().shape({
   role_name: yup.string().required("Role Name is required"),
-  description: yup.string().required("Description is required"),
   start_date: yup.date().required("Start Date is required"),
   end_date: yup.date().required("End Date is required"),
 })
 
-const endpointUrl = "http://127.0.0.1:5000/api/roles"
 const RolelistingForm = () => {
   const navigate = useNavigate()
   const [data, setData] = useState(null)
@@ -32,25 +31,36 @@ const RolelistingForm = () => {
   const [retrievedSkills, setRetrievedSkills] = useState<string[]>([])
   const [startDateValue, setstartDateValue] = useState<Dayjs | null>(null)
   const [endDateValue, setendDateValue] = useState<Dayjs | null>(null)
+  const user = localStorage.getItem("role")
+  const CRlabel = user === "HR" ? "Create Listings" : ""
+  const CRurl = user === "HR" ? "/create-role-listing" : ""
+  const navbarProps: NavBar = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: CRlabel, to: CRurl },
+      { label: "View Applications", to: "/view-applications" },
+      { label: "Logout", to: "/" },
+    ],
+  }
 
   useEffect(() => {
     const rolesArray = new Array<string>()
     const skillsSet = new Set<string>()
-    fetch(endpointUrl)
-      .then((response) => response.json())
-      .then((res) => {
-        setData(res.data)
-        const result = res.data
-        result.forEach((item) => {
-          const roleName = item.name
-          const skills = item.skills
-          skills.forEach((skill) => {
-            skillsSet.add(skill)
-          })
-          rolesArray.push(roleName)
-          setRoles(rolesArray)
+    const fetchData = async () => {
+      const data = await getRoles()
+      setData(data)
+      const result = data
+      result.forEach((item) => {
+        const roleName = item.name
+        const skills = item.skills
+        skills.forEach((skill) => {
+          skillsSet.add(skill)
         })
+        rolesArray.push(roleName)
+        setRoles(rolesArray)
       })
+    }
+    fetchData()
   }, [])
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
@@ -63,27 +73,13 @@ const RolelistingForm = () => {
   }
   const handleFormSubmit = async (values, { resetForm }) => {
     const formattedValues = {
-      ...values,
+      role_name: values.role_name,
       start_date: startDateValue ? startDateValue.format("YYYY-MM-DD") : "",
       end_date: endDateValue ? endDateValue.format("YYYY-MM-DD") : "",
     }
-    //temporary fix before endpoint is fixed to take in role description
-    delete formattedValues.description
-    function getCookie(name) {
-      const value = `; ${document.cookie}`
-      const parts = value.split(`; ${name}=`)
-      if (parts.length === 2) return parts.pop().split(";").shift()
-    }
     try {
-      const response = await fetch("/api/listings", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-        },
-        body: JSON.stringify(formattedValues),
-      })
+      const response  = await createRoleListing(formattedValues)
+      console.log("this is response", response)
       if (response.ok) {
         handleSuccess("Create Role Listing")
         resetForm()
@@ -95,29 +91,10 @@ const RolelistingForm = () => {
         navigate("/view-applications")
       }, 2000)
     } catch (error) {
+      console.log("error", error)
       handleError("Error occurred when submitting form")
       resetForm()
     }
-  }
-  const handleDropDownChange = (event) => {
-    const selectedRoleName = event.target.value
-    const items = data
-    items.forEach((item) => {
-      const roleName = item.name
-      const skills = item.skills
-      if (roleName === selectedRoleName) {
-        setRetrievedSkills(skills)
-      }
-    })
-  }
-
-  const navbarProps = {
-    title: "SKILLS BASED ROLE PORTAL",
-    items: [
-      { label: "View Applications", to: "/view-applications" },
-      { label: "Create Listing", to: "/create-role-listing" },
-      { label: "Logout", to: "/" },
-    ],
   }
 
   return (
@@ -127,7 +104,7 @@ const RolelistingForm = () => {
       <Grid container className="mt-5">
         <Grid item xs={12}>
           <Typography className="mt-5 text-center" variant="h4">
-            Role Listing Form
+            Create Role Listing
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -138,7 +115,20 @@ const RolelistingForm = () => {
                 onSubmit={handleFormSubmit}
                 validationSchema={createRoleSchema}
               >
-                {({ values, touched, errors, handleChange, handleSubmit }) => {
+                {({ values, touched, errors, handleChange, handleSubmit, setFieldValue }) => {
+                  const handleDropDownChange = (event) => {
+                    const selectedRoleName = event.target.value
+                    const items = data
+                    items.forEach((item) => {
+                      const roleName = item.name
+                      const skills = item.skills
+                      const description = item.description
+                      if (roleName === selectedRoleName) {
+                        setRetrievedSkills(skills)
+                        setFieldValue("description", description)
+                      }
+                    })
+                  }
                   const handleDropDown = (event) => {
                     console.log("role event", event)
                     handleDropDownChange(event)
