@@ -32,7 +32,6 @@ const AllRoleListing: React.FC = () => {
     fetchData(initialPage, searchRoleName)
     setIsFiltersApplied(false)
     window.scrollTo({ top: 0, behavior: "smooth" })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPage, searchRoleName])
 
   const fetchData = async (page, roleName = "", skills = []) => {
@@ -69,7 +68,6 @@ const AllRoleListing: React.FC = () => {
     if (selectedSkills.length === 0) {
       fetchData(currentPage, searchRoleName, [])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFiltersApplied, currentPage, searchRoleName, selectedSkills])
 
   const navbarProps = {
