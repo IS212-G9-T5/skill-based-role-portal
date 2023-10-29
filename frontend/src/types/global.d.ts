@@ -69,6 +69,7 @@ declare global {
     lname: string
     skills: SkillObject[]
   }
+}
 
 export type AccessControlProps = {
   userPermissions: string
