@@ -11,7 +11,6 @@ import Navbar from "../../components/Navbar"
 import Role from "../../components/Role"
 import Search from "../../components/Search"
 
-
 const AllRoleListing: React.FC = () => {
   const [data, setData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -26,56 +25,52 @@ const AllRoleListing: React.FC = () => {
   const query = new URLSearchParams(location.search)
   const initialPage = parseInt(query.get("page") || "1", 10)
   const [isLoading, setIsLoading] = useState(false)
+  const [isFiltersApplied, setIsFiltersApplied] = useState(false)
 
   useEffect(() => {
     setCurrentPage(initialPage)
     fetchData(initialPage, searchRoleName)
+    setIsFiltersApplied(false)
     window.scrollTo({ top: 0, behavior: "smooth" })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPage, searchRoleName])
 
+  const fetchData = async (page, roleName = "", skills = []) => {
+    setIsLoading(true)
+    setTimeout(async () => {
+      const res = await getRoleListings(page, listingsPerPage, roleName, skills)
+      if (res) {
+        setData(res.items)
+        setTotalListings(res.total)
+        setTotalPages(Math.ceil(res.total / listingsPerPage))
+        setCurrentPage(page)
+      }
+      setIsLoading(false)
+    }, 300)
+  }
+
+  const applyFilters = () => {
+    setIsFiltersApplied(true)
+    setCurrentPage(1)
+  }
+
   const handleClearFilters = () => {
     setActiveFilter({})
     setSelectedSkills([])
+    setIsFiltersApplied(false)
+    fetchData(currentPage, searchRoleName, [])
   }
 
   useEffect(() => {
-    setCurrentPage(1) // reset the page state to 1 whenever the filter changes
-    fetchData(1, searchRoleName) // fetch data for the first page
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSkills])
-
-  const fetchData = async (page, roleName = "") => {
-    setIsLoading(true) // Start loading
-    const res = await getRoleListings(
-      page,
-      listingsPerPage,
-      roleName,
-      selectedSkills
-    )
-
-    if (res) {
-      setData(res.items)
-      setTotalListings(res.total)
-      setTotalPages(Math.ceil(res.total / listingsPerPage))
-      setCurrentPage(page)
+    if (isFiltersApplied) {
+      fetchData(currentPage, searchRoleName, selectedSkills)
+      setIsFiltersApplied(false)
     }
-    setIsLoading(false) // End loading
-  }
-
-  useEffect(() => {
-    fetchData(currentPage, searchRoleName)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchRoleName, selectedSkills])
-
-  useEffect(() => {
-    const areAllFiltersUnchecked = Object.values(activeFilter).every(
-      (value) => !value
-    )
-    if (areAllFiltersUnchecked) {
-      setActiveFilter({})
+    if (selectedSkills.length === 0) {
+      fetchData(currentPage, searchRoleName, [])
     }
-  }, [activeFilter])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFiltersApplied, currentPage, searchRoleName, selectedSkills])
 
   const navbarProps = {
     title: "SKILLS BASED ROLE PORTAL",
@@ -97,16 +92,28 @@ const AllRoleListing: React.FC = () => {
         <div className="p-4 lg:sticky lg:top-0 lg:w-1/4">
           <div className="flex items-center justify-between">
             <h2 className="font-bold">Filter by skills:</h2>
-            <button
-              className={`rounded p-2 text-sm ${
-                Object.values(activeFilter).some((value) => value === true)
-                  ? "text-blue-500"
-                  : "text-gray-400"
-              }`}
-              onClick={handleClearFilters}
-            >
-              Clear
-            </button>
+            <div>
+              <button
+                className={`rounded p-2 text-sm ${
+                  Object.values(activeFilter).some((value) => value === true)
+                    ? "text-blue-500"
+                    : "text-gray-400"
+                }`}
+                onClick={applyFilters}
+              >
+                Apply
+              </button>
+              <button
+                className={`rounded p-2 text-sm ${
+                  Object.values(activeFilter).some((value) => value === true)
+                    ? "text-blue-500"
+                    : "text-gray-400"
+                }`}
+                onClick={handleClearFilters}
+              >
+                Clear
+              </button>
+            </div>
           </div>
           <Filter
             activeFilter={activeFilter}
@@ -184,6 +191,7 @@ const AllRoleListing: React.FC = () => {
                   onChange={(_, newPage) => {
                     if (typeof newPage === "number") {
                       setCurrentPage(newPage)
+                      setIsFiltersApplied(true)
                     }
                   }}
                 />
