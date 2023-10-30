@@ -11,6 +11,12 @@ declare global {
     roleMatchData: RoleMatch
   }
 
+  type CreateRoleListing = {
+    role_name: string
+    start_date: string
+    end_date: string
+  }
+
   type RoleApplication = {
     status: string
     start_date: string

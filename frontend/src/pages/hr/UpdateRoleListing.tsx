@@ -7,6 +7,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { Form, Formik } from "formik"
 import { toast, Toaster } from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
+import { useMediaQuery } from 'react-responsive';
 import * as yup from "yup"
 
 import {
@@ -31,6 +32,10 @@ const signupSchema = yup.object().shape({
 })
 
 const RolelistingForm = () => {
+
+  // Use the useMediaQuery hook to check the screen size
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 992px)' });
+
   const { id } = useParams()
   const status = ["OPEN", "CLOSED"]
   const navigate = useNavigate()
@@ -45,6 +50,17 @@ const RolelistingForm = () => {
     start_date: dayjs(Date.now()),
     end_date: dayjs(Date.now()),
   })
+  const user = localStorage.getItem("role")
+  const CRlabel = user === "HR" ? "Create Listings" : ""
+  const CRurl = user === "HR" ? "/create-role-listing" : ""
+  const navbarProps: NavBar = {
+    title: "SKILLS BASED ROLE PORTAL",
+    items: [
+      { label: CRlabel, to: CRurl },
+      { label: "View Applications", to: "/view-applications" },
+      { label: "Logout", to: "/" },
+    ],
+  }
   const handleSuccess = (msg) => toast.success(msg, { position: "top-center" })
   const handleError = (msg) => toast.error(msg, { position: "top-center" })
 
@@ -94,14 +110,6 @@ const RolelistingForm = () => {
       handleError("Error occured when updating role listing")
       resetForm()
     }
-  }
-  const navbarProps = {
-    title: "SKILLS BASED ROLE PORTAL",
-    items: [
-      { label: "View Applications", to: "/view-applications" },
-      { label: "Create Listing", to: "/create-role-listing" },
-      { label: "Logout", to: "/" },
-    ],
   }
   return (
     <>
@@ -276,7 +284,16 @@ const RolelistingForm = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Button variant="contained" fullWidth type="submit">
+                          <Button variant="contained" fullWidth type="submit"
+                          style={{
+                            marginTop: "20px",
+                            ...(isSmallScreen && {
+                              backgroundColor: "#1976d2",
+                              borderRadius: "4px",
+                              padding: "8px",
+                              color: "white",
+                            }),
+                          }}>
                             Submit
                           </Button>
                         </Grid>
