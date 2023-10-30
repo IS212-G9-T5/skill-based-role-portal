@@ -585,7 +585,7 @@ def test_get_role_listing_paginated_search_by_role(
     role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
@@ -675,7 +675,7 @@ def test_get_role_listing_paginated_search_by_skills(
     role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
@@ -720,7 +720,7 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
     role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)

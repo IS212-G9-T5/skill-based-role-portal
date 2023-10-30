@@ -56,4 +56,4 @@ jobs:
         run: |
           echo $SQLALCHEMY_TEST_DATABASE_URI
           cd ./backend
-          poetry run python -B -m pytest -s
+          poetry run python -B -m pytest --exitfirst
