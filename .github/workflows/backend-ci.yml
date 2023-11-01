@@ -54,7 +54,7 @@ jobs:
           SQLALCHEMY_TEST_DATABASE_URI: ${{ secrets.SQLALCHEMY_TEST_DATABASE_URI }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          echo $SQLALCHEMY_TEST_DATABASE_URI
+          cd ./backend
           docker-compose up --build -d
           docker-compose run backend poetry run python -B -m pytest --exitfirst
           docker-compose down
