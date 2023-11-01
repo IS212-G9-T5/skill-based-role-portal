@@ -582,16 +582,16 @@ def test_get_role_listing_paginated_search_by_role(
     # create role listing with role Software Developer
     skills = skill_service.find_unique(2)
     role = Role(name="Software Developer", description="lorem ipsum", skills=skills)
-    role_service.create(role)
+    res = role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
     role_listing_service.save(role_listing)
 
-    response = random_user_client.get(path=ENDPOINT, query_string={"role": "software"})
+    response = random_user_client.get(path=ENDPOINT, query_string={"role": "Software"})
 
     # check response
     assert response.status_code == 200
@@ -675,7 +675,7 @@ def test_get_role_listing_paginated_search_by_skills(
     role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
@@ -720,7 +720,7 @@ def test_get_role_listing_paginated_search_by_role_and_skills(
     role_service.create(role)
 
     today = date.today()
-    start_date = date(today.year, today.month - 1, today.day)
+    start_date = date(today.year, today.month, today.day)
     end_date = start_date + timedelta(days=30)
 
     role_listing = RoleListing(role=role, start_date=start_date, end_date=end_date)
