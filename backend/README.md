@@ -172,7 +172,7 @@ SQLALCHEMY_TEST_DATABASE_URI=postgresql://postgres:postgres@localhost:5432/test 
 # endregion
 ```
 
-- Start the database
+- Start the pg database
 
 ```
 cd backend
